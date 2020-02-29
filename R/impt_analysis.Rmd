@@ -1,0 +1,506 @@
+---
+title: "impt_analysis"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+#install packages
+```{r}
+install.packages("metafor")
+install.packages("tidyverse")
+install.packages("forestplot")
+install.packages("ggplot2")
+install.packages("meta")
+install.packages("shiny")
+install.packages("expss")
+install.packages("DiagrammeR")
+install.packages("PRISMAstatement")
+install.packages("formattable")
+install.packages("data.table")
+install.packages('htmltools')
+install.packages('webshot')
+install.packages('rsconnect')
+```
+
+#load packages
+```{r}
+library(metafor)
+library(tidyverse)
+library(forestplot)
+library(meta)
+library(shiny)
+library(ggplot2)
+library(expss)
+library(readxl)
+library(DiagrammeR)
+library(PRISMAstatement)
+library(formattable)
+library(dplyr)
+library(data.table)
+library(htmltools)
+library(webshot)
+```
+
+Steps:
+1. create a flow chart
+2. summarize the included studies
+3. summarize the included treatment programs
+4. perform within-subjects meta analysis for each outcome domain
+5. create timeline with standardized effect on each outcome domain
+6. determine the number of relapse
+
+
+## step 1 ## create a flowchart
+```{r}
+prisma(found = 29903,
+       found_other = 12,
+       no_dupes = 15693, 
+       screened = 15693, 
+       screen_exclusions = 15346, 
+       full_text = 347,
+       full_text_exclusions = 293, 
+       qualitative = 54, 
+       quantitative = 54,
+       width = 800, height = 800,
+       font_size = 12,
+       fontcolor = red)
+```
+
+
+## step 2 ## provide an overview of descriptive information for all included studies
+```{r}
+study_desc <- read_excel("data.raw/r_desc_study.xlsx")
+View(study_desc)
+study_desc$id <- NULL
+study_desc$`study objective` 
+
+formattable(study_desc, align = c("l", "c", rep("r", 5), rep("c", 10)),
+            list(area(col = 8:17) ~ color_tile("#FF6347", "#71CA97"))
+            )
+
+widget_format_table = formattable(study_desc, align = c("l", "c", rep("r", 5), rep("c", 10)),
+            list(area(col = 8:17) ~ color_tile("#FF6347", "#71CA97"))
+            )
+
+icon_formatter <- function() {
+    formatter("span", 
+        style = x ~ style(color = ifelse(x, "green", "red")), x ~ icontext(ifelse(x, "available", "not available"), "")
+    )	 	 
+}
+
+widget_format_table2 = formattable(study_desc, list(
+                      HRQOL = icon_formatter(),
+                      `physical function` = icon_formatter(),
+                      anxiety = icon_formatter()
+                      ))
+
+ft <- formattable(study_desc, align = c("l", "c", rep("r", 5), rep("c", 10)),
+            list(area(col = 8:17) ~ color_tile("#FF6347", "#71CA97"))
+            )       
+
+```
+
+export to png
+
+```{r}
+html_header="
+<head> 
+<meta charset=\"utf-8\"> 
+<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"> 
+<link rel=\"stylesheet\" href=\"https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css\">
+</head>
+<body>
+"
+
+html_table = format_table(study_desc, align = c("l", "c", rep("r", 5), rep("c", 10)),
+            list(area(col = 8:17) ~ color_tile("#FF6347", "#71CA97"))
+            )
+
+write(paste(html_header, html_table, sep=""), "./Supplementary_html_table.html")
+
+webshot::install_phantomjs()
+
+export_formattable <- function(f, file, width = "100%", height = NULL, 
+                               background = "white", delay = 0.2)
+{
+  w <- as.htmlwidget(f, width = width, height = height)
+  path <- html_print(w, background = background, viewer = NULL)
+  url <- paste0("file:///", gsub("\\\\", "/", normalizePath(path)))
+  webshot(url,
+          file = file,
+          selector = ".formattable_widget",
+          delay = delay)
+}
+
+export_formattable(ft, "./Supplementary_html_table.jpg")
+```
+
+
+
+#load descriptives
+```{r}
+data_desc <- read_excel("data.raw/r_descriptives.xlsx")
+view(data_desc)
+```
+
+#add labels to HCP data
+```{r}
+add_val_lab(data_desc$who_provided) = num_lab("
+                                1 rehabilitation_physician
+                                2 clinical_psychologist
+                                3 physiotherapist
+                                4 occupational_therapist
+                                5 social_worker
+                                6 nurse
+                                7 physician(other)
+                                8 nutritionist
+                                9 patient expert
+                                10 other")
+```
+
+
+
+
+## step 3: create an interactive forest plot for pain intensity
+
+#load outcomedata
+```{r}
+dataraw <- read_excel("data.raw/20190523.r_example.xlsx")
+data_timeserie <- read_excel("data.raw/r_line_graph_test.xlsx")
+View(dataraw)
+```
+
+#test for complete dataset
+```{r}
+data_hrqol <- read_excel("data.raw/20200123.r_data_forest_plot.xlsx")
+data_hrqol <- as_tibble(data_hrqol)
+
+
+data_hrqol$ri <- 0 
+data_hrqol_meta <- escalc(measure="SMCR", m1i=m_post, m2i=m_pre, sd1i=sd_pre, ni=n_post, ri=ri, data=data_hrqol)
+hrqol_meta <- metafor::summary.escalc(data_hrqol_meta)
+
+## Trying to conditionally change the number signs of specific values of a column
+#test <- hrqol_meta
+#test2 <- if("test$rev_scoring==1 is TRUE") {test$yi*(-1)}
+#change_sign <- function(*-1)
+#apply(test, 1, test$yi*(-1))
+
+
+hrqol_meta_pre_post <- filter(hrqol_meta, outcome == "hrqol" & contrast == "pre-post")
+hrqol_meta_post_fu <- filter(hrqol_meta, outcome == "hrqol" & contrast == "post-fu")
+hrqol_meta_pre_fu <- filter(hrqol_meta, outcome == "hrqol" & contrast == "pre-fu")
+```
+
+#create shinyApp
+input will be: slider to determine the correlation of the analysis
+output will be: a forrest plot, using the input_cor as value.
+```{r}
+ui <- fluidPage(
+  
+  # App title ----
+  headerPanel("Forest plot systematic review"),
+  
+  # Sidebar layout with input and output definitions ----
+  sidebarLayout(
+    
+    # Sidebar panel for inputs ----
+    sidebarPanel(
+      
+      # Input: Slider for the number of bins ----
+      sliderInput(inputId = "r_value",
+                  label = "R Correction Value:",
+                  min = 0,
+                  max = 1,
+                  value = 0,
+                  step = 0.1),
+      
+      selectInput(inputId = "outcome",
+                  label = "select ouctome:",
+                  choices = c("hr quality of life", "physical function", "pain interference", "depression", "anxiety",   
+                             "self-efficacy", "social functioning", "pain intensity"),
+                  selected = "pain interference"),
+    
+      selectInput(inputId = "contrast",
+                  label = "select contrast:",
+                  choices = c("pre-post", "post-fu", "pre-fu"),
+                  selected = "pre-post")
+    ),
+    
+    # Main panel for displaying outputs ----
+    mainPanel(
+      
+      # Output: Histogram ----
+      plotOutput("forestplot")
+      
+    )
+  )
+)
+
+# Define server logic required to draw a histogram ----
+server <- function(input, output, session) {
+  
+
+  output$forestplot <- renderPlot({
+    
+    data_hrqol$ri <- input$r_value
+    data_hrqol_meta <- escalc(measure="SMCR", m1i=m_post, m2i=m_pre, sd1i=sd_pre, ni=n_post, ri=ri, data=data_hrqol)
+    hrqol_meta <- metafor::summary.escalc(data_hrqol_meta)
+    hrqol_meta2 <- filter(hrqol_meta, contrast == input$contrast & outcome == input$outcome)
+    hrqol_meta2$tabletext <- cbind(hrqol_meta2$author, hrqol_meta2$year, hrqol_meta2$n_pre, hrqol_meta2$measure, 
+                                   hrqol_meta2$fu_month)
+  
+    forestplot(hrqol_meta2$tabletext, hrqol_meta2$yi, hrqol_meta2$ci.lb, hrqol_meta2$ci.ub,
+               zero = 0,
+               cex = 2,
+               lineheight = "auto",
+               xlab = "SMD",
+               lwd.ci= 3,
+               col = fpColors(text="black", lines="#4393C3", box="#2166AC"),
+               boxsize = .25
+               )
+    })
+    
+  }
+
+shinyApp(ui=ui, server=server)
+```
+
+#publish shiny app
+```{r}
+library(rsconnect)
+rsconnect::deployApp('path/to/your/app')
+```
+
+
+#create a dataframe
+```{r}
+data <- as_tibble(dataraw)
+View(data)
+```
+
+#perform meta analysis
+```{r}
+data$ri_0 <- 0
+data_meta_0 <- escalc(measure="SMCR", m1i=m_post, m2i=m_pre, sd1i=sd_pre, ni=n_post, ri=ri_0, data=data)
+meta_0 <- metafor::summary.escalc(data_meta_0)
+```
+
+#create forest plot
+```{r}
+forestplot(meta_0$Author, meta_0$yi, meta_0$ci.lb, meta_0$ci.ub,
+zero = 0,
+cex = 2,
+lineheight = "auto",
+xlab = "Lab axis txt",
+lwd.ci= 3)
+```
+
+#create shinyApp
+input will be: slider to determine the correlation of the analysis
+output will be: a forrest plot, using the input_cor as value.
+```{r}
+ui <- fluidPage(
+  
+  # App title ----
+  headerPanel("Forest plot Stefan"),
+  
+  # Sidebar layout with input and output definitions ----
+  sidebarLayout(
+    
+    # Sidebar panel for inputs ----
+    sidebarPanel(
+      
+      # Input: Slider for the number of bins ----
+      sliderInput(inputId = "r_value",
+                  label = "R Correction Value:",
+                  min = 0,
+                  max = 1,
+                  value = 0,
+                  step = 0.1)
+      
+    ),
+    
+    # Main panel for displaying outputs ----
+    mainPanel(
+      
+      # Output: Histogram ----
+      plotOutput("forestplot")
+      
+    )
+  )
+)
+
+# Define server logic required to draw a histogram ----
+server <- function(input, output, session) {
+  
+
+  output$forestplot <- renderPlot({
+    
+    data$ri_0 <- input$r_value
+    data_meta_0 <- escalc(measure="SMCR", m1i=m_post, m2i=m_pre, sd1i=sd_pre, ni=n_post, ri=ri_0, data=data)
+    meta_0 <- metafor::summary.escalc(data_meta_0)
+    
+  
+    forestplot(meta_0$Author, meta_0$yi, meta_0$ci.lb, meta_0$ci.ub,
+               zero = 0,
+               cex = 2,
+               lineheight = "auto",
+               xlab = "Lab axis txt",
+               lwd.ci= 3)
+    })
+    
+  }
+
+shinyApp(ui=ui, server=server)
+```
+
+
+#impute r
+```{r}
+data$ri <- .59
+data$ri_1 <- 1
+data$ri_0 <- 0
+data$ri_.4 <- .4
+data$ri_.81 <- .81
+```
+
+#perform meta analysis
+```{r}
+data_meta_0 <- escalc(measure="SMCR", m1i=m_post, m2i=m_pre, sd1i=sd_pre, ni=n_post, ri=ri_0, data=data)
+data_meta_.4 <- escalc(measure="SMCR", m1i=m_post, m2i=m_pre, sd1i=sd_pre, ni=n_post, ri=ri_.4, data=data)
+data_meta_.59 <- escalc(measure="SMCR", m1i=m_post, m2i=m_pre, sd1i=sd_pre, ni=n_post, ri=ri, data=data)
+data_meta_.81 <- escalc(measure="SMCR", m1i=m_post, m2i=m_pre, sd1i=sd_pre, ni=n_post, ri=ri_.81, data=data)
+data_meta_1 <- escalc(measure="SMCR", m1i=m_post, m2i=m_pre, sd1i=sd_pre, ni=n_post, ri=ri_1, data=data)
+```
+
+#add summary statistics
+```{r}
+meta_0 <- metafor::summary.escalc(data_meta_0)
+meta_.4 <- metafor::summary.escalc(data_meta_.4)
+meta_.59 <- metafor::summary.escalc(data_meta_.59)
+meta_.81 <- metafor::summary.escalc(data_meta_.81)
+meta_1 <- metafor::summary.escalc(data_meta_1)
+```
+
+
+#create forest plots for sensitivity analyses
+```{r}
+#create forestplot with ggplot2
+label <- c(data_meta_0$Author)
+
+
+fp_0 <- ggplot(data=meta_0, aes(x=label, y=yi, ymin=ci.lb, ymax=ci.ub)) +
+        geom_pointrange() + 
+        geom_hline(yintercept=1, lty=2) +  # add a dotted line at x=1 after flip
+        coord_flip() +  # flip coordinates (puts labels on y axis)
+        xlab("Label") + ylab("Mean (95% CI)") +
+        theme_bw()  # use a white background
+print(fp)
+
+fp_.4 <- ggplot(data=meta_.4, aes(x=label, y=yi, ymin=ci.lb, ymax=ci.ub)) +
+        geom_pointrange() + 
+        geom_hline(yintercept=1, lty=2) +  # add a dotted line at x=1 after flip
+        coord_flip() +  # flip coordinates (puts labels on y axis)
+        xlab("Label") + ylab("Mean (95% CI)") +
+        theme_bw()  # use a white background
+print(fp)
+
+fp_1 <- ggplot(data=meta_1, aes(x=label, y=yi, ymin=ci.lb, ymax=ci.ub)) +
+        geom_pointrange() + 
+        geom_hline(yintercept=1, lty=2) +  # add a dotted line at x=1 after flip
+        coord_flip() +  # flip coordinates (puts labels on y axis)
+        xlab("Label") + ylab("Mean (95% CI)") +
+        theme_bw()  # use a white background
+print(fp)
+
+
+```
+
+
+#compare RevMan to R
+```{r}
+data_test <- data
+data_test$ri <- 0
+data_test_meta <- escalc(measure="SMCR", m1i=m_post, m2i=m_pre, sd1i=sd_pre, ni=n_post, ri=ri, data=data_test)
+data_test_meta_summary <- metafor::summary.escalc(data_test_meta)
+```
+
+#create forestplot with ggplot2
+```{r}
+label <- c(data_test_meta_summary$Author)
+
+library(ggplot2)
+fp <- ggplot(data=data_test_meta_summary, aes(x=label, y=yi, ymin=ci.lb, ymax=ci.ub)) +
+        geom_pointrange() + 
+        geom_hline(yintercept=1, lty=2) +  # add a dotted line at x=1 after flip
+        coord_flip() +  # flip coordinates (puts labels on y axis)
+        xlab("Label") + ylab("Mean (95% CI)") +
+        theme_bw()  # use a white background
+print(fp)
+```
+
+#using meta package for meta analysis
+```{r}
+m1 <- metacont(n.e=n_post, mean.e=m_post, sd.e=sd_post, n.c=n_pre, mean.c=m_pre, sd.c=sd_pre,
+data = data_test, sm = "SMD")
+```
+
+#tutorial
+```{r}
+ui <- fluidPage(
+  # *Input()
+  sliderInput(inputId = "cor",
+              label = "Kies een waarde",
+              value = 2, min = 1 , max = 10),
+  plotOutput("table")
+  )
+
+server <- function(input, output) {
+  output$table <- renderPlot({hist(rnorm(input$cor))})
+  }
+
+shinyApp(ui = ui, server = server)
+
+```
+
+#shiny app
+```{r}
+ui <- fluidPage(
+  # *Input()
+  sliderInput(inputId = "cor",
+              label = "Kies een waarde",
+              value = 0.59, min = 0 , max = 1),
+  tableOutput("table")
+  )
+
+server <- function(input, output) {
+  output$table <- renderTable({
+    data_shiny <- dataraw
+    data_shiny$bla <- input$cor
+  })
+  }
+
+shinyApp(ui = ui, server = server)
+
+```
+
+#plot time series
+```{r}
+ggplot(data=data_timeserie, aes(x=time, y=score, group=Author, color=Author)) +
+  geom_line()+
+  scale_color_brewer(palette = "Set3")+
+  geom_point()+
+  scale_x_continuous(breaks=seq(1,3), labels=seq(1,3))
+```
+
+
