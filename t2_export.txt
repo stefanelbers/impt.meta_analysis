@@ -1,0 +1,88 @@
+"author_year"	"cohort_id"	"ed"	"ex"	"ga"	"bt"	"re"	"pm"	"ph"	"ba"	"wo"	"te"	"other_procedures"	"phy"	"psy"	"pt"	"ot"	"nur"	"swo"	"other_healthcare_providers"	"in_out_patient"	"type_of_contact"	"group_size"	"mode_of_delivery_subinfo"	"setting"	"time_span"	"hours"	"minutes"	"tailoring"	"followup_sessions_provided"	"followup_sessions_description"
+"Abbasi (2012)"	"a"	1	0	0	1	1	1	0	0	0	0	"influence of spouse responses.
+relapse prevention"	1	1	1	0	0	0	"orthopedic surgeon"	"outpatient"	"Mixed"	"6"	"face-to-face"	"pain clinic"	7	14	45	NA	NA	NA
+"Abbasi (2012)"	"b"	1	0	0	1	1	1	0	0	0	0	"strategies for sustained practice and skill learning for dealing with setbacks and relapses"	1	1	1	0	0	0	"Orthopedic surgeon"	NA	"Mixed"	NA	"face-to-face"	"pain clinic"	7	15	50	NA	NA	NA
+"Beaudreuil (2010)"	"a"	0	1	0	0	1	0	0	0	0	0	"na"	1	0	1	1	0	1	"Rheumatologist"	"outpatient"	"Group (>90%)"	"2-6"	"face-to-face"	"hospital"	5	137	30	"Low"	NA	NA
+"Bendix (2000)"	"a"	1	1	0	0	1	1	0	0	0	0	"Psychology: optional: interview with patient and partner."	1	1	1	1	0	0	NA	"outpatient"	"Group (>90%)"	NA	"face-to-face"	"hospital"	3	117	NA	NA	"yes"	"Three single days followed the 3-week period of daily training. Two days were placed in the second and third week after the intensive program, and the third day after 2 months.
+"
+"Bendix (1998)"	"a"	1	1	0	1	1	0	0	0	0	0	"individual  counseling session (1x per week)."	1	1	1	1	0	1	"nutritionist"	"outpatient"	"Group (>90%)"	"6-8"	"face-to-face"	"pain clinic"	3	135	NA	NA	NA	NA
+"Bendix (1998)"	"b"	0	0	0	0	0	0	0	0	0	0	NA	0	0	0	0	0	0	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+"Bergstrom (2014)"	"a"	1	1	0	0	1	1	0	1	0	1	"Consultation with Social insurance agency, primary care physician, if needed."	1	1	1	1	0	1	NA	"outpatient"	"Group (>90%)"	"10-12"	"face-to-face"	"hospital"	5	NA	NA	"Low"	"No"	NA
+"Bileviciute-Ljungar (2014)"	"a"	1	1	0	0	0	1	0	0	1	0	"social training; group counseling; family meetings; individual contact with different team members; visit to labour market institute; Hot packs, cool-packs, TENS and acupuncture  (not stimulated)"	1	1	1	1	1	1	"medical secretary"	"outpatient"	"Mixed"	"8"	"face-to-face"	"hospital"	8	143	NA	"Low"	"No"	"staff aimed at strengthening their adhesion to these indications"
+"Bileviciute-Ljungar (2014)"	"b"	0	0	0	0	0	0	0	0	0	0	NA	0	0	0	0	0	0	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+"Borys (2015)"	"a"	1	1	0	1	0	0	1	1	0	1	NA	1	1	1	0	0	1	NA	"inpatient"	"Mixed"	NA	"face-to-face"	"hospital"	3	168	NA	"Low"	NA	NA
+"Brendbekken (2016)"	"a"	0	1	0	0	0	1	0	0	0	1	NA	1	0	1	0	0	1	NA	"outpatient"	"Individual (>90%)"	NA	"face-to-face, coaching by telephone"	"hospital"	NA	8	15	"Low"	"Yes"	"at 12 months f/u: phone contact to use the ISIVET for the last time."
+"Cardosa (2012)"	"a"	1	1	0	1	1	1	0	0	0	0	"optional famility visits; recommending withdrawal of pain medication"	1	1	1	0	1	0	"anaesthetiologist/pain specialist"	"inpatient"	"Group (>90%)"	NA	"face-to-face"	"hospital"	2	60	NA	NA	NA	NA
+"De Rooij (2014)"	"a"	1	1	0	1	1	1	0	0	0	0	"Assertiveness training + Making a personalized plan, based on individual needs and requirements"	1	1	1	1	0	1	NA	"outpatient"	"Mixed"	NA	"face-to-face"	"treatment/rehabilitation center"	7	49	NA	"High"	"Yes"	"- 4-6 months of tailored individual treatment - 2 optional evaluation sessions"
+"Dysvik (2013)"	"a"	1	1	0	0	0	1	0	1	0	0	"follow-up sessions"	1	1	1	0	1	0	"nutritionist"	"outpatient"	"Group (>90%)"	"8-12"	"face-to-face, coaching by telephone"	"hospital"	8	45	NA	"Low"	"Yes"	"•	2 follow-up sessions (6m and 12m): focus on exercise and education on nutrition and pain, challenges and future plans. Homework on nutrition and health improvements/, thinking on how to continue. 12m was telephone sessions."
+"Frost (2000)"	"a"	1	1	0	0	0	0	0	0	0	0	"Individual psychologist sessions for patients who had particular psychological problems affecting their rehabilitation; video assessment of posture and daily life activities at pre and post measurement, to identify progress."	1	1	1	0	0	0	NA	"outpatient"	"Group (>90%)"	"maximum of 5"	"face-to-face, coaching by telephone"	NA	3	97	30	"Low"	"Yes"	"4 full day follow-up sessions , to monitor and maintain progress in exercises, discuss changes in their lifestyle, and any problems that might have arisen"
+"Gantschnigg (2017)"	"a"	1	1	0	1	1	1	0	1	1	0	"medical treatment, occupational therapy, social workers intervention,"	1	1	1	1	1	1	NA	"inpatient and outpatient combined"	"Mixed"	NA	"face-to-face"	"hospital"	12	108	NA	"Medium"	"No"	NA
+"Grahn (2000)"	"a"	1	1	0	1	1	1	0	1	1	0	"Social activities (e.g. creative and cultural activities)"	1	0	1	1	1	0	"Specialist consultants in orthopaedics and psychiatry"	"inpatient"	"Mixed"	NA	"face-to-face"	"treatment/rehabilitation center"	4	120	NA	"High"	"Yes"	"at least 3 follow-up meetings (3m 6m 12m), where the patient obtained further advice from the team"
+"Gustafsson (2002)"	"a"	1	1	0	0	1	0	0	1	0	0	"pain-relieving methods: TNS, heat and acupuncture, group discussion (pain, stress, coping, working situations, medication, sleep, relaxation emotions and bodily reactions)
+individual guidance (supporting in finding new coping strategies)"	1	1	0	0	1	1	NA	"outpatient"	"Mixed"	"7-8"	"face-to-face"	"hospital"	12	96	NA	"Low"	"Yes"	"3  day follow-up meeting at 3months."
+"Hafenbrack (2013)"	"a"	1	1	0	0	1	1	1	0	1	0	NA	1	1	1	0	0	0	NA	"outpatient"	"Group (>90%)"	NA	"face-to-face"	"pain clinic"	4	120	NA	NA	NA	NA
+"Hafenbrack (2013)"	"b"	0	0	0	0	0	0	0	0	0	0	NA	0	0	0	0	0	0	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+"Haiduk (2017)"	"a"	0	1	0	1	1	1	0	0	0	0	"Music/painting therapy; Tai Chi and Qigong; nursing service on request"	1	1	1	1	0	0	"Qigong instructors; creative therapists"	"inpatient"	"Mixed"	NA	"face-to-face"	"hospital"	4	108	NA	"Low"	"No"	NA
+"Hallstam (2016)"	"a"	0	1	0	1	1	1	0	0	0	0	"Counseling; Adjusting Pharmacological treatment; TENS"	1	1	1	0	1	0	NA	"outpatient"	"Mixed"	NA	"face-to-face"	"hospital"	13	65	NA	"Low"	"No"	NA
+"Hazard (1988)"	"a"	1	1	0	1	1	1	0	0	0	0	"weekly family meetings."	0	1	1	1	0	0	NA	"outpatient"	"Mixed"	NA	"face-to-face"	"treatment/rehabilitation center"	3	53	NA	"Low"	NA	NA
+"Heikkilä (1998)"	"a"	0	0	1	0	0	0	0	0	0	0	"Cognitive behavioural approach"	0	1	1	1	0	1	NA	"outpatient"	"Individual (>90%)"	NA	"face-to-face"	"treatment/rehabilitation center"	6	NA	NA	"Low"	NA	NA
+"Jensen (1997)"	"a"	1	1	0	1	1	1	0	0	0	0	"self-efficacy training;"	1	1	1	0	1	0	"alcohol/drugs counselor"	"inpatient"	"Group (>90%)"	NA	"face-to-face"	"pain clinic"	5	NA	NA	"Low"	NA	NA
+"Jensen (1997)"	"b"	0	0	0	0	0	0	0	0	0	0	NA	0	0	0	0	0	0	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	"Yes"	"•	Follow-up phone calls (by nurse) every 6 weeks, for 6 months."
+"Kääpä (2006)"	"a"	1	1	0	1	1	0	1	0	1	0	NA	1	1	1	1	0	0	NA	"outpatient"	"Mixed"	"6-8"	"face-to-face"	"treatment/rehabilitation center"	8	70	NA	"Low"	NA	NA
+"Koopman (2004)"	"a"	0	1	1	1	1	0	0	0	0	0	"Partners were invited to join the participant in a partner program, which consisted of three meetings
+individual counseling: monitoring progress and answering questions with regard to the program."	1	1	1	0	0	0	"Physical education instructor"	"outpatient"	"Mixed"	"6-10"	"face-to-face"	"treatment/rehabilitation center"	12	216	NA	"Low"	NA	NA
+"Lemstra (2005)"	"a"	1	1	0	0	1	1	0	0	0	0	"1 group dietary lecture (general dietary goals and strategies)"	1	1	1	0	0	0	"Dietician (lecture): education
+Massage therapist: providing two individual massages
+Exercise therapist (supervising exercise sessions, monitoring attendance, creating a social, non-intimidating environment."	"outpatient"	"Mixed"	NA	"face-to-face"	"community center"	6	32	40	"Low"	NA	NA
+"Mangels (2009)"	"a"	1	1	0	0	1	1	1	0	0	0	NA	0	1	1	1	0	0	NA	"inpatient"	"Mixed"	"10-12"	"face-to-face"	"hospital"	NA	167	20	"Low"	"no"	NA
+"Mangels (2009)"	"b"	1	1	0	0	1	1	1	0	0	0	NA	0	1	1	1	0	0	NA	"inpatient"	"Mixed"	"10-12"	"face-to-face, coaching by telephone"	"hospital"	NA	167	20	"Low"	"Yes"	"Booster: by telephone"
+"Martin (2012)"	"a"	1	1	0	1	1	1	1	0	0	0	NA	1	1	1	0	0	0	NA	NA	"Group (>90%)"	"12"	"face-to-face"	"hospital"	6	21	NA	NA	"No"	NA
+"McAllister (2005)"	"a"	0	1	0	0	1	1	0	0	0	0	"Participation of significant others; Medication management"	1	0	1	0	1	0	NA	"inpatient and outpatient combined"	"Group (>90%)"	NA	"face-to-face"	NA	4	80	NA	NA	"yes"	"After completion of the four week program, patients
+ were encouraged to attend an aftercare program that included 3 month’s use of the pool for exercising, and an indefinite"
+"Merrick (2009)"	"a"	1	1	0	1	1	1	0	1	0	0	"General information by social insurance/safety regulations
+Individual sessions
+Physiotherapy
+Occupational therapy"	1	1	1	1	0	1	"Patient is team member"	"outpatient"	"Mixed"	NA	"face-to-face"	"hospital"	5	66	30	"Low"	"No"	NA
+"Monticone (2013)"	"a"	1	1	0	1	0	1	0	0	0	0	"- Active and passive mobilisations of the spine (manual therapy) aimed at increasing ROM.
+- At each session: treatment fidelity check, based on treatment manual for administration of CBT and exercise. 
+- Family doctors and spouses were asked to support patient compliance."	1	1	1	0	0	0	NA	"outpatient"	"Individual (>90%)"	NA	"face-to-face, coaching by telephone"	"treatment/rehabilitation center"	5	15	NA	"Low"	"Yes"	"for 1 year: monthly 60 minute CBT sessions + telephone reminders to continue exercise"
+"Monticone (2016)"	"a"	1	1	0	1	1	1	0	0	0	0	"the patients were also asked to fill out a diary after each training session and the physiotherapists checked the diary every week."	1	1	1	0	0	0	NA	"outpatient"	"Group (>90%)"	"5"	"face-to-face"	"treatment/rehabilitation center"	5	15	NA	NA	"yes"	"1 year reinforcement phase,the psychologist met the patients for
+ further 1-hour sessions once a month for a year to verify
+ their growing ability to manage chronic pain and reinforce
+ the self-management of dysfunctional thoughts and wrong behaviors related to the fear of movement (reinforcement
+ phase).The patients were asked to continue the exercises taught actively in twice-weekly 60-
+ minute sessions for 1 year (reinforcement phase), during
+ which they received telephone reminders from personal"
+"Olason (2004)"	"a"	1	1	0	1	1	1	1	1	0	1	"Decrease drugs dose (weaning?)
+Optional: manipulation or other forms of special PT
+Optional: Psychiatric consultation"	1	1	1	1	1	1	"Sport therapist"	"inpatient"	"Mixed"	NA	"face-to-face"	"treatment/rehabilitation center"	7	NA	NA	"Medium"	"No"	NA
+"Oslund (2009)"	"a"	1	1	0	1	1	1	0	0	0	0	NA	1	1	1	1	0	0	"Counselors
+Case managers"	"outpatient"	"Mixed"	NA	"face-to-face"	"university"	4	120	NA	"Low"	"No"	NA
+"Persson (2012)"	"a"	1	1	0	1	1	1	0	1	1	1	"group discussions on communication, stress management skills; significant others could visit; instructions to write down relevant strategies; written discharge plan"	1	1	1	1	1	1	NA	"outpatient"	"Group (>90%)"	"9"	"face-to-face"	"hospital"	5	126	NA	NA	"yes"	"2 days of follow-up at 2 months after discharge. The discharge plan included recommendations for further strategies to improve the participants’ activity level and participation in society. Progress and unsuccessful events were re-evaluated during the 2-day follow-up meeting, 8 weeks after discharge"
+"Reck (2017)"	"a"	1	1	0	1	1	1	0	0	1	0	NA	1	1	1	1	0	0	NA	"outpatient"	"Group (>90%)"	NA	"face-to-face"	"pain clinic"	1	45	NA	NA	NA	"bi-monthly support group."
+"Richardson (1994)"	"a"	1	1	1	1	1	1	0	0	0	0	"withdrawal from pain drugs"	0	1	1	1	1	0	"anaesthetist"	"inpatient and outpatient combined"	"Group (>90%)"	"5"	"face-to-face"	"hospital"	NA	120	NA	NA	NA	NA
+"Roche (2011)"	"a"	0	1	0	0	1	0	0	0	1	1	"Informal meetings with group; weekly individual session with physiatrist"	1	1	0	1	0	0	NA	"outpatient"	"Group (>90%)"	"6-8"	"face-to-face"	"treatment/rehabilitation center"	5	150	NA	"Low"	"No"	NA
+"Semrau (2014)"	"a"	1	1	0	0	1	1	0	0	0	0	"Physical interventions (e.g. massages) were limited to two sessions
+per week per person.
+"	1	1	1	0	0	1	NA	"inpatient"	"Mixed"	NA	"face-to-face"	"treatment/rehabilitation center"	3	48	NA	"Low"	"No"	NA
+"Silvemark (2014)"	"a"	1	1	0	1	1	1	0	1	0	0	NA	1	1	1	1	1	1	NA	"outpatient"	"Group (>90%)"	"6-9"	"face-to-face"	"hospital"	5	175	NA	NA	NA	NA
+"Smeets (2008)"	"a"	1	0	1	1	0	0	0	0	0	0	"optional counselling sessions; partner participation"	1	1	1	1	0	1	NA	"outpatient"	"Group (>90%)"	"max 4"	"face-to-face"	"treatment/rehabilitation center"	10	23	30	"Low"	"No"	NA
+"Smeets (2008)"	"b"	1	1	1	1	0	0	0	0	0	0	"optional individual counselling; partner participation"	1	1	1	1	0	1	NA	"outpatient"	"Group (>90%)"	"max 4"	"face-to-face"	"treatment/rehabilitation center"	10	77	NA	"Low"	"No"	NA
+"Spinhoven (2004)"	"a"	1	0	1	1	0	1	0	0	0	0	"homework + check for patient compliance; spouse training; group discussion; listening to music fragments"	0	1	1	1	0	0	NA	"inpatient and outpatient combined"	"Mixed"	NA	"face-to-face"	"treatment/rehabilitation center"	8	150	NA	NA	NA	NA
+"Stein (2013)"	"a"	1	1	0	1	1	1	0	1	0	1	"mindfulness; education on postures to avoid the pain"	1	1	1	1	0	0	"medical secretary"	"outpatient"	"Group (>90%)"	"6-8"	"face-to-face"	"primary care unit"	6	90	NA	NA	NA	NA
+"Tavafian (2011)"	"a"	1	1	0	1	1	1	1	0	0	0	"preventive back injury techniques such as correct posture; booster sessions (discussing beliefs, promoting healthy behaviors);"	0	1	1	0	0	0	"health education specialist; rheumatologist"	"outpatient"	"Group (>90%)"	NA	"face-to-face"	"university"	1	9	NA	"Low"	"Yes"	"motivational counseling by phone (for 12 months) / monthly booster sessions Discussing beliefs, knowledge and perception regarding LBP. Promoting healthy behaviors, exercising and negating stressors. •	Motivational counseling by phone. Encouraged to cope with the stressors actively to achieve successful adaptation. (for 6 months)"
+"Thieme (2003)"	"a"	1	1	0	1	0	1	0	0	0	0	NA	1	1	1	0	1	0	NA	"inpatient"	"Group (>90%)"	"5-7"	"face-to-face"	"hospital"	5	75	NA	"Low"	"no"	NA
+"Van der Maas (2015)"	"a"	1	1	1	1	1	0	0	0	0	0	"occupational therapy / partner education / coaching"	1	1	1	1	0	0	NA	"outpatient"	"Group (>90%)"	"4-6"	"face-to-face"	"treatment/rehabilitation center"	12	94	NA	"Low"	"Yes"	"2x 90min follow-up group sessions to evaluate goals, share experiences, explore solutions and reasons for not achieving goals. New goal setting at fu1, when necessary."
+"Van der Maas (2015)"	"b"	1	1	1	1	1	0	0	1	0	0	"Occupational therapy / Partner education / coaching"	1	1	1	1	0	0	NA	"outpatient"	"Group (>90%)"	"4-6"	"face-to-face"	"treatment/rehabilitation center"	12	109	NA	"Low"	"Yes"	"2x90min group follow-up sessions to evaluate goals, share experiences, explore solutions and reasons for not achieving goals. New goal setting at fu1, when necessary."
+"van Eijk-Hustings (2013)"	"a"	1	1	1	1	0	0	0	1	0	0	"sociotherapy (increase social behavior strategies and support); creative arts therapy"	0	0	0	0	0	0	NA	"outpatient"	"Group (>90%)"	NA	"face-to-face"	"treatment/rehabilitation center"	12	126	NA	"Medium"	"Yes"	"up to 7 seven sessions, repeat key messages to presevere behavior change.  based on patients requirements."
+"van Hooff (2010)"	"a"	1	1	0	1	1	1	0	0	0	0	NA	0	1	1	1	0	0	NA	"inpatient"	"Group (>90%)"	NA	"face-to-face"	"Hotel facility, organized by Sint Maartens kliniek Nijmegen"	2	100	NA	"Low"	NA	NA
+"van Wilgen (2009)"	"a"	1	1	1	1	1	1	0	0	0	0	"counseling; medication reduction; bedrest; desensitization; participation of significant other"	1	1	1	0	0	0	NA	"inpatient and outpatient combined"	"Mixed"	NA	"face-to-face"	"hospital"	7	NA	NA	"High"	"No"	NA
+"Vendrig (2000)"	"a"	1	1	1	0	0	0	1	0	1	0	"Follow-up meeting"	0	1	1	0	0	0	"orthopedic surgeon; reintegration therapist"	"outpatient"	"Group (>90%)"	NA	"face-to-face"	"treatment/rehabilitation center"	4	NA	NA	NA	NA	NA
+"Verkerk (2011)"	"a"	1	1	0	0	1	1	0	1	0	0	NA	1	1	1	0	0	0	"Mensendieck therapist, health scientist"	"outpatient"	"Group (>90%)"	"6"	"face-to-face"	"treatment/rehabilitation center"	9	48	NA	"Low"	"Yes"	"•	Follow-up session (1): including, evaluation, assessments, training."
+"Volker (2017)"	"a"	1	1	0	1	1	0	0	0	0	0	NA	1	1	1	1	0	1	NA	"outpatient"	"Mixed"	NA	"face-to-face"	"treatment/rehabilitation center"	15	NA	NA	"Low"	"No"	NA
+"Wagner (2011)"	"a"	1	1	0	1	1	1	0	0	0	0	NA	1	1	1	1	1	0	NA	"outpatient"	"Mixed"	NA	"face-to-face"	"pain clinic"	6	122	30	"High"	"No"	NA
+"Westman (2009)"	"a"	1	1	0	1	1	0	0	1	0	0	"creative activities (e.g. music, dance, art)
+information presented by the social insurance office and employment office. 
+Optional individual program: orthopedic treatment/training; short-term psychotherapy; physiotherapy)."	1	1	1	0	0	0	"Representative from the insurance company"	"outpatient"	"Group (>90%)"	"8-10"	"face-to-face"	"primary care setting"	8	140	NA	"Low"	"yes"	"At the end of the base program, individual target formulations were constructed, and regular meetings were held for a period of 1 year after rehabilitation was terminated.
+"
+"Bergstrom (2001)"	"a"	1	1	0	0	1	0	0	1	0	0	"methods for pain relief (TENS, autotraction, acupuncture)"	0	0	1	0	0	0	"ergonomists / fitness trainers"	"inpatient"	"Group (>90%)"	"14"	"face-to-face"	"treatment/rehabilitation center"	4	160	NA	"Medium"	"No"	NA

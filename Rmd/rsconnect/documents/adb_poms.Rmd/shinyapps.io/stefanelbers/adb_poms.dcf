@@ -1,0 +1,12 @@
+name: adb_poms
+title: adb_poms
+username:
+account: stefanelbers
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 2371092
+bundleId: 3200638
+url: https://stefanelbers.shinyapps.io/adb_poms/
+when: 1590676209.29947
+asMultiple: FALSE
+asStatic: FALSE

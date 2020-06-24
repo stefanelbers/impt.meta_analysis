@@ -1,0 +1,13 @@
+name: poms_adb
+title: poms_adb
+username:
+account: stefanelbers
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 2371094
+bundleId: 3200543
+url: https://stefanelbers.shinyapps.io/poms_adb/
+when: 1590674949.49729
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: data_extraction_forms.R|forms_to_forest_plot.R|risk_of_bias_table.R|search_study_dataset.R|shiny_forest_plot_static_analysis.R|shiny_forest_plot.R|study_tables_md.R|archive/descriptive_results.R|archive/impt_shiny.html|archive/study_tables.R|forest_plot/fp_pinter.R|time_series
