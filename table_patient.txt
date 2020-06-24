@@ -1,0 +1,61 @@
+"author";"year";"cohort_id";"cohort_name";"sample_size";"sample_size_pre";"sample_size_post";"sample_size_fu";"nationality";"female_gender";"age_m";"age_sd";"patient_group";"minimum_pain_duration";"pain_duration_months_m";"pain_duration_sd";"age_m_sd";"author_year";"attrition_post";"attrition_fu"
+"Vendrig";"(2000)";"a";"Multidisciplinary behavioural program for chronic pain";147;143;NA;130;"Netherlands";31;41.6;"(8.5)";"Chronic low back pain";NA;"46.3";NA;"41.6 (8.5)";"Vendrig (2000)";NA;NA
+"Abbasi";"(2012)";"a";"Spouse assisted multidisciplinary pain management program";36;10;9;9;"Iran";88;45;"(10)";"Low back pain";"6";"74 (median)";NA;"45 (10)";"Abbasi (2012)";10;0
+"Bendix";"(2000)";"a";"Functional Restoration";138;59;51;48;"Denmark";66.1;42.1;"(NA)";"Chronic low back pain";NA;"?";NA;"42.1 (NA)";"Bendix (2000)";13.56;5.88
+"Borys";"(2015)";"a";"Multimodal therapy";155;155;155;63;"Germany";55.6;58.3;"(10.4)";"Chronic low back pain";"3";"217.2";"172.8";"58.3 (10.4)";"Borys (2015)";0;59.35
+"Beaudreuil";"(2010)";"a";"Functional restoration program";39;39;39;39;"France";28;42.9;"(8.2)";"Low back pain";"3";"28.6";"32";"42.9 (8.2)";"Beaudreuil (2010)";0;0
+"De Rooij";"(2014)";"a";"Multidisciplinary treatment programme";138;133;NA;114;"Netherlands";95;45.04;"(10.3)";"Chronic widespread pain";NA;"84";NA;"45.04 (10.3)";"De Rooij (2014)";NA;NA
+"Dysvik";"(2013)";"a";"Multidisciplinary pain management programme";117;117;104;95;"Norway";79;45;"(11.25)";"Chronic non-malignant pain";"6";"89.9";NA;"45 (11.25)";"Dysvik (2013)";11.11;8.65
+"Gantschnigg";"(2017)";"a";"BAI-REHA";30;24;23;24;"Swiss";43;44.83;"(12.57)";"ICD-10 diagnosis of chronic musculoskeletal pain";NA;NA;NA;"44.83 (12.57)";"Gantschnigg (2017)";4.17;-4.35
+"Grahn";"(2000)";"a";"Multidisciplinary rehabilitation";236;122;NA;113;"Sweden";82;44.3;"(9.1)";"Prolonged musculoskeletal disease as main diagnosis";NA;"68.4";"73.2";"44.3 (9.1)";"Grahn (2000)";NA;NA
+"Frost";"(2000)";"a";"Functional restoration";129;123;121;97;"United Kingdom";45;43;"(9)";"Constant pain";"12";NA;NA;"43 (9)";"Frost (2000)";1.63;19.83
+"Hafenbrack";"(2013)";"a";"Berlin";681;560;544;242;"Germany";49.2;45.54;"(9.42)";"Back pain";NA;NA;NA;"45.54 (9.42)";"Hafenbrack (2013)";2.86;55.51
+"Hafenbrack";"(2013)";"b";"Hamburg";NA;157;152;68;NA;NA;NA;"(NA)";NA;NA;NA;NA;"NA (NA)";"Hafenbrack (2013)";3.18;55.26
+"Hallstam";"(2016)";"a";"Multimodal rehabilitation";42;42;NA;29;"Sweden";90.5;43.6;"(15.7)";"Complex pain problems";NA;">25 months pain (83% of the cohort)";NA;"43.6 (15.7)";"Hallstam (2016)";NA;NA
+"Jensen";"(1997)";"a";"multimodal cognitive behavioral treatment only (regular intervention)";63;30;28;25;"Sweden";100;43;"(9)";"Non specific spinal pain without neurological signs";NA;"51";"68";"43 (9)";"Jensen (1997)";6.67;10.71
+"Jensen";"(1997)";"b";"Multimodal cognitive behavioral treatment (experimental program)";NA;33;31;29;NA;100;45;"(8)";NA;NA;"44";"66";"45 (8)";"Jensen (1997)";6.06;6.45
+"Mangels";"(2009)";"a";"Behavioral-medical rehabilitation";363;113;113;106;"Germany";78.8;49.5;"(9)";"Musculoskeletal pain";NA;NA;NA;"49.5 (9)";"Mangels (2009)";0;6.19
+"Mangels";"(2009)";"b";"Behavioral-medical rehabilitation+booster";NA;119;119;111;NA;75.6;48.3;"(15.8)";NA;NA;NA;NA;"48.3 (15.8)";"Mangels (2009)";0;6.72
+"Martin";"(2012)";"a";"PSYMEPHY";180;120;108;93;"Spain";93.46;49.07;"(8.92)";"Fibromyalgia";"6";"174.22";"119.52";"49.07 (8.92)";"Martin (2012)";10;13.89
+"McAllister";"(2005)";"a";"Multidisciplinary chronic pain program";276;276;219;99;"United States";66.3;44.7;"(9.7)";"Chronic non-malignant pain";"6";NA;NA;"44.7 (9.7)";"McAllister (2005)";20.65;54.79
+"Reck";"(2017)";"a";"Interdisciplinary multimodal pain therapy";71;69;NA;41;"Switzerland";54;43.59;"(11.84)";"Chronic non-specific low back pain";NA;"44.4% more than 5 years";NA;"43.59 (11.84)";"Reck (2017)";NA;NA
+"Roche";"(2011)";"a";"Functional restoration";132;68;NA;64;"France";32.4;40.8;"(7.4)";"Non-specific low back pain";"3";NA;NA;"40.8 (7.4)";"Roche (2011)";NA;NA
+"Semrau";"(2014)";"a";"PASTOR";554;280;266;193;"Germany";54.1;48.9;"(8)";"Low back pain";"3";NA;NA;"48.9 (8)";"Semrau (2014)";5;27.44
+"Silvemark";"(2014)";"a";"Pain rehabilitation programme";164;154;133;68;"Sweden";69.5;37.4;"(9.07)";"Long-term non-malignant pain";NA;"68.4";"21.9";"37.4 (9.07)";"Silvemark (2014)";13.64;48.87
+"Smeets";"(2008)";"a";"Graded activity with problem solving training";223;58;55;52;"Netherlands";58.6;42.52;"(9.67)";"Non-specific low-back pain";"3";"68.33";"74.21";"42.52 (9.67)";"Smeets (2008)";5.17;5.45
+"Smeets";"(2008)";"b";"Combination treatment";NA;61;55;53;NA;37.7;40.67;"(10.14)";NA;NA;"56.13";"67.5";"40.67 (10.14)";"Smeets (2008)";9.84;3.64
+"Spinhoven";"(2004)";"a";"Merged cohorts: operant-behavioral treatment + coping or group discussion (OPCO/OPDI)";148;117;103;90;"Netherlands";63.5;39.8;"(9.1)";"Low back pain";"6";"117.6";"104.4";"39.8 (9.1)";"Spinhoven (2004)";11.97;12.62
+"van Wilgen";"(2009)";"a";"Inpatient multidisciplinary CBT programme";32;26;26;26;"Netherlands";73;42;"(11)";"Chronic pain";"12";"96";"84";"42 (11)";"van Wilgen (2009)";0;0
+"Verkerk";"(2011)";"a";"Functional recovery";1760;1760;1696;965;"Netherlands";74.26;40.1;"(10.6)";"Chronic non-specific low back pain";"3";"92.4";"105.6";"40.1 (10.6)";"Verkerk (2011)";3.64;43.1
+"Kääpä";"(2006)";"a";"Multidisciplinary rehabilitation program";64;64;59;49;"Finland";100;46;"(7.9)";"Low back pain";"12";"16";"25";"46 (7.9)";"Kääpä (2006)";7.81;16.95
+"Koopman";"(2004)";"a";"Multidisciplinary occupational training program";68;68;64;51;"Netherlands";47.1;NA;"(41.2)";"Low back pain";"6";"72";"96.78";"NA (41.2)";"Koopman (2004)";5.88;20.31
+"Lemstra";"(2005)";"a";"Multidisciplinary rehabilitation";43;43;36;35;"Canada";86;49.7;"(9.57)";"Chronic widespread pain";"6";"121.7";"128.36";"49.7 (9.57)";"Lemstra (2005)";16.28;2.78
+"van Hooff";"(2010)";"a";"Pain management programme";107;107;82;82;"Netherlands";57;44.1;"(8.4)";"Low back pain";"6";"12.3 (years)";"10.9 (years)";"44.1 (8.4)";"van Hooff (2010)";23.36;0
+"Heikkilä";"(1998)";"a";"Multidisciplinary pain rehabilitation program";73;73;65;56;"Sweden";64.38;36.5;"(NA)";"Whiplash trauma and other myofascial pain";NA;"Mean sick leave in the 2-years before: 331 days (range 0-730)";NA;"36.5 (NA)";"Heikkilä (1998)";10.96;13.85
+"Gustafsson";"(2002)";"a";"Multimodal, multidisiciplinary outpatient rehabilitation programme";23;23;22;17;"Sweden";100;43.8;"(10.7)";"Fibromyalgia or widespread chronic pain";NA;"13.2 (years)";"9.8 (years)";"43.8 (10.7)";"Gustafsson (2002)";4.35;22.73
+"Hazard";"(1988)";"a";"Functional restoration";64;59;58;37;"USA";36;37;"(4.3)";"Low back pain";"4";NA;NA;"37 (4.3)";"Hazard (1988)";1.69;36.21
+"Bendix";"(1998)";"a";"Functional restoration (A)";238;55;47;44;"Denmark";67.4;42;"(NA)";"Chronic low back pain";"6";NA;NA;"42 (NA)";"Bendix (1998)";14.55;6.38
+"Bendix";"(1998)";"b";"Functional restoration (B)";NA;46;41;37;NA;70.27;41;"(NA)";NA;NA;NA;NA;"41 (NA)";"Bendix (1998)";10.87;9.76
+"Monticone";"(2013)";"a";"Multidisciplinary intervention";90;45;45;45;"Italy";60;48.96;"(7.97)";"Chronic non-specific low back pain";"3";"22.15";"11.9";"48.96 (7.97)";"Monticone (2013)";0;0
+"Monticone";"(2016)";"a";"Multidisciplinary cognitive behavioural rehabilitation programme";150;75;74;65;"Italy";62.67;53.2;"(11.1)";"Non-specific low back pain";"3";"21.7";"15";"53.2 (11.1)";"Monticone (2016)";1.33;12.16
+"Bileviciute-Ljungar";"(2014)";"a";"Rehabilitation cohort (1998)";88;NA;NA;19;"Sweden";84;43.2;"(2.1)";"Persistent musculoskeletal pain";NA;NA;NA;"43.2 (2.1)";"Bileviciute-Ljungar (2014)";NA;NA
+"Bileviciute-Ljungar";"(2014)";"b";"Rehabilitation (2003)";NA;NA;NA;NA;NA;89.47;39.5;"(1.9)";NA;NA;NA;NA;"39.5 (1.9)";"Bileviciute-Ljungar (2014)";NA;NA
+"Brendbekken";"(2016)";"a";"Multidisciplinary intervention";284;141;137;85;"Norway";53.9;41.3;"(NA)";"Musculoskeletal pain";NA;NA;NA;"41.3 (NA)";"Brendbekken (2016)";2.84;37.96
+"Haiduk";"(2017)";"a";"Zurzacher Interdisziplinäres HWS Konzept (ZIHKo)";115;115;NA;59;"Switzerland";83.1;40.3;"(12.3)";"Chronic neck pain";"3";"17.2";"23.6";"40.3 (12.3)";"Haiduk (2017)";NA;NA
+"Richardson";"(1994)";"a";"Pain management course";109;109;99;109;"United Kingdom";68;45;"(10)";"Chronic pain";NA;"128";"114";"45 (10)";"Richardson (1994)";9.17;-10.1
+"Abbasi";"(2012)";"b";"Patient-oriented multidisciplinary pain management program";NA;12;12;10;NA;NA;NA;"(NA)";NA;NA;NA;NA;"NA (NA)";"Abbasi (2012)";0;16.67
+"Cardosa";"(2012)";"a";"MENANG program";102;70;70;70;"Malaysia";64.3;42.87;"(9.87)";"Chronic pain";"3";"66.81";"65.37";"42.87 (9.87)";"Cardosa (2012)";0;0
+"van Eijk-Hustings";"(2013)";"a";"Multidisciplinary treatment";203;108;67;67;"Netherlands";93.51;41.49;"(9.64)";"Fibromyalgia";"3";"82.08";"75.84";"41.49 (9.64)";"van Eijk-Hustings (2013)";37.96;0
+"Persson";"(2012)";"a";"Musculoskeletal interdisciplinary pain rehabilitation program";509;509;NA;509;"Sweden";79;40;"(9.6)";"Musculoskeletal pain";NA;"49.2";"54.24";"40 (9.6)";"Persson (2012)";NA;NA
+"Thieme";"(2003)";"a";"Operant pain therapy";40;40;40;40;"Germany";100;46.61;"(8.67)";"Fibromyalgia";"ACR criteria";"17.05 years";"7.12 years";"46.61 (8.67)";"Thieme (2003)";0;0
+"Westman";"(2009)";"a";"Early multimodal rehabilitation";91;91;NA;72;"Sweden";70;41.5;"(NA)";"Musculoskeletal pain and disability";NA;"Duration of sick leave period before program in months: 2";"0.9";"41.5 (NA)";"Westman (2009)";NA;NA
+"Bergstrom";"(2014)";"a";"Multimodal rehabilitation";43;43;39;34;"Sweden";80;41;"(NA)";"Disabling chronic pain";"6";NA;NA;"41 (NA)";"Bergstrom (2014)";9.3;12.82
+"Merrick";"(2009)";"a";"Interdisciplinary rehabilitation";255;168;165;167;"Sweden";79;39;"(NA)";"Disabling chronic pain";"6";"43 (median)";NA;"39 (NA)";"Merrick (2009)";1.79;-1.21
+"Olason";"(2004)";"a";"Interdisciplinary pain management program";158;158;120;NA;"Iceland";70.9;39.5;"(NA)";"Chronic pain";NA;"67% > 24 maanden, 49.3% more than 5 years";NA;"39.5 (NA)";"Olason (2004)";24.05;NA
+"Stein";"(2013)";"a";"Multidisciplinary rehabilitation";169;59;59;51;"Sweden";86;48;"(7.8)";"Chronic non-cancer pain";"3";NA;"135.4";"48 (7.8)";"Stein (2013)";0;13.56
+"Tavafian";"(2011)";"a";"Group-based multidisciplinary rehabilitation program";197;97;93;69;"Iran";73.2;44.6;"(10.2)";"Chronic low back pain";"3";"75.9";"71.4";"44.6 (10.2)";"Tavafian (2011)";4.12;25.81
+"Van der Maas";"(2015)";"a";"Pain rehabilitation";114;57;33;26;"Netherlands";71.1;45.4;"(11.1)";"Chronic musculoskeletal pain";NA;NA;NA;"45.4 (11.1)";"Van der Maas (2015)";42.11;21.21
+"Van der Maas";"(2015)";"b";"Rehabilitation treatment + body awareness";NA;49;45;23;NA;91.8;38.6;"(11.1)";NA;NA;NA;NA;"38.6 (11.1)";"Van der Maas (2015)";8.16;48.89
+"Volker";"(2017)";"a";"Outpatient multidisciplinary programme";165;165;154;120;"Netherlands";87;44.1;"(12.9)";"Chronic musculoskeletal pain";"3";"65% more than 5 years;  87% > 24 mo";NA;"44.1 (12.9)";"Volker (2017)";6.67;22.08
+"Wagner";"(2011)";"a";"Interdisciplinary treatment program";142;88;88;88;"Canada";63.64;49.16;"(10.03)";"Chronic pain";NA;"32.99";"13.41";"49.16 (10.03)";"Wagner (2011)";0;0
+"Oslund";"(2009)";"a";"Comprehensive outpatient pain management program";108;80;80;46;"USA";70.4;55;"(11.47)";"Patients with various chronic pain problems not specified";NA;"110.44";"136.73";"55 (11.47)";"Oslund (2009)";0;42.5

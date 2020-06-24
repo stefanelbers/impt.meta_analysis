@@ -1,0 +1,130 @@
+---
+title: "Untitled"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: rows
+    vertical_layout: scroll
+runtime: shiny
+---
+
+```{r setup, include=FALSE}
+library(flexdashboard)
+library(gsheet)
+library(dplyr)
+library(formattable)
+library(magrittr)
+library(tidyverse)
+library(tidyr)
+library(ggplot2)
+library(tidyverse)
+library(lessR)
+library(plotly)
+library(wesanderson)
+library(PRISMAstatement)
+library(psych)
+library(shiny)
+```
+
+
+
+Row {data-height=2000}
+-------------------------------------
+
+### Chart A
+
+```{r forestplot, echo=FALSE}
+prisma(29911, 90, 16548, 16548, 16199, 349, 297, 52, 52)
+```
+
+```{r forestplot2, echo=FALSE}
+prisma(29911, 90, 16548, 16548, 16199, 349, 297, 52, 52)
+```
+
+Row {data-height=650}
+-------------------------------------
+
+### Chart B
+
+```{r forestplot3, echo=FALSE}
+prisma(29911, 90, 16548, 16548, 16199, 349, 297, 52, 52)
+```
+
+```{r}
+
+```
+
+Row {data-height=650}
+-------------------------------------
+
+### Chart C
+
+```{r table 1, include=FALSE}
+url <- 'https://docs.google.com/spreadsheets/d/1DE08OpdFC2eH8VwAV-xLmsFByGh2VvL0DRDjPLhyo9U/edit?usp=sharing'
+dat <- gsheet2tbl(url)
+
+#select variables
+t <- select(dat, id, author, year, cohort_id, sample_size, sample_size_pre, sample_size_post, sample_size_fu, cohort_name,
+              nationality, female_gender, age_m, age_sd, patient_group, minimum_pain_duration, pain_duration_months_m, 
+              pain_duration_sd) %>%
+  filter(!is.na(author) & !author == "test" & !author == 0)
+
+#recode
+t$cohort_id <- t$cohort_id %>% dplyr::recode("1" = "a", "2" = "b")
+
+#merge mean and sd
+as.character(t$age_sd)
+as.character(t$age_m)
+t$age_sd <- paste("(", t$age_sd, ")", sep = "")
+t$age_m_sd <- paste(t$age_m, t$age_sd, sep = " ")
+t$attrition_post <- round(100-((t$sample_size_post/t$sample_size_pre)*100), 2)
+t$attrition_fu <- round(100-((t$sample_size_fu/t$sample_size_pre)*100), 2)
+t$year <- paste("(", t$year, ")", sep="")
+t$author_year_id <- paste(t$author, t$year, t$cohort_id, sep = " ")
+
+#change column order
+t_1 <- select(t, id, author_year_id, cohort_name, sample_size, sample_size_pre, 
+              sample_size_post, sample_size_fu, attrition_post, attrition_fu, 
+              nationality, female_gender, age_m_sd, age_m, age_sd, patient_group, 
+              minimum_pain_duration, pain_duration_months_m, pain_duration_sd
+              )
+
+#change column names
+t_1 <- t_1 %>% 
+  dplyr::rename(
+    "study sample size" = "sample_size",
+    "cohort sample size (pre)" = "sample_size_pre",
+    "cohort sample size (post)" = "sample_size_post",
+    "cohort sample size (final follow-up)" = "sample_size_fu",
+    "attrition rate post intervention" = "attrition_post",
+    "attrition rate at final follow-up" = "attrition_fu",
+    "% females" = "female_gender",
+    "patient group" = "patient_group",
+    "minimum pain duration" = "minimum_pain_duration",
+    "mean pain duration in months" = "pain_duration_months_m",
+    "mean age (sd)" = "age_m_sd",
+    "cohort name" = "cohort_name",
+    "author (year)" = "author_year_id"
+    ) 
+
+t_1 <- t_1 %>% arrange(`author (year)`)
+    
+```
+
+```{r, echo=FALSE}
+unit.scale = function(x) (x - min(x)) / (max(x) - min(x))
+
+#t_1$`attrition rate post intervention`[is.na(t_1$`attrition rate post intervention`)] <- 1
+#na.exclude(t_1$`attrition rate post intervention`) %>%
+#proportion()
+
+###t_1[is.na(t_1)] = ''
+
+formattable(t_1, 
+            align = c("l", "l", rep("r", NCOL(t_1) - 2)),
+            list(`attrition rate post intervention` = color_bar("#FA614B66", unit.scale),
+                 `id` = FALSE,
+                 `n_west` = FALSE,
+                 `age_m` = FALSE,
+                 `age_sd` = FALSE)
+)
+```

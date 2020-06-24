@@ -1,0 +1,12 @@
+name: results_IMPT_draft
+title: results_IMPT_draft
+username:
+account: stefanelbers
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 2152649
+bundleId: 3049284
+url: https://stefanelbers.shinyapps.io/results_IMPT_draft/
+when: 1587552970.26221
+asMultiple: FALSE
+asStatic: FALSE

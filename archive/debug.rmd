@@ -1,0 +1,417 @@
+---
+title: "IMPT_results"
+output: html_notebook
+runtime: shiny
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r, include=FALSE}
+#load packages
+library(gsheet)
+library(dplyr)
+library(formattable)
+library(magrittr)
+library(tidyverse)
+library(tidyr)
+library(ggplot2)
+library(tidyverse)
+library(lessR)
+library(plotly)
+library(wesanderson)
+library(PRISMAstatement)
+library(psych)
+library(shiny)
+library(metafor)
+library(forestplot)
+library(meta)
+library(readxl)
+library(DiagrammeR)
+library(data.table)
+library(htmltools)
+```
+
+# methods
+![records flow](figures/records_flow.png)
+
+# results
+
+### forestplot
+```{r forestplot, echo=FALSE}
+prisma(29911, 90, 16548, 16548, 16199, 349, 297, 52, 52)
+```
+
+### Study Characteristics
+```{r table 1, include=FALSE}
+url <- 'https://docs.google.com/spreadsheets/d/1DE08OpdFC2eH8VwAV-xLmsFByGh2VvL0DRDjPLhyo9U/edit?usp=sharing'
+dat <- gsheet2tbl(url)
+
+#select variables
+t <- select(dat, id, author, year, cohort_id, sample_size, sample_size_pre, sample_size_post, sample_size_fu, cohort_name,
+              nationality, female_gender, age_m, age_sd, patient_group, minimum_pain_duration, pain_duration_months_m, 
+              pain_duration_sd) %>%
+  filter(!is.na(author) & !author == "test" & !author == 0)
+
+#recode
+t$cohort_id <- t$cohort_id %>% dplyr::recode("1" = "a", "2" = "b")
+
+#merge mean and sd
+as.character(t$age_sd)
+as.character(t$age_m)
+t$age_sd <- paste("(", t$age_sd, ")", sep = "")
+t$age_m_sd <- paste(t$age_m, t$age_sd, sep = " ")
+t$attrition_post <- round(100-((t$sample_size_post/t$sample_size_pre)*100), 2)
+t$attrition_fu <- round(100-((t$sample_size_fu/t$sample_size_pre)*100), 2)
+t$year <- paste("(", t$year, ")", sep="")
+t$author_year_id <- paste(t$author, t$year, t$cohort_id, sep = " ")
+
+#change column order
+t_1 <- select(t, id, author_year_id, cohort_name, sample_size, sample_size_pre, 
+              sample_size_post, sample_size_fu, attrition_post, attrition_fu, 
+              nationality, female_gender, age_m_sd, age_m, age_sd, patient_group, 
+              minimum_pain_duration, pain_duration_months_m, pain_duration_sd
+              )
+
+#change column names
+t_1 <- t_1 %>% 
+  dplyr::rename(
+    "study sample size" = "sample_size",
+    "cohort sample size (pre)" = "sample_size_pre",
+    "cohort sample size (post)" = "sample_size_post",
+    "cohort sample size (final follow-up)" = "sample_size_fu",
+    "attrition rate post intervention" = "attrition_post",
+    "attrition rate at final follow-up" = "attrition_fu",
+    "% females" = "female_gender",
+    "patient group" = "patient_group",
+    "minimum pain duration" = "minimum_pain_duration",
+    "mean pain duration in months" = "pain_duration_months_m",
+    "mean age (sd)" = "age_m_sd",
+    "cohort name" = "cohort_name",
+    "author (year)" = "author_year_id"
+    ) 
+
+t_1 <- t_1 %>% arrange(`author (year)`)
+    
+```
+
+```{r, echo=FALSE}
+unit.scale = function(x) (x - min(x)) / (max(x) - min(x))
+
+#t_1$`attrition rate post intervention`[is.na(t_1$`attrition rate post intervention`)] <- 1
+#na.exclude(t_1$`attrition rate post intervention`) %>%
+#proportion()
+
+###t_1[is.na(t_1)] = ''
+
+formattable(t_1, 
+            align = c("l", "l", rep("r", NCOL(t_1) - 2)),
+            list(`attrition rate post intervention` = color_bar("#FA614B66", unit.scale),
+                 `id` = FALSE,
+                 `n_west` = FALSE,
+                 `age_m` = FALSE,
+                 `age_sd` = FALSE)
+)
+```
+
+```{r, table 1 descriptive data analysis, include=FALSE}
+
+#obtain descriptives of the sample sizes at various timepoints
+qqnorm(t_1$`cohort sample size (pre)`)
+qqline(t_1$`cohort sample size (pre)`)
+qqnorm(t_1$`% females`)
+qqline(t_1$`% females`)
+
+describe(t_1)
+#conclusion: cohort sample size is not normally distributed, so use median and range.
+
+#calculate proportion of the sample from non-western studies
+#for each additional non-western study, add the id below to update the calculation
+
+t_1$n_west <- if_else(t_1$id == 1 | t_1$id == 185 | t_1$id == 144, 1, 0)
+
+#sum of all non-western sample sizes divided by the total sample size * 100
+100 - (t_1$`cohort sample size (pre)` %>% subset(t_1$n_west == 1) %>%
+  sum() / (sum(t_1$`cohort sample size (pre)`, na.rm = TRUE)) * 100)
+```
+
+```{r, table 2 intervention characteristics, include=FALSE}
+
+t_2 <- select(dat, author, year, treatment_aim, treatment_modalities, healthcare_providers, in_out_patient, type_of_contact, group_size,
+              mode_of_delivery_subinfo, setting, time_span, hours, minutes, tailoring, followup_sessions_provided, 
+              followup_sessions_description) %>%
+  filter(!is.na(author) & !author == "test" & !author == 0)
+
+#create variable author (year)
+t_2$year <- paste("(", t$year, ")", sep="")
+t_2$author_year_id <- paste(t$author, t$year, t$cohort_id, sep = " ")
+
+
+#create variable type of treatment
+t_2$type_of_contact <- dplyr::recode(t_2$type_of_contact, 
+                            "Group (>90%)" = "Group",
+                            "Individual (>90%)" = "Individual")
+
+t_2$group_size <- ifelse(!is.na(t_2$group_size), 
+                         paste(" (", t_2$group_size, ")", sep = ""),
+                        NA
+)
+
+is.na(t_2$group_size)
+
+t_2$group_size <- replace_na(t_2$group_size, "")
+t_2$group <- paste(t_2$type_of_contact, t_2$group_size, sep = "")
+
+t_2$`type of treatment` <- paste(t_2$in_out_patient, t_2$group, t_2$mode_of_delivery_subinfo, t_2$setting, 
+                                 sep = "<br>")
+
+#create variable treatment time
+t_2$hrs <- ifelse(!is.na(t_2$hours), 
+                         paste(t_2$hours, "h", sep = ""),
+                        NA
+)
+
+t_2$minutes <- ifelse(!is.na(t_2$minutes), 
+                         paste(t_2$minutes, "m", sep = ""),
+                        NA
+)
+
+t_2$minutes <- replace_na(t_2$minutes, "")
+
+t_2$duration <- ifelse(!is.na(t_2$hrs),
+                       paste(t_2$hours, t_2$minutes, sep=""),
+                       NA
+)
+
+#create formatter table
+t2 <- select(t_2, author_year_id, treatment_aim, treatment_modalities, healthcare_providers, `type of treatment`, 
+             followup_sessions_description, time_span, duration, tailoring)
+
+
+t2 <- t2 %>% 
+  dplyr::rename(
+    "author (year)" = "author_year_id",
+    "treatment aim" = "treatment_aim",
+    "treatment modalities" = "treatment_modalities",
+    "healthcare providers" = "healthcare_providers",
+    "follow-up sessions" = "followup_sessions_description",
+    "time span (weeks)" = "time_span"
+    )
+
+t2 <- t2 %>% arrange(`author (year)`)
+```
+
+```{r, echo=FALSE}
+formattable(t2, 
+            align = c("l", rep("l", NCOL(t2) - 1))
+            )
+```
+
+
+```{r, include=FALSE}
+describe(t_2)
+```
+
+ShinyApp forest plots
+```{r, echo - FALSE}
+## reverse scoring procedure ##
+data <- read_excel("data.raw/20200123.r_data_forest_plot.xlsx")
+# return: new dataframe with corrected stds and means.
+correct_rev_score <- function(data) {
+  # Create new copy of data
+  rev_corrected_data <- data.frame(data)
+  
+  # Iterate over each row in data
+  for (row in 1:nrow(data)) {
+    if (data[row, "rev_scoring"] == 1) {
+      # Replace pre by post
+      rev_corrected_data[row, "m_pre"] <- data[row, "m_post"]
+      rev_corrected_data[row, "sd_pre"] <- data[row, "sd_post"]
+      rev_corrected_data[row, "n_pre"] <- data[row, "n_post"]
+      
+      # Replace post by pre
+      rev_corrected_data[row, "m_post"] <- data[row, "m_pre"]
+      rev_corrected_data[row, "sd_post"] <- data[row, "sd_pre"]
+      rev_corrected_data[row, "n_post"] <- data[row, "n_pre"]
+    }
+  }
+  return(rev_corrected_data)
+}
+corrected_data <- correct_rev_score(data)
+
+## create shinyapp ##
+
+#step1: create tibble for corrected data
+data_fp <- as_tibble(corrected_data)
+
+#step 2: create Shinyapp
+ui <- fluidPage(
+  
+  # App title ----
+  headerPanel("Forest plot systematic review"),
+  
+  # Sidebar layout with input and output definitions ----
+  sidebarLayout(
+    
+    # Sidebar panel for inputs ----
+    sidebarPanel(
+      
+      # Input: Slider for the number of bins ----
+      sliderInput(inputId = "r_value",
+                  label = "R Correction Value:",
+                  min = 0,
+                  max = 1,
+                  value = 0,
+                  step = 0.1),
+      
+      selectInput(inputId = "outcome",
+                  label = "select ouctome:",
+                  choices = c("hr quality of life", "physical function", "pain interference", "depression", "anxiety",   
+                              "self-efficacy", "social functioning", "pain intensity"),
+                  selected = "pain interference"),
+      
+      selectInput(inputId = "contrast",
+                  label = "select contrast:",
+                  choices = c("pre-post", "post-fu", "pre-fu"),
+                  selected = "pre-post")
+    ),
+    
+    # Main panel for displaying outputs ----
+    mainPanel(
+      
+      # Output: Histogram ----
+      plotOutput("forestplot")
+      
+    )
+  )
+)
+# Define server logic required to draw a histogram ----
+server <- function(input, output, session) {
+  
+  
+  output$forestplot <- renderPlot({
+    
+    data_fp$ri <- input$r_value
+    data_fp_meta <- escalc(measure="SMCR", m1i=m_post, m2i=m_pre, sd1i=sd_pre, ni=n_post, ri=ri, data=data_fp)
+    fp_meta <- metafor::summary.escalc(data_fp_meta)
+    fp_meta2 <- filter(fp_meta, contrast == input$contrast & outcome == input$outcome)
+    fp_meta2$tabletext <- cbind(fp_meta2$author, fp_meta2$year, fp_meta2$n_pre, fp_meta2$measure, 
+                                fp_meta2$fu_month)
+    
+    forestplot(fp_meta2$tabletext, fp_meta2$yi, fp_meta2$ci.lb, fp_meta2$ci.ub,
+               zero = 0,
+               cex = 2,
+               lineheight = "auto",
+               xlab = "SMD",
+               lwd.ci= 3,
+               col = fpColors(text="black", lines="#4393C3", box="#2166AC"),
+               boxsize = .25
+    )
+  })
+  
+}
+
+shinyApp(ui=ui, server=server)
+```
+
+
+```{r, code = readLines("R/time_series/ts_pinter.R"), echo=FALSE}
+```
+
+
+time series depression
+```{r, code = readLines("R/time_series/ts_dep.R"), echo=FALSE}
+```
+
+time series anxiety
+```{r, code = readLines("R/time_series/ts_anx.R"), echo=FALSE}
+```
+
+time series general emotional functioning
+```{r, code = readLines("R/time_series/ts_ef.R"), echo=FALSE}
+```
+
+time series anger
+```{r, code = readLines("R/time_series/ts_ang.R"), echo=FALSE}
+```
+
+time series self-efficacy
+```{r, code = readLines("R/time_series/ts_se.R"), echo=FALSE}
+```
+
+time series social-role functioning
+```{r, code = readLines("R/time_series/ts_srf.R"), echo=FALSE}
+```
+
+#supplement: raw data extraction forms
+```{r create data extraction forms, include=FALSE}
+dat_ex <- dat %>%
+  filter(!is.na(author) & !author == "test" & !author == 0)
+
+dat_ex$cohort_id <- dat_ex$cohort_id %>% dplyr::recode("1" = "a", "2" = "b")
+
+#create list of cohort ids
+dat_ex$year2 <- paste("(", dat_ex$year, ")", sep="")
+dat_ex$ayi <- paste(dat_ex$author, dat_ex$year2, dat_ex$cohort_id, sep = " ")
+
+cohort_list <- (dat_ex$ayi) %>%
+  as.data.frame() %>%
+  unique() 
+
+cohort_list <- arrange(cohort_list, .)
+
+
+
+```
+
+```{r, echo=FALSE}
+#Shiny
+
+ui <- fluidPage(
+  
+  # App title ----
+  titlePanel("data extraction forms"),
+  
+  # Sidebar layout with input and output definitions ----
+  sidebarLayout(
+    
+    # Sidebar panel for inputs ----
+    sidebarPanel(
+      
+      # Input: Slider for the number of bins ----
+      selectInput(inputId = "cohort",
+                  label = "select cohort:",
+                  choices = cohort_list,
+                  selected = NULL)
+      
+    ),
+    
+    # Main panel for displaying outputs ----
+    mainPanel(
+      
+      # Output: Histogram ----
+      formattableOutput(outputId = "data_extraction_table")
+      
+    )
+  )
+)
+
+# Define server logic required to draw a histogram ----
+server <- function(input, output, session) {
+  
+    output$data_extraction_table <- renderFormattable({
+    
+    extraction_data <- as.data.frame(t(dplyr::filter(dat_ex, ayi == input$cohort)))
+    library(formattable)
+    formattable(extraction_data)   
+  
+  })
+  
+}
+
+shinyApp(ui, server)
+
+```
+

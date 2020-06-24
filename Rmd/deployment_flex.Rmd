@@ -1,0 +1,2574 @@
+---
+title: "flexdashboard: IMPT meta analysis"
+output: 
+  flexdashboard::flex_dashboard:
+    social: menu
+    source_code: embed 
+    vertical_layout: scroll
+    runtime: shiny
+---
+
+```{r setup, include=FALSE}
+library(flexdashboard)
+library(forestplot)
+library(dplyr)
+library(formattable)
+library(magrittr)
+library(tidyverse)
+library(tidyr)
+library(ggplot2)
+library(tidyverse)
+library(lessR)
+library(plotly)
+library(wesanderson)
+library(PRISMAstatement)
+library(psych)
+library(shiny)
+library(metafor)
+library(forestplot)
+library(meta)
+library(readxl)
+library(DiagrammeR)
+library(data.table)
+library(htmltools)
+library(gsheet)
+library(DT)
+library(reactable)
+library(stringr)
+```
+
+Flow Chart {data-orientation=rows}
+=======================================================================
+
+Row {data-height=1200}
+-------------------------------------
+### flow chart
+```{r}
+prisma(29911, 90, 16548, 16548, 16199, 349, 297, 52, 52)
+```
+
+Study/patient characteristics {data-orientation=rows}
+=======================================================================
+
+Row {data-height=1000}
+-------------------------------------
+### Study and patient characteristics
+
+```{r}
+#Input
+url <- 'https://docs.google.com/spreadsheets/d/1DE08OpdFC2eH8VwAV-xLmsFByGh2VvL0DRDjPLhyo9U/edit?usp=sharing'
+
+#read data
+dat <- gsheet2tbl(url)
+
+#obtain colnames
+
+datcolnames <- colnames(dat)
+colnames <- as_tibble(datcolnames)
+
+#create table
+
+t_1 <- select(dat, author, year, cohort_id, cohort_name, sample_size, sample_size_pre, sample_size_post, sample_size_fu, 
+              nationality, female_gender, age_m, age_sd, patient_group, minimum_pain_duration, pain_duration_months_m, 
+              pain_duration_sd) %>%
+  filter(!is.na(author) & !author == "test" & !author == 0)
+
+t_2 <- select(dat, author, year, cohort_id, treatment_aim, treatment_modalities, healthcare_providers, in_out_patient, type_of_contact, group_size,
+              mode_of_delivery_subinfo, setting, time_span, hours, minutes, tailoring, followup_sessions_provided, 
+              followup_sessions_description, other_healthcare_providers, other_procedures) %>%
+  filter(!is.na(author) & !author == "test" & !author == 0)
+
+#recode cohort_id
+t_1$cohort_id <- t_1$cohort_id %>% dplyr::recode("1" = "a", "2" = "b")
+t_2$cohort_id <- t_2$cohort_id %>% dplyr::recode("1" = "a", "2" = "b")
+
+#merge mean and sd
+t_1$age_sd <- as.character(t_1$age_sd)
+t_1$age_m <-as.character(t_1$age_m)
+t_1$age_sd <- paste("(", t_1$age_sd, ")", sep = "")
+t_1$age_m_sd <- paste(t_1$age_m, t_1$age_sd, sep = " ")
+t_1$year <- paste("(", t_1$year, ")", sep="")
+t_1$author_year <- paste(t_1$author, t_2$year, sep = " ")
+t_2$year <- paste("(", t_2$year, ")", sep="")
+t_2$author_year <- paste(t_2$author, t_2$year, sep = " ")
+t_1$author_year <- paste(t_1$author, t_1$year, sep = " ")
+
+
+#calculate attrition
+
+t_1$attrition_post <- round(100-((t_1$sample_size_post/t_1$sample_size_pre)*100), 2)
+t_1$attrition_fu <- round(100-((t_1$sample_size_fu/t_1$sample_size_post)*100), 2)
+
+
+
+#change column order
+t1 <- select(t_1, author_year, cohort_id, cohort_name, sample_size, sample_size_pre, 
+              sample_size_post, sample_size_fu, attrition_post, attrition_fu, 
+              nationality, female_gender, age_m_sd, age_m, age_sd, patient_group, 
+              minimum_pain_duration, pain_duration_months_m
+             )
+
+#change column names
+t1 <- t1 %>% 
+  dplyr::rename(
+    "study sample size" = "sample_size",
+    "cohort sample size (pre)" = "sample_size_pre",
+    "cohort sample size (post)" = "sample_size_post",
+    "cohort sample size (final follow-up)" = "sample_size_fu",
+    "attrition rate post intervention" = "attrition_post",
+    "attrition rate at final follow-up" = "attrition_fu",
+    "% females" = "female_gender",
+    "patient group" = "patient_group",
+    "minimum pain duration" = "minimum_pain_duration",
+    "mean pain duration in months" = "pain_duration_months_m",
+    "mean age (sd)" = "age_m_sd",
+    "cohort name" = "cohort_name",
+    "author (year)" = "author_year"
+  ) 
+
+t1 <- t1 %>% arrange(`author (year)`)
+
+sample_cols <- c("study sample size", "cohort sample size (pre)", "cohort sample size (post)",
+                 "cohort sample size (final follow-up)", "attrition rate post intervention",
+                 "attrition rate at final follow-up")
+
+patient_cols <- c("% females", "patient group", "minimum pain duration",
+                  "mean pain duration in months", "mean age (sd)"
+                  )
+
+#create table 1 with reactable
+reactable(t1,
+          columns = list(
+            "author (year)" = colDef(minWidth = 105),
+            cohort_id = colDef(maxWidth = 30, name = "ID"),
+            "cohort name" = colDef(minWidth = 105),
+            "study sample size" = colDef(format = colFormat(digits = 0))
+          ),
+          defaultColGroup = colGroup(headerClass = "header"),
+          style = list(fontFamily = "Arial Narrow", fontSize = "14px"),
+          columnGroups = list(
+            colGroup(name = "sample size", columns = sample_cols),
+            colGroup(name = "patient characteristics", columns = patient_cols)
+          ),
+          defaultColDef = colDef(
+            header = function(value) gsub("_", " ", value, fixed = TRUE),
+            cell = function(value) format(value),
+            align = "left",
+            minWidth = 70
+            ),
+          searchable = TRUE,
+          showPageSizeOptions = TRUE
+          )
+          
+#create t2 with reactable
+#create unique variable for each treatment modality
+
+t_2 <- t_2 %>%
+  mutate(
+    ed = str_detect(treatment_modalities, "education"),
+    ex = str_detect(treatment_modalities, "exercise"),
+    ga = str_detect(treatment_modalities, "graded activity"),
+    ph = str_detect(treatment_modalities, "pharmacological treatment"),
+    wo = str_detect(treatment_modalities, "workplace advice"),
+    bt = str_detect(treatment_modalities, "behavioral therapy"),
+    pm = str_detect(treatment_modalities, "pain management skills"),
+    te = str_detect(treatment_modalities, "team meetings"),
+    ba = str_detect(treatment_modalities, "body awareness therapy"),
+    re = str_detect(treatment_modalities, "relaxation")
+    )
+
+treatment_mod_abb <- c("ed", "ex", "ga", "ph", "wo", "bt", "pm", "te", "ba", "re")
+
+t_2[c(treatment_mod_abb)] <- 1*t_2[c(treatment_mod_abb)]
+t_2[c(treatment_mod_abb)][is.na(t_2[c(treatment_mod_abb)])] <- 0
+
+t_2 <- t_2 %>%
+  mutate(
+    phy = str_detect(healthcare_providers, "Physician"),
+    psy = str_detect(healthcare_providers, "psychologist"),
+    pt = str_detect(healthcare_providers, "physical therapist"),
+    ot = str_detect(healthcare_providers, "occupational therapist"),
+    nur = str_detect(healthcare_providers, "nurse"),
+    swo = str_detect(healthcare_providers, "social worker")
+  )
+
+hcp_abb <- c("phy", "psy", "pt", "ot", "nur", "swo")
+
+t_2[c(hcp_abb)] <- 1*t_2[c(hcp_abb)]
+t_2[c(hcp_abb)][is.na(t_2[c(hcp_abb)])] <- 0
+
+
+t2 <- select(t_2, author_year, cohort_id, ed, ex, ga, bt, re, pm, ph, ba, wo, te, other_procedures, phy, psy, pt, ot, nur, swo,
+             other_healthcare_providers, in_out_patient, type_of_contact, group_size, mode_of_delivery_subinfo, setting, 
+             time_span, hours, minutes, tailoring, followup_sessions_provided, followup_sessions_description)
+
+procedure_cols <- c("ed", "ex", "ga", "bt", "re", "pm", "ph", "ba", "wo", "te", "other_procedures")
+hcp_cols <- c("phy", "psy", "pt", "ot", "nur", "swo", "other_healthcare_providers")
+
+
+```
+
+Intervention characteristics {data-orientation=rows}
+=======================================================================
+
+Row {data-height=1000}
+-------------------------------------
+### table intervention characteristics
+
+```{r}
+reactable(t2,
+          defaultSorted = "author_year",
+          defaultSortOrder = "asc",
+          defaultColGroup = colGroup(headerClass = "header"),
+          style = list(fontFamily = "Arial Narrow", fontSize = "14px"),
+          columnGroups = list(
+            colGroup(name = "Treatment modalities", columns = procedure_cols),
+            colGroup(name = "Healthcare providers", columns = hcp_cols)
+            ),
+          defaultColDef = colDef(
+            header = function(value) gsub("_", " ", value, fixed = TRUE),
+            cell = function(value) format(value, nsmall = 1),
+            align = "left",
+            minWidth = 70,
+            headerStyle = list(background = "#f7f7f8")
+            ),
+          columns = list(
+            author_year = colDef(minWidth = 105),
+            other_procedures = colDef(minWidth = 200),
+            other_healthcare_providers = colDef(minWidth = 110),
+            followup_sessions_description = colDef(minWidth = 150),
+            cohort_id = colDef(maxWidth = 30, name = "ID"),
+            ed = colDef(maxWidth = 30, cell = function(value) {
+              # Render as ✘ or ✓
+              if (value == 0) "\u2718" else "\u2713"
+              }, style = function(value){
+                if (value == 0) {color <- '#ABB2B9'} else {color <- '#28B463'}
+                list(background = color)
+              }),
+            ex = colDef(maxWidth = 30, cell = function(value) {
+              # Render as ✘ or ✓
+              if (value == 0) "\u2718" else "\u2713"
+            }, style = function(value){
+              if (value == 0) {color <- '#ABB2B9'} else {color <- '#28B463'}
+              list(background = color)
+              }),
+            ga = colDef(maxWidth = 30, cell = function(value) {
+              # Render as ✘ or ✓
+              if (value == 0) "\u2718" else "\u2713"
+            }, style = function(value){
+              if (value == 0) {color <- '#ABB2B9'} else {color <- '#28B463'}
+              list(background = color)
+            }),
+            ph = colDef(maxWidth = 30, cell = function(value) {
+              # Render as ✘ or ✓
+              if (value == 0) "\u2718" else "\u2713"
+            }, style = function(value){
+              if (value == 0) {color <- '#ABB2B9'} else {color <- '#28B463'}
+              list(background = color)
+            }),
+            wo = colDef(maxWidth = 30, cell = function(value) {
+              # Render as ✘ or ✓
+              if (value == 0) "\u2718" else "\u2713"
+            }, style = function(value){
+              if (value == 0) {color <- '#ABB2B9'} else {color <- '#28B463'}
+              list(background = color)
+            }),
+            bt = colDef(maxWidth = 30, cell = function(value) {
+              # Render as ✘ or ✓
+              if (value == 0) "\u2718" else "\u2713"
+            }, style = function(value){
+              if (value == 0) {color <- '#ABB2B9'} else {color <- '#28B463'}
+              list(background = color)
+            }),
+            pm = colDef(maxWidth = 30, cell = function(value) {
+              # Render as ✘ or ✓
+              if (value == 0) "\u2718" else "\u2713"
+            }, style = function(value){
+              if (value == 0) {color <- '#ABB2B9'} else {color <- '#28B463'}
+              list(background = color)
+            }),
+            ba = colDef(maxWidth = 30, cell = function(value) {
+              # Render as ✘ or ✓
+              if (value == 0) "\u2718" else "\u2713"
+            }, style = function(value){
+              if (value == 0) {color <- '#ABB2B9'} else {color <- '#28B463'}
+              list(background = color)
+            }),
+            te = colDef(maxWidth = 30, cell = function(value) {
+              # Render as ✘ or ✓
+              if (value == 0) "\u2718" else "\u2713"
+            }, style = function(value){
+              if (value == 0) {color <- '#ABB2B9'} else {color <- '#28B463'}
+              list(background = color)
+            }),
+            re = colDef(maxWidth = 30, cell = function(value) {
+              # Render as ✘ or ✓
+              if (value == 0) "\u2718" else "\u2713"
+            }, style = function(value){
+              if (value == 0) {color <- '#ABB2B9'} else {color <- '#28B463'}
+              list(background = color)
+            }),
+            phy = colDef(maxWidth = 30, cell = function(value) {
+              # Render as ✘ or ✓
+              if (value == 0) "\u2718" else "\u2713"
+            }, style = function(value){
+              if (value == 0) {color <- '#ABB2B9'} else {color <- '#28B463'}
+              list(background = color)
+            }),
+            psy = colDef(maxWidth = 30, cell = function(value) {
+              # Render as ✘ or ✓
+              if (value == 0) "\u2718" else "\u2713"
+            }, style = function(value){
+              if (value == 0) {color <- '#ABB2B9'} else {color <- '#28B463'}
+              list(background = color)
+            }),
+            pt = colDef(maxWidth = 30, cell = function(value) {
+              # Render as ✘ or ✓
+              if (value == 0) "\u2718" else "\u2713"
+            }, style = function(value){
+              if (value == 0) {color <- '#ABB2B9'} else {color <- '#28B463'}
+              list(background = color)
+            }),
+            ot = colDef(maxWidth = 30, cell = function(value) {
+              # Render as ✘ or ✓
+              if (value == 0) "\u2718" else "\u2713"
+            }, style = function(value){
+              if (value == 0) {color <- '#ABB2B9'} else {color <- '#28B463'}
+              list(background = color)
+            }),
+            nur = colDef(maxWidth = 30, cell = function(value) {
+              # Render as ✘ or ✓
+              if (value == 0) "\u2718" else "\u2713"
+            }, style = function(value){
+              if (value == 0) {color <- '#ABB2B9'} else {color <- '#28B463'}
+              list(background = color)
+            }),
+            swo = colDef(maxWidth = 30, cell = function(value) {
+              # Render as ✘ or ✓
+              if (value == 0) "\u2718" else "\u2713"
+            }, style = function(value){
+              if (value == 0) {color <- '#ABB2B9'} else {color <- '#28B463'}
+              list(background = color)
+            })
+          ),
+          bordered = FALSE,
+          highlight = FALSE,
+          striped = FALSE,
+          searchable = TRUE,
+          showPageSizeOptions = TRUE,
+          onClick = "expand"
+          )
+```
+
+
+
+Time Series {data-orientation=rows}
+=======================================================================
+
+Row {data-height=600}
+-------------------------------------
+
+### Time series: pain interference
+
+```{r, pain interference, echo=FALSE}
+#Input
+url <- 'https://docs.google.com/spreadsheets/d/1DE08OpdFC2eH8VwAV-xLmsFByGh2VvL0DRDjPLhyo9U/edit?usp=sharing'
+
+#read data
+dat <- gsheet2tbl(url)
+
+#create time_series datafile
+dat_clean <- dat %>%
+  filter(!is.na(author) & !author == "test" & !author == 0)
+dat_clean$cohort <- paste(dat_clean$author, dat_clean$year, dat_clean$cohort_id, sep = "_")
+
+#create input value
+input <- "pinter"
+
+
+
+
+#input <- as.data.frame(c("pintens", "pf"))  
+#for (row in 1:nrow(input)) { 
+
+
+if (input == "pinter") {
+  
+  dat_pinter <- dat_clean %>%
+    filter(measurements_pain_interference == "Yes")
+  
+  ts_m <- select (dat_pinter, cohort, author, year, cohort_id, pinter_pre_m, pinter_post_m, pinter_fu1_m,
+                  pinter_fu2_m, pinter_fu3_m, measurements_pain_interference, pinter_name_measurement_instrument) %>%
+    rename(instrument_name = pinter_name_measurement_instrument, 
+           pre_m = pinter_pre_m,
+           post_m = pinter_post_m,
+           fu1_m = pinter_fu1_m,
+           fu2_m = pinter_fu2_m,
+           fu3_m = pinter_fu3_m,
+           instrument_present = measurements_pain_interference)
+  
+  ts_sd <- select (dat_pinter, cohort, pinter_pre_sd, pinter_post_sd, pinter_fu1_sd,
+                   pinter_fu2_sd, pinter_fu3_sd) %>%
+    rename( pre_sd = pinter_pre_sd,
+            post_sd = pinter_post_sd,
+            fu1_sd = pinter_fu1_sd,
+            fu2_sd = pinter_fu2_sd,
+            fu3_sd = pinter_fu3_sd)
+  
+  ts_t <- select (dat_pinter, cohort, pinter_fu1_t, pinter_fu2_t, pinter_fu3_t) %>%
+    rename( fu1_t = pinter_fu1_t,
+            fu2_t = pinter_fu2_t,
+            fu3_t = pinter_fu3_t)
+}
+
+ts_t$pre_t = -20
+ts_t$post_t = 0
+
+#change SD columns to numeric
+cols.num <- c("pre_sd","post_sd", "fu1_sd", "fu2_sd", "fu3_sd")
+ts_sd[cols.num] <- sapply(ts_sd[cols.num],as.numeric)
+#sapply(ts_sd, class)
+
+
+#convert to long dataset
+# The arguments to gather():
+# - data: Data object
+# - key: Name of new key column (made from names of data columns)
+# - value: Name of new value column
+# - ...: Names of source columns that contain values
+# - factor_key: Treat the new key column as a factor (instead of character vector)
+ts_m_long <- pivot_longer(ts_m, 
+                          cols = c("pre_m", "post_m", "fu1_m", "fu2_m", "fu2_m", "fu3_m"),
+                          names_to = "timepoint",
+                          values_to = "m")
+
+ts_sd_long <- pivot_longer(ts_sd, 
+                           cols = c("pre_sd", "post_sd", "fu1_sd", "fu2_sd", "fu2_sd", "fu3_sd"),
+                           names_to = "timepoint",
+                           values_to = "sd")
+
+
+ts_t_long <- pivot_longer(ts_t,
+                          cols = c("pre_t", "post_t", "fu1_t", "fu2_t", "fu3_t"),
+                          names_to = "timepoint",
+                          values_to = "t")
+
+
+#merge long datasets
+ts_sd_long$timepoint <-  gsub("\\_sd*$","",ts_sd_long$timepoint)
+ts_t_long$timepoint <- gsub("\\_t*$","",ts_t_long$timepoint)
+ts_m_long$timepoint <- gsub("\\_m*$","",ts_m_long$timepoint)
+
+ts_sdt_long <- merge(ts_sd_long, ts_t_long, c("cohort", "timepoint"))
+ts_long <- merge(ts_sdt_long, ts_m_long, c("cohort", "timepoint"))
+
+#unique(ts_long$instrument_name)
+
+#create max_score column
+
+ts_long$max_scale = ts_long$instrument_name
+ts_long$max_scale <- recode(ts_long$max_scale, 
+                            "VAS" = 100, "VAS (0-100)" = 100,"PRI" = 78, "MPI: pain severity" = 7,
+                            "NRS" = 10, "NPRS" = 10, "NRS (0-10)" = 10, "VAS (0-10)"= 10, "NRS (0-100)" = 100,
+                            "Likert pain intensity" = 6, "RDQ" = 24, "QBPDS" = 100, "LBPRS" = 30, "DRI" = 1200,
+                            "DRI (0-100)" = 100, "MPI: pain interference" = 6, "ODI" = 100, "ODI (0-1)" = 1, "PDI" = 70, "RMDQ" = 24,
+                            "DPQ: Daily activities" = 100, "SF-36 subscale Physical Functioning" = 100, "NHP: PA" = 100,
+                            "HFAQ" = 100, "MPI: GA" = 6, "Norfunk (0-3)" = 3, "ADS (german scale of CES-D)" =60, "HADS-D" =21,
+                            "DASS" = 42, "BDI-II" =63, "Zung" =100,"BDI" =63, "depression index (DEPS)" =30, "SCL90-D" = 52,
+                            "HADS-A"= 21, "VAS Anxiety (0-100)" = 100, "SCL90-A" = 40, "STAI" = 80,
+                            "NHP: Emotional reactions" = 100, "SF-36: mental health" = 100,"DPQ: anxiety/depression" = 100,
+                            "SCL-90: Hostility" = 24, "PSEQ" = 60, "DPQ: social life" = 100, "SF-36: social functioning" = 100, 
+                            "SIP" = 9608, "QBPRS" = 100
+                            )
+
+#create reverse scoring variable
+#binary variable: do higher scores indicate better functioning? 0=no; 1=yes.
+measReverse <- c("FIQ", "NHP", "NHP: PA", "Norfunk (0-3)", "RDQ", "QBPDS",
+                 "DRI (0-100)", "PDI", "ODI (0-1)", "MPI: pain interference",
+                 "RMDQ", "ODI", "QBPRS", "DPQ: Daily activities", "LBPRS",
+                 "DRI", "SIP", "ADS (german scale of CES-D)", "HADS-D",
+                 "BDI", "SCL90-D", "Depression index (DEPS)", "DASS", "BDI-II",
+                 "Zung", "HADS-A", "VAS Anxiety (0-100)", "SCL90-A", "STAI", 
+                 "NHP: Emotional reactions", "DPQ: anxiety/depression",
+                 "SCL-90: Hostility", "DPQ: social life", "VAS (0-10)", 
+                 "NRS (0-10)", "VAS", "NRS", "Likert pain intensity", 
+                 "MPI: pain severity", "PRI", "NPRS", "NRS (0-100)")
+
+#questionnaires in the current dataset for which higher scores indicate increased functioning: 
+#"EuroQol-5D-3L", "LiSat-11", "WHQOL-BREF", "HFAQ", "MPI: GA",
+#"SF-36 subscale Physical Functioning", "RAND-36 subscale Physical Functioning",
+#"SF-36: mental health", "PSEQ", "SF-36: social functioning", "German Life Satisfaction Questionnaire".
+
+ts_long$rev_score = 0
+logical <- ts_long$instrument_name %in% measReverse
+ts_long$rev_score[logical] = 1
+
+
+#reverse scoring
+ts_long$rev_score_m <- (ts_long$max_scale)-ts_long$m 
+
+#combining rev_score and normal score on contion of ts_long$rev_score
+
+ts_long$m_final <- ts_long$m
+
+for (row in 1:nrow(ts_long)) {
+  if (ts_long[row, "rev_score"] == 1 & !is.na(ts_long[row, "rev_score"])) {
+    # replace value by ts_long$rev_score_m
+    ts_long[row, "m_final"] <- ts_long[row, "rev_score_m"]
+  }
+}
+
+
+#standardize mean
+ts_long$m_stand = (ts_long$m_final/ts_long$max_scale)*100
+
+
+
+#create plot
+p <- ggplot(ts_long, aes(x=t, y=m_stand, group=cohort, color=cohort, text = 
+                           paste("Author: ", author,
+                                 "<br>Year: ", year,
+                                 "<br>Cohort ID: ", cohort_id,
+                                 "<br>Instrument: ", instrument_name,
+                                 "<br>Raw mean: ", m,
+                                 "<br>Raw SD: ", sd,
+                                 "<br>Standardized score ", m_stand
+                           ))) +
+  labs(y= "outcome standardized (0-100)") +
+  geom_line(data=ts_long[!is.na(ts_long$m_stand),]) + 
+  geom_point() +
+  scale_x_continuous(name = "Time (months)",
+                     breaks = c(-20, 0, 3, 6, 12, 24, 60, 120),
+                     labels = c("pre", "post", "3m", "6m", "12m", "24m", "60m", "120m"),
+                     limits = c(-20, 200))
+
+ggplotly(p, tooltip = "text") %>%
+  layout(
+    xaxis = list(
+      tickvals = c(-20, 0, 3, 6, 12, 24, 60, 120),
+      ticktext = c("pre", "post", "3m", "6m", "12m", "24m", "60m", "120m"),
+      ticklen = 5,
+      tickwidth = 2,
+      tickcolor = toRGB("blue"),
+      range=c(-22, 26)
+    ),
+    yaxis = list(
+      range=c(0, 100))
+  ) 
+```
+
+Row {data-height=600}
+-------------------------------------
+### Time series: pain intensity
+
+```{r, pain intensity, echo=FALSE}
+#Input
+url <- 'https://docs.google.com/spreadsheets/d/1DE08OpdFC2eH8VwAV-xLmsFByGh2VvL0DRDjPLhyo9U/edit?usp=sharing'
+
+#read data
+dat <- gsheet2tbl(url)
+
+#create time_series datafile
+dat_clean <- dat %>%
+  filter(!is.na(author) & !author == "test" & !author == 0)
+dat_clean$cohort <- paste(dat_clean$author, dat_clean$year, dat_clean$cohort_id, sep = "_")
+
+
+#create input value
+input <- "pintens"
+
+#input <- as.data.frame(c("pintens", "pf"))  
+#for (row in 1:nrow(input)) { 
+
+if (input == "pintens") { 
+  
+  dat_pintens <- dat_clean %>%
+    filter(measurements_pain_intensity == "Yes")  
+  
+  ts_m <- select (dat_pintens, cohort, author, year, cohort_id, pintens_pre_m, pintens_post_m, pintens_fu1_m,
+                  pintens_fu2_m, pintens_fu3_m, measurements_pain_intensity, pintens_name_measurement_instrument) %>%
+    rename(instrument_name = pintens_name_measurement_instrument, 
+           pre_m = pintens_pre_m,
+           post_m = pintens_post_m,
+           fu1_m = pintens_fu1_m,
+           fu2_m = pintens_fu2_m,
+           fu3_m = pintens_fu3_m,
+           instrument_present = measurements_pain_intensity)
+  
+  ts_sd <- select (dat_pintens, cohort, pintens_pre_sd, pintens_post_sd, pintens_fu1_sd,
+                   pintens_fu2_sd, pintens_fu3_sd) %>%
+    rename( pre_sd = pintens_pre_sd,
+            post_sd = pintens_post_sd,
+            fu1_sd = pintens_fu1_sd,
+            fu2_sd = pintens_fu2_sd,
+            fu3_sd = pintens_fu3_sd)
+  
+  ts_t <- select (dat_pintens, cohort, pintens_fu1_t, pintens_fu2_t, pintens_fu3_t) %>%
+    rename( fu1_t = pintens_fu1_t,
+            fu2_t = pintens_fu2_t,
+            fu3_t = pintens_fu3_t)
+}  
+
+ts_t$pre_t = -20
+ts_t$post_t = 0
+
+#change SD columns to numeric
+cols.num <- c("pre_sd","post_sd", "fu1_sd", "fu2_sd", "fu3_sd")
+ts_sd[cols.num] <- sapply(ts_sd[cols.num],as.numeric)
+#sapply(ts_sd, class)
+
+
+#convert to long dataset
+# The arguments to gather():
+# - data: Data object
+# - key: Name of new key column (made from names of data columns)
+# - value: Name of new value column
+# - ...: Names of source columns that contain values
+# - factor_key: Treat the new key column as a factor (instead of character vector)
+ts_m_long <- pivot_longer(ts_m, 
+                          cols = c("pre_m", "post_m", "fu1_m", "fu2_m", "fu2_m", "fu3_m"),
+                          names_to = "timepoint",
+                          values_to = "m")
+
+ts_sd_long <- pivot_longer(ts_sd, 
+                           cols = c("pre_sd", "post_sd", "fu1_sd", "fu2_sd", "fu2_sd", "fu3_sd"),
+                           names_to = "timepoint",
+                           values_to = "sd")
+
+
+ts_t_long <- pivot_longer(ts_t,
+                          cols = c("pre_t", "post_t", "fu1_t", "fu2_t", "fu3_t"),
+                          names_to = "timepoint",
+                          values_to = "t")
+
+
+#merge long datasets
+ts_sd_long$timepoint <-  gsub("\\_sd*$","",ts_sd_long$timepoint)
+ts_t_long$timepoint <- gsub("\\_t*$","",ts_t_long$timepoint)
+ts_m_long$timepoint <- gsub("\\_m*$","",ts_m_long$timepoint)
+
+ts_sdt_long <- merge(ts_sd_long, ts_t_long, c("cohort", "timepoint"))
+ts_long <- merge(ts_sdt_long, ts_m_long, c("cohort", "timepoint"))
+
+#unique(ts_long$instrument_name)
+
+#create max_score column
+
+ts_long$max_scale = ts_long$instrument_name
+ts_long$max_scale <- recode(ts_long$max_scale, 
+                            "VAS" = 100, "VAS (0-100)" = 100,"PRI" = 78, "MPI: pain severity" = 7,
+                            "NRS" = 10, "NPRS" = 10, "NRS (0-10)" = 10, "VAS (0-10)"= 10, "NRS (0-100)" = 100,
+                            "Likert pain intensity" = 6, "RDQ" = 24, "QBPDS" = 100, "LBPRS" = 30, "DRI" = 1200,
+                            "DRI (0-100)" = 100, "MPI: pain interference" = 6, "ODI" = 100, "ODI (0-1)" = 1, "PDI" = 70, "RMDQ" = 24,
+                            "DPQ: Daily activities" = 100, "SF-36 subscale Physical Functioning" = 100, "NHP: PA" = 100,
+                            "HFAQ" = 100, "MPI: GA" = 6, "Norfunk (0-3)" = 3, "ADS (german scale of CES-D)" =60, "HADS-D" =21,
+                            "DASS" = 42, "BDI-II" =63, "Zung" =100,"BDI" =63, "depression index (DEPS)" =30, "SCL90-D" = 52,
+                            "HADS-A"= 21, "VAS Anxiety (0-100)" = 100, "SCL90-A" = 40, "STAI" = 80,
+                            "NHP: Emotional reactions" = 100, "SF-36: mental health" = 100,"DPQ: anxiety/depression" = 100,
+                            "SCL-90: Hostility" = 24, "PSEQ" = 60, "DPQ: social life" = 100, "SF-36: social functioning" = 100, 
+                            "SIP" = 9608, "QBPRS" = 100
+)
+
+#create reverse scoring variable
+#binary variable: do higher scores indicate better functioning? 0=no; 1=yes.
+measReverse <- c("FIQ", "NHP", "NHP: PA", "Norfunk (0-3)", "RDQ", "QBPDS",
+                 "DRI (0-100)", "PDI", "ODI (0-1)", "MPI: pain interference",
+                 "RMDQ", "ODI", "QBPRS", "DPQ: Daily activities", "LBPRS",
+                 "DRI", "SIP", "ADS (german scale of CES-D)", "HADS-D",
+                 "BDI", "SCL90-D", "Depression index (DEPS)", "DASS", "BDI-II",
+                 "Zung", "HADS-A", "VAS Anxiety (0-100)", "SCL90-A", "STAI", 
+                 "NHP: Emotional reactions", "DPQ: anxiety/depression",
+                 "SCL-90: Hostility", "DPQ: social life", "VAS (0-10)", 
+                 "NRS (0-10)", "VAS", "NRS", "Likert pain intensity", 
+                 "MPI: pain severity", "PRI", "NPRS", "NRS (0-100)")
+
+#questionnaires in the current dataset for which higher scores indicate increased functioning: 
+#"EuroQol-5D-3L", "LiSat-11", "WHQOL-BREF", "HFAQ", "MPI: GA",
+#"SF-36 subscale Physical Functioning", "RAND-36 subscale Physical Functioning",
+#"SF-36: mental health", "PSEQ", "SF-36: social functioning", "German Life Satisfaction Questionnaire".
+
+ts_long$rev_score = 0
+logical <- ts_long$instrument_name %in% measReverse
+ts_long$rev_score[logical] = 1
+
+
+#reverse scoring
+ts_long$rev_score_m <- (ts_long$max_scale)-ts_long$m 
+
+#combining rev_score and normal score on contion of ts_long$rev_score
+
+ts_long$m_final <- ts_long$m
+
+for (row in 1:nrow(ts_long)) {
+  if (ts_long[row, "rev_score"] == 1 & !is.na(ts_long[row, "rev_score"])) {
+    # replace value by ts_long$rev_score_m
+    ts_long[row, "m_final"] <- ts_long[row, "rev_score_m"]
+  }
+}
+
+
+#standardize mean
+ts_long$m_stand = (ts_long$m_final/ts_long$max_scale)*100
+
+
+
+#create plot
+p <- ggplot(ts_long, aes(x=t, y=m_stand, group=cohort, color=cohort, text = 
+                           paste("Author: ", author,
+                                 "<br>Year: ", year,
+                                 "<br>Cohort ID: ", cohort_id,
+                                 "<br>Instrument: ", instrument_name,
+                                 "<br>Raw mean: ", m,
+                                 "<br>Raw SD: ", sd,
+                                 "<br>Standardized score ", m_stand
+                           ))) +
+  labs(y= "outcome standardized (0-100)") +
+  geom_line(data=ts_long[!is.na(ts_long$m_stand),]) + 
+  geom_point() +
+  scale_x_continuous(name = "Time (months)",
+                     breaks = c(-20, 0, 3, 6, 12, 24, 60, 120),
+                     labels = c("pre", "post", "3m", "6m", "12m", "24m", "60m", "120m"),
+                     limits = c(-20, 200))
+
+ggplotly(p, tooltip = "text") %>%
+  layout(
+    xaxis = list(
+      tickvals = c(-20, 0, 3, 6, 12, 24, 60, 120),
+      ticktext = c("pre", "post", "3m", "6m", "12m", "24m", "60m", "120m"),
+      ticklen = 5,
+      tickwidth = 2,
+      tickcolor = toRGB("blue"),
+      range=c(-22, 26)
+    ),
+    yaxis = list(
+      range=c(0, 100))
+  ) 
+```
+
+Row {data-height=600}
+-------------------------------------
+### Time series: depression
+```{r, depression, echo=FALSE}
+#Input
+url <- 'https://docs.google.com/spreadsheets/d/1DE08OpdFC2eH8VwAV-xLmsFByGh2VvL0DRDjPLhyo9U/edit?usp=sharing'
+
+#read data
+dat <- gsheet2tbl(url)
+
+### PHYSICAL FUNCTIONING ###
+
+#create time_series datafile
+dat_clean <- dat %>%
+  filter(!is.na(author) & !author == "test" & !author == 0)
+dat_clean$cohort <- paste(dat_clean$author, dat_clean$year, dat_clean$cohort_id, sep = "_")
+
+
+#create input value
+input <- "dep"
+
+#input <- as.data.frame(c("pintens", "pf"))  
+#for (row in 1:nrow(input)) { 
+
+if (input == "dep") { 
+  
+  dat_dep <- dat_clean %>%
+    filter(measurements_depression == "Yes")  
+  
+  ts_m <- select (dat_dep, cohort, author, year, cohort_id, dep_pre_m, dep_post_m, dep_fu1_m,
+                  dep_fu2_m, dep_fu3_m, measurements_depression, dep_name_measurement_instrument) %>%
+    rename(instrument_name = dep_name_measurement_instrument, 
+           pre_m = dep_pre_m,
+           post_m = dep_post_m,
+           fu1_m = dep_fu1_m,
+           fu2_m = dep_fu2_m,
+           fu3_m = dep_fu3_m,
+           instrument_present = measurements_depression)
+  
+  ts_sd <- select (dat_dep, cohort, dep_pre_sd, dep_post_sd, dep_fu1_sd,
+                   dep_fu2_sd, dep_fu3_sd) %>%
+    rename( pre_sd = dep_pre_sd,
+            post_sd = dep_post_sd,
+            fu1_sd = dep_fu1_sd,
+            fu2_sd = dep_fu2_sd,
+            fu3_sd = dep_fu3_sd)
+  
+  ts_t <- select (dat_dep, cohort, dep_fu1_t, dep_fu2_t, dep_fu3_t) %>%
+    rename( fu1_t = dep_fu1_t,
+            fu2_t = dep_fu2_t,
+            fu3_t = dep_fu3_t)
+}  
+
+ts_t$pre_t = -20
+ts_t$post_t = 0
+
+#change SD columns to numeric
+cols.num <- c("pre_sd","post_sd", "fu1_sd", "fu2_sd", "fu3_sd")
+ts_sd[cols.num] <- sapply(ts_sd[cols.num],as.numeric)
+#sapply(ts_sd, class)
+
+
+#convert to long dataset
+# The arguments to gather():
+# - data: Data object
+# - key: Name of new key column (made from names of data columns)
+# - value: Name of new value column
+# - ...: Names of source columns that contain values
+# - factor_key: Treat the new key column as a factor (instead of character vector)
+ts_m_long <- pivot_longer(ts_m, 
+                          cols = c("pre_m", "post_m", "fu1_m", "fu2_m", "fu2_m", "fu3_m"),
+                          names_to = "timepoint",
+                          values_to = "m")
+
+ts_sd_long <- pivot_longer(ts_sd, 
+                           cols = c("pre_sd", "post_sd", "fu1_sd", "fu2_sd", "fu2_sd", "fu3_sd"),
+                           names_to = "timepoint",
+                           values_to = "sd")
+
+
+ts_t_long <- pivot_longer(ts_t,
+                          cols = c("pre_t", "post_t", "fu1_t", "fu2_t", "fu3_t"),
+                          names_to = "timepoint",
+                          values_to = "t")
+
+
+#merge long datasets
+ts_sd_long$timepoint <-  gsub("\\_sd*$","",ts_sd_long$timepoint)
+ts_t_long$timepoint <- gsub("\\_t*$","",ts_t_long$timepoint)
+ts_m_long$timepoint <- gsub("\\_m*$","",ts_m_long$timepoint)
+
+ts_sdt_long <- merge(ts_sd_long, ts_t_long, c("cohort", "timepoint"))
+ts_long <- merge(ts_sdt_long, ts_m_long, c("cohort", "timepoint"))
+
+#unique(ts_long$instrument_name)
+
+#create max_score column
+
+ts_long$max_scale = ts_long$instrument_name
+ts_long$max_scale <- recode(ts_long$max_scale, 
+                            "VAS" = 100, "VAS (0-100)" = 100,"PRI" = 78, "MPI: pain severity" = 7,
+                            "NRS" = 10, "NPRS" = 10, "NRS (0-10)" = 10, "VAS (0-10)"= 10, "NRS (0-100)" = 100,
+                            "Likert pain intensity" = 6, "RDQ" = 24, "QBPDS" = 100, "LBPRS" = 30, "DRI" = 1200,
+                            "DRI (0-100)" = 100, "MPI: pain interference" = 6, "ODI" = 100, "ODI (0-1)" = 1, "PDI" = 70, "RMDQ" = 24,
+                            "DPQ: Daily activities" = 100, "SF-36 subscale Physical Functioning" = 100, "NHP: PA" = 100,
+                            "HFAQ" = 100, "MPI: GA" = 6, "Norfunk (0-3)" = 3, "ADS (german scale of CES-D)" =60, "HADS-D" =21,
+                            "DASS" = 42, "BDI-II" =63, "Zung" =100,"BDI" =63, "depression index (DEPS)" =30, "SCL90-D" = 52,
+                            "HADS-A"= 21, "VAS Anxiety (0-100)" = 100, "SCL90-A" = 40, "STAI" = 80,
+                            "NHP: Emotional reactions" = 100, "SF-36: mental health" = 100,"DPQ: anxiety/depression" = 100,
+                            "SCL-90: Hostility" = 24, "PSEQ" = 60, "DPQ: social life" = 100, "SF-36: social functioning" = 100, 
+                            "SIP" = 9608, "QBPRS" = 100, "Depression index (DEPS)" = 30
+)
+
+#create reverse scoring variable
+#binary variable: do higher scores indicate better functioning? 0=no; 1=yes.
+measReverse <- c("FIQ", "NHP", "NHP: PA", "Norfunk (0-3)", "RDQ", "QBPDS",
+                 "DRI (0-100)", "PDI", "ODI (0-1)", "MPI: pain interference",
+                 "RMDQ", "ODI", "QBPRS", "DPQ: Daily activities", "LBPRS",
+                 "DRI", "SIP", "ADS (german scale of CES-D)", "HADS-D",
+                 "BDI", "SCL90-D", "Depression index (DEPS)", "DASS", "BDI-II",
+                 "Zung", "HADS-A", "VAS Anxiety (0-100)", "SCL90-A", "STAI", 
+                 "NHP: Emotional reactions", "DPQ: anxiety/depression",
+                 "SCL-90: Hostility", "DPQ: social life", "VAS (0-10)", 
+                 "NRS (0-10)", "VAS", "NRS", "Likert pain intensity", 
+                 "MPI: pain severity", "PRI", "NPRS", "NRS (0-100)")
+
+#questionnaires in the current dataset for which higher scores indicate increased functioning: 
+#"EuroQol-5D-3L", "LiSat-11", "WHQOL-BREF", "HFAQ", "MPI: GA",
+#"SF-36 subscale Physical Functioning", "RAND-36 subscale Physical Functioning",
+#"SF-36: mental health", "PSEQ", "SF-36: social functioning", "German Life Satisfaction Questionnaire".
+
+ts_long$rev_score = 0
+logical <- ts_long$instrument_name %in% measReverse
+ts_long$rev_score[logical] = 1
+
+
+#reverse scoring
+ts_long$rev_score_m <- (ts_long$max_scale)-ts_long$m 
+
+#combining rev_score and normal score on contion of ts_long$rev_score
+
+ts_long$m_final <- ts_long$m
+
+for (row in 1:nrow(ts_long)) {
+  if (ts_long[row, "rev_score"] == 1 & !is.na(ts_long[row, "rev_score"])) {
+    # replace value by ts_long$rev_score_m
+    ts_long[row, "m_final"] <- ts_long[row, "rev_score_m"]
+  }
+}
+
+
+#standardize mean
+ts_long$m_stand = (ts_long$m_final/ts_long$max_scale)*100
+
+
+
+#create plot
+p <- ggplot(ts_long, aes(x=t, y=m_stand, group=cohort, color=cohort, text = 
+                           paste("Author: ", author,
+                                 "<br>Year: ", year,
+                                 "<br>Cohort ID: ", cohort_id,
+                                 "<br>Instrument: ", instrument_name,
+                                 "<br>Raw mean: ", m,
+                                 "<br>Raw SD: ", sd,
+                                 "<br>Standardized score ", m_stand
+                           ))) +
+  labs(y= "outcome standardized (0-100)") +
+  geom_line(data=ts_long[!is.na(ts_long$m_stand),]) + 
+  geom_point() +
+  scale_x_continuous(name = "Time (months)",
+                     breaks = c(-20, 0, 3, 6, 12, 24, 60, 120),
+                     labels = c("pre", "post", "3m", "6m", "12m", "24m", "60m", "120m"),
+                     limits = c(-20, 200))
+
+ggplotly(p, tooltip = "text") %>%
+  layout(
+    xaxis = list(
+      tickvals = c(-20, 0, 3, 6, 12, 24, 60, 120),
+      ticktext = c("pre", "post", "3m", "6m", "12m", "24m", "60m", "120m"),
+      ticklen = 5,
+      tickwidth = 2,
+      tickcolor = toRGB("blue"),
+      range=c(-22, 26)
+    ),
+    yaxis = list(
+      range=c(0, 100))
+  ) 
+
+```
+
+Row {data-height=600}
+-------------------------------------
+### Time series: anxiety
+```{r}
+#Input
+url <- 'https://docs.google.com/spreadsheets/d/1DE08OpdFC2eH8VwAV-xLmsFByGh2VvL0DRDjPLhyo9U/edit?usp=sharing'
+
+#read data
+dat <- gsheet2tbl(url)
+
+### PHYSICAL FUNCTIONING ###
+
+#create time_series datafile
+dat_clean <- dat %>%
+  filter(!is.na(author) & !author == "test" & !author == 0)
+dat_clean$cohort <- paste(dat_clean$author, dat_clean$year, dat_clean$cohort_id, sep = "_")
+
+
+#create input value
+input <- "anx"
+
+#input <- as.data.frame(c("pintens", "pf"))  
+#for (row in 1:nrow(input)) { 
+
+if (input == "anx") { 
+  
+  dat_anx <- dat_clean %>%
+    filter(measurements_anxiety == "Yes")  
+  
+  ts_m <- select (dat_anx, cohort, author, year, cohort_id, anx_pre_m, anx_post_m, anx_fu1_m,
+                  anx_fu2_m, anx_fu3_m, measurements_anxiety, anx_name_measurement_instrument) %>%
+    rename(instrument_name = anx_name_measurement_instrument, 
+           pre_m = anx_pre_m,
+           post_m = anx_post_m,
+           fu1_m = anx_fu1_m,
+           fu2_m = anx_fu2_m,
+           fu3_m = anx_fu3_m,
+           instrument_present = measurements_anxiety)
+  
+  ts_sd <- select (dat_anx, cohort, anx_pre_sd, anx_post_sd, anx_fu1_sd,
+                   anx_fu2_sd, anx_fu3_sd) %>%
+    rename( pre_sd = anx_pre_sd,
+            post_sd = anx_post_sd,
+            fu1_sd = anx_fu1_sd,
+            fu2_sd = anx_fu2_sd,
+            fu3_sd = anx_fu3_sd)
+  
+  ts_t <- select (dat_anx, cohort, anx_fu1_t, anx_fu2_t, anx_fu3_t) %>%
+    rename( fu1_t = anx_fu1_t,
+            fu2_t = anx_fu2_t,
+            fu3_t = anx_fu3_t)
+}  
+
+ts_t$pre_t = -20
+ts_t$post_t = 0
+
+#change SD columns to numeric
+cols.num <- c("pre_sd","post_sd", "fu1_sd", "fu2_sd", "fu3_sd")
+ts_sd[cols.num] <- sapply(ts_sd[cols.num],as.numeric)
+#sapply(ts_sd, class)
+
+
+#convert to long dataset
+# The arguments to gather():
+# - data: Data object
+# - key: Name of new key column (made from names of data columns)
+# - value: Name of new value column
+# - ...: Names of source columns that contain values
+# - factor_key: Treat the new key column as a factor (instead of character vector)
+ts_m_long <- pivot_longer(ts_m, 
+                          cols = c("pre_m", "post_m", "fu1_m", "fu2_m", "fu2_m", "fu3_m"),
+                          names_to = "timepoint",
+                          values_to = "m")
+
+ts_sd_long <- pivot_longer(ts_sd, 
+                           cols = c("pre_sd", "post_sd", "fu1_sd", "fu2_sd", "fu2_sd", "fu3_sd"),
+                           names_to = "timepoint",
+                           values_to = "sd")
+
+
+ts_t_long <- pivot_longer(ts_t,
+                          cols = c("pre_t", "post_t", "fu1_t", "fu2_t", "fu3_t"),
+                          names_to = "timepoint",
+                          values_to = "t")
+
+
+#merge long datasets
+ts_sd_long$timepoint <-  gsub("\\_sd*$","",ts_sd_long$timepoint)
+ts_t_long$timepoint <- gsub("\\_t*$","",ts_t_long$timepoint)
+ts_m_long$timepoint <- gsub("\\_m*$","",ts_m_long$timepoint)
+
+ts_sdt_long <- merge(ts_sd_long, ts_t_long, c("cohort", "timepoint"))
+ts_long <- merge(ts_sdt_long, ts_m_long, c("cohort", "timepoint"))
+
+#unique(ts_long$instrument_name)
+
+#create max_score column
+
+ts_long$max_scale = ts_long$instrument_name
+ts_long$max_scale <- recode(ts_long$max_scale, 
+                            "VAS" = 100, "VAS (0-100)" = 100,"PRI" = 78, "MPI: pain severity" = 7,
+                            "NRS" = 10, "NPRS" = 10, "NRS (0-10)" = 10, "VAS (0-10)"= 10, "NRS (0-100)" = 100,
+                            "Likert pain intensity" = 6, "RDQ" = 24, "QBPDS" = 100, "LBPRS" = 30, "DRI" = 1200,
+                            "DRI (0-100)" = 100, "MPI: pain interference" = 6, "ODI" = 100, "ODI (0-1)" = 1, "PDI" = 70, "RMDQ" = 24,
+                            "DPQ: Daily activities" = 100, "SF-36 subscale Physical Functioning" = 100, "NHP: PA" = 100,
+                            "HFAQ" = 100, "MPI: GA" = 6, "Norfunk (0-3)" = 3, "ADS (german scale of CES-D)" =60, "HADS-D" =21,
+                            "DASS" = 42, "BDI-II" =63, "Zung" =100,"BDI" =63, "depression index (DEPS)" =30, "SCL90-D" = 52,
+                            "HADS-A"= 21, "VAS Anxiety (0-100)" = 100, "SCL90-A" = 40, "STAI" = 80,
+                            "NHP: Emotional reactions" = 100, "SF-36: mental health" = 100,"DPQ: anxiety/depression" = 100,
+                            "SCL-90: Hostility" = 24, "PSEQ" = 60, "DPQ: social life" = 100, "SF-36: social functioning" = 100, 
+                            "SIP" = 9608, "QBPRS" = 100
+)
+
+#create reverse scoring variable
+#binary variable: do higher scores indicate better functioning? 0=no; 1=yes.
+measReverse <- c("FIQ", "NHP", "NHP: PA", "Norfunk (0-3)", "RDQ", "QBPDS",
+                 "DRI (0-100)", "PDI", "ODI (0-1)", "MPI: pain interference",
+                 "RMDQ", "ODI", "QBPRS", "DPQ: Daily activities", "LBPRS",
+                 "DRI", "SIP", "ADS (german scale of CES-D)", "HADS-D",
+                 "BDI", "SCL90-D", "Depression index (DEPS)", "DASS", "BDI-II",
+                 "Zung", "HADS-A", "VAS Anxiety (0-100)", "SCL90-A", "STAI", 
+                 "NHP: Emotional reactions", "DPQ: anxiety/depression",
+                 "SCL-90: Hostility", "DPQ: social life", "VAS (0-10)", 
+                 "NRS (0-10)", "VAS", "NRS", "Likert pain intensity", 
+                 "MPI: pain severity", "PRI", "NPRS", "NRS (0-100)")
+
+#questionnaires in the current dataset for which higher scores indicate increased functioning: 
+#"EuroQol-5D-3L", "LiSat-11", "WHQOL-BREF", "HFAQ", "MPI: GA",
+#"SF-36 subscale Physical Functioning", "RAND-36 subscale Physical Functioning",
+#"SF-36: mental health", "PSEQ", "SF-36: social functioning", "German Life Satisfaction Questionnaire".
+
+ts_long$rev_score = 0
+logical <- ts_long$instrument_name %in% measReverse
+ts_long$rev_score[logical] = 1
+
+
+#reverse scoring
+ts_long$rev_score_m <- (ts_long$max_scale)-ts_long$m 
+
+#combining rev_score and normal score on contion of ts_long$rev_score
+
+ts_long$m_final <- ts_long$m
+
+for (row in 1:nrow(ts_long)) {
+  if (ts_long[row, "rev_score"] == 1 & !is.na(ts_long[row, "rev_score"])) {
+    # replace value by ts_long$rev_score_m
+    ts_long[row, "m_final"] <- ts_long[row, "rev_score_m"]
+  }
+}
+
+
+#standardize mean
+ts_long$m_stand = (ts_long$m_final/ts_long$max_scale)*100
+
+
+
+#create plot
+p <- ggplot(ts_long, aes(x=t, y=m_stand, group=cohort, color=cohort, text = 
+                           paste("Author: ", author,
+                                 "<br>Year: ", year,
+                                 "<br>Cohort ID: ", cohort_id,
+                                 "<br>Instrument: ", instrument_name,
+                                 "<br>Raw mean: ", m,
+                                 "<br>Raw SD: ", sd,
+                                 "<br>Standardized score ", m_stand
+                           ))) +
+  labs(y= "outcome standardized (0-100)") +
+  geom_line(data=ts_long[!is.na(ts_long$m_stand),]) + 
+  geom_point() +
+  scale_x_continuous(name = "Time (months)",
+                     breaks = c(-20, 0, 3, 6, 12, 24, 60, 120),
+                     labels = c("pre", "post", "3m", "6m", "12m", "24m", "60m", "120m"),
+                     limits = c(-20, 200))
+
+ggplotly(p, tooltip = "text") %>%
+  layout(
+    xaxis = list(
+      tickvals = c(-20, 0, 3, 6, 12, 24, 60, 120),
+      ticktext = c("pre", "post", "3m", "6m", "12m", "24m", "60m", "120m"),
+      ticklen = 5,
+      tickwidth = 2,
+      tickcolor = toRGB("blue"),
+      range=c(-22, 26)
+    ),
+    yaxis = list(
+      range=c(0, 100))
+  ) 
+```
+
+Row {data-height=600}
+-------------------------------------
+### Time series: emotional functioning
+
+```{r}
+#Input
+url <- 'https://docs.google.com/spreadsheets/d/1DE08OpdFC2eH8VwAV-xLmsFByGh2VvL0DRDjPLhyo9U/edit?usp=sharing'
+
+#read data
+dat <- gsheet2tbl(url)
+
+### PHYSICAL FUNCTIONING ###
+
+#create time_series datafile
+dat_clean <- dat %>%
+  filter(!is.na(author) & !author == "test" & !author == 0)
+dat_clean$cohort <- paste(dat_clean$author, dat_clean$year, dat_clean$cohort_id, sep = "_")
+
+
+#create input value
+input <- "ef"
+
+#input <- as.data.frame(c("pintens", "pf"))  
+#for (row in 1:nrow(input)) { 
+
+if (input == "ef") { 
+  
+  dat_ef <- dat_clean %>%
+    filter(measurements_general_emotional_functioning == "Yes")  
+  
+  ts_m <- select (dat_ef, cohort, author, year, cohort_id, ef_pre_m, ef_post_m, ef_fu1_m,
+                  ef_fu2_m, ef_fu3_m, measurements_general_emotional_functioning, ef_name_measurement_instrument) %>%
+    rename(instrument_name = ef_name_measurement_instrument, 
+           pre_m = ef_pre_m,
+           post_m = ef_post_m,
+           fu1_m = ef_fu1_m,
+           fu2_m = ef_fu2_m,
+           fu3_m = ef_fu3_m,
+           instrument_present = measurements_general_emotional_functioning)
+  
+  ts_sd <- select (dat_ef, cohort, ef_pre_sd, ef_post_sd, ef_fu1_sd,
+                   ef_fu2_sd, ef_fu3_sd) %>%
+    rename( pre_sd = ef_pre_sd,
+            post_sd = ef_post_sd,
+            fu1_sd = ef_fu1_sd,
+            fu2_sd = ef_fu2_sd,
+            fu3_sd = ef_fu3_sd)
+  
+  ts_t <- select (dat_ef, cohort, ef_fu1_t, ef_fu2_t, ef_fu3_t) %>%
+    rename( fu1_t = ef_fu1_t,
+            fu2_t = ef_fu2_t,
+            fu3_t = ef_fu3_t)
+}  
+
+ts_t$pre_t = -20
+ts_t$post_t = 0
+
+#change SD columns to numeric
+cols.num <- c("pre_sd","post_sd", "fu1_sd", "fu2_sd", "fu3_sd")
+ts_sd[cols.num] <- sapply(ts_sd[cols.num],as.numeric)
+#sapply(ts_sd, class)
+
+
+#convert to long dataset
+# The arguments to gather():
+# - data: Data object
+# - key: Name of new key column (made from names of data columns)
+# - value: Name of new value column
+# - ...: Names of source columns that contain values
+# - factor_key: Treat the new key column as a factor (instead of character vector)
+ts_m_long <- pivot_longer(ts_m, 
+                          cols = c("pre_m", "post_m", "fu1_m", "fu2_m", "fu2_m", "fu3_m"),
+                          names_to = "timepoint",
+                          values_to = "m")
+
+ts_sd_long <- pivot_longer(ts_sd, 
+                           cols = c("pre_sd", "post_sd", "fu1_sd", "fu2_sd", "fu2_sd", "fu3_sd"),
+                           names_to = "timepoint",
+                           values_to = "sd")
+
+
+ts_t_long <- pivot_longer(ts_t,
+                          cols = c("pre_t", "post_t", "fu1_t", "fu2_t", "fu3_t"),
+                          names_to = "timepoint",
+                          values_to = "t")
+
+
+#merge long datasets
+ts_sd_long$timepoint <-  gsub("\\_sd*$","",ts_sd_long$timepoint)
+ts_t_long$timepoint <- gsub("\\_t*$","",ts_t_long$timepoint)
+ts_m_long$timepoint <- gsub("\\_m*$","",ts_m_long$timepoint)
+
+ts_sdt_long <- merge(ts_sd_long, ts_t_long, c("cohort", "timepoint"))
+ts_long <- merge(ts_sdt_long, ts_m_long, c("cohort", "timepoint"))
+
+#unique(ts_long$instrument_name)
+
+#create max_score column
+
+ts_long$max_scale = ts_long$instrument_name
+ts_long$max_scale <- recode(ts_long$max_scale, 
+                            "VAS" = 100, "VAS (0-100)" = 100,"PRI" = 78, "MPI: pain severity" = 7,
+                            "NRS" = 10, "NPRS" = 10, "NRS (0-10)" = 10, "VAS (0-10)"= 10, "NRS (0-100)" = 100,
+                            "Likert pain intensity" = 6, "RDQ" = 24, "QBPDS" = 100, "LBPRS" = 30, "DRI" = 1200,
+                            "DRI (0-100)" = 100, "MPI: pain interference" = 6, "ODI" = 100, "ODI (0-1)" = 1, "PDI" = 70, "RMDQ" = 24,
+                            "DPQ: Daily activities" = 100, "SF-36 subscale Physical Functioning" = 100, "NHP: PA" = 100,
+                            "HFAQ" = 100, "MPI: GA" = 6, "Norfunk (0-3)" = 3, "ADS (german scale of CES-D)" =60, "HADS-D" =21,
+                            "DASS" = 42, "BDI-II" =63, "Zung" =100,"BDI" =63, "depression index (DEPS)" =30, "SCL90-D" = 52,
+                            "HADS-A"= 21, "VAS Anxiety (0-100)" = 100, "SCL90-A" = 40, "STAI" = 80,
+                            "NHP: Emotional reactions" = 100, "SF-36: mental health" = 100,"DPQ: anxiety/depression" = 100,
+                            "SCL-90: Hostility" = 24, "PSEQ" = 60, "DPQ: social life" = 100, "SF-36: social functioning" = 100, 
+                            "SIP" = 9608, "QBPRS" = 100
+)
+
+#create reverse scoring variable
+#binary variable: do higher scores indicate better functioning? 0=no; 1=yes.
+measReverse <- c("FIQ", "NHP", "NHP: PA", "Norfunk (0-3)", "RDQ", "QBPDS",
+                 "DRI (0-100)", "PDI", "ODI (0-1)", "MPI: pain interference",
+                 "RMDQ", "ODI", "QBPRS", "DPQ: Daily activities", "LBPRS",
+                 "DRI", "SIP", "ADS (german scale of CES-D)", "HADS-D",
+                 "BDI", "SCL90-D", "Depression index (DEPS)", "DASS", "BDI-II",
+                 "Zung", "HADS-A", "VAS Anxiety (0-100)", "SCL90-A", "STAI", 
+                 "NHP: Emotional reactions", "DPQ: anxiety/depression",
+                 "SCL-90: Hostility", "DPQ: social life", "VAS (0-10)", 
+                 "NRS (0-10)", "VAS", "NRS", "Likert pain intensity", 
+                 "MPI: pain severity", "PRI", "NPRS", "NRS (0-100)")
+
+#questionnaires in the current dataset for which higher scores indicate increased functioning: 
+#"EuroQol-5D-3L", "LiSat-11", "WHQOL-BREF", "HFAQ", "MPI: GA",
+#"SF-36 subscale Physical Functioning", "RAND-36 subscale Physical Functioning",
+#"SF-36: mental health", "PSEQ", "SF-36: social functioning", "German Life Satisfaction Questionnaire".
+
+ts_long$rev_score = 0
+logical <- ts_long$instrument_name %in% measReverse
+ts_long$rev_score[logical] = 1
+
+
+#reverse scoring
+ts_long$rev_score_m <- (ts_long$max_scale)-ts_long$m 
+
+#combining rev_score and normal score on contion of ts_long$rev_score
+
+ts_long$m_final <- ts_long$m
+
+for (row in 1:nrow(ts_long)) {
+  if (ts_long[row, "rev_score"] == 1 & !is.na(ts_long[row, "rev_score"])) {
+    # replace value by ts_long$rev_score_m
+    ts_long[row, "m_final"] <- ts_long[row, "rev_score_m"]
+  }
+}
+
+
+#standardize mean
+ts_long$m_stand = (ts_long$m_final/ts_long$max_scale)*100
+
+
+
+#create plot
+p <- ggplot(ts_long, aes(x=t, y=m_stand, group=cohort, color=cohort, text = 
+                           paste("Author: ", author,
+                                 "<br>Year: ", year,
+                                 "<br>Cohort ID: ", cohort_id,
+                                 "<br>Instrument: ", instrument_name,
+                                 "<br>Raw mean: ", m,
+                                 "<br>Raw SD: ", sd,
+                                 "<br>Standardized score ", m_stand
+                           ))) +
+  labs(y= "outcome standardized (0-100)") +
+  geom_line(data=ts_long[!is.na(ts_long$m_stand),]) + 
+  geom_point() +
+  scale_x_continuous(name = "Time (months)",
+                     breaks = c(-20, 0, 3, 6, 12, 24, 60, 120),
+                     labels = c("pre", "post", "3m", "6m", "12m", "24m", "60m", "120m"),
+                     limits = c(-20, 200))
+
+ggplotly(p, tooltip = "text") %>%
+  layout(
+    xaxis = list(
+      tickvals = c(-20, 0, 3, 6, 12, 24, 60, 120),
+      ticktext = c("pre", "post", "3m", "6m", "12m", "24m", "60m", "120m"),
+      ticklen = 5,
+      tickwidth = 2,
+      tickcolor = toRGB("blue"),
+      range=c(-22, 26)
+    ),
+    yaxis = list(
+      range=c(0, 100))
+  ) 
+```
+
+Row {data-height=600}
+-------------------------------------
+### Time series: physical function
+```{r}
+#Input
+url <- 'https://docs.google.com/spreadsheets/d/1DE08OpdFC2eH8VwAV-xLmsFByGh2VvL0DRDjPLhyo9U/edit?usp=sharing'
+
+#read data
+dat <- gsheet2tbl(url)
+
+### PHYSICAL FUNCTIONING ###
+
+#create time_series datafile
+dat_clean <- dat %>%
+  filter(!is.na(author) & !author == "test" & !author == 0)
+dat_clean$cohort <- paste(dat_clean$author, dat_clean$year, dat_clean$cohort_id, sep = "_")
+
+
+#create input value
+input <- "pf"
+
+#input <- as.data.frame(c("pintens", "pf"))  
+#for (row in 1:nrow(input)) { 
+
+
+if (input == "pf") {
+  
+  dat_pf <- dat_clean %>%
+    filter(measurements_physical_functioning == "Yes")
+  
+  ts_m <- select (dat_pf, cohort, author, year, cohort_id, pf_pre_m, pf_post_m, pf_fu1_m,
+                  pf_fu2_m, pf_fu3_m, measurements_physical_functioning, pf_measurement_name) %>%
+    rename(instrument_name = pf_measurement_name, 
+           pre_m = pf_pre_m,
+           post_m = pf_post_m,
+           fu1_m = pf_fu1_m,
+           fu2_m = pf_fu2_m,
+           fu3_m = pf_fu3_m,
+           instrument_present = measurements_physical_functioning)
+  
+  ts_sd <- select (dat_pf, cohort, pf_pre_sd, pf_post_sd, pf_fu1_sd,
+                   pf_fu2_sd, pf_fu3_sd) %>%
+    rename( pre_sd = pf_pre_sd,
+            post_sd = pf_post_sd,
+            fu1_sd = pf_fu1_sd,
+            fu2_sd = pf_fu2_sd,
+            fu3_sd = pf_fu3_sd)
+  
+  ts_t <- select (dat_pf, cohort, pf_fu1_t, pf_fu2_t, pf_fu3_t) %>%
+    rename( fu1_t = pf_fu1_t,
+            fu2_t = pf_fu2_t,
+            fu3_t = pf_fu3_t)
+}
+
+
+ts_t$pre_t = -20
+ts_t$post_t = 0
+
+#change SD columns to numeric
+cols.num <- c("pre_sd","post_sd", "fu1_sd", "fu2_sd", "fu3_sd")
+ts_sd[cols.num] <- sapply(ts_sd[cols.num],as.numeric)
+sapply(ts_sd, class)
+
+
+#convert to long dataset
+# The arguments to gather():
+# - data: Data object
+# - key: Name of new key column (made from names of data columns)
+# - value: Name of new value column
+# - ...: Names of source columns that contain values
+# - factor_key: Treat the new key column as a factor (instead of character vector)
+ts_m_long <- pivot_longer(ts_m, 
+                          cols = c("pre_m", "post_m", "fu1_m", "fu2_m", "fu2_m", "fu3_m"),
+                          names_to = "timepoint",
+                          values_to = "m")
+
+ts_sd_long <- pivot_longer(ts_sd, 
+                           cols = c("pre_sd", "post_sd", "fu1_sd", "fu2_sd", "fu2_sd", "fu3_sd"),
+                           names_to = "timepoint",
+                           values_to = "sd")
+
+
+ts_t_long <- pivot_longer(ts_t,
+                          cols = c("pre_t", "post_t", "fu1_t", "fu2_t", "fu3_t"),
+                          names_to = "timepoint",
+                          values_to = "t")
+
+
+#merge long datasets
+ts_sd_long$timepoint <-  gsub("\\_sd*$","",ts_sd_long$timepoint)
+ts_t_long$timepoint <- gsub("\\_t*$","",ts_t_long$timepoint)
+ts_m_long$timepoint <- gsub("\\_m*$","",ts_m_long$timepoint)
+
+ts_sdt_long <- merge(ts_sd_long, ts_t_long, c("cohort", "timepoint"))
+ts_long <- merge(ts_sdt_long, ts_m_long, c("cohort", "timepoint"))
+
+#unique(ts_long$instrument_name)
+
+#create max_score column
+
+ts_long$max_scale = ts_long$instrument_name
+ts_long$max_scale <- recode(ts_long$max_scale, 
+                            "VAS" = 100, "VAS (0-100)" = 100,"PRI" = 78, "MPI: pain severity" = 7,
+                            "NRS" = 10, "NPRS" = 10, "NRS (0-10)" = 10, "VAS (0-10)"= 10, "NRS (0-100)" = 100,
+                            "Likert pain intensity" = 6, "RDQ" = 24, "QBPDS" = 100, "LBPRS" = 30, "DRI" = 1200,
+                            "DRI (0-100)" = 100, "MPI: pain interference" = 6, "ODI" = 100, "ODI (0-1)" = 1, "PDI" = 70, "RMDQ" = 24,
+                            "DPQ: Daily activities" = 100, "SF-36 subscale Physical Functioning" = 100, "NHP: PA" = 100,
+                            "HFAQ" = 100, "MPI: GA" = 6, "Norfunk (0-3)" = 3, "ADS (german scale of CES-D)" =60, "HADS-D" =21,
+                            "DASS" = 42, "BDI-II" =63, "Zung" =100,"BDI" =63, "depression index (DEPS)" =30, "SCL90-D" = 52,
+                            "HADS-A"= 21, "VAS Anxiety (0-100)" = 100, "SCL90-A" = 40, "STAI" = 80,
+                            "NHP: Emotional reactions" = 100, "SF-36: mental health" = 100,"DPQ: anxiety/depression" = 100,
+                            "SCL-90: Hostility" = 24, "PSEQ" = 60, "DPQ: social life" = 100, "SF-36: social functioning" = 100, 
+                            "SIP" = 9608, "QBPRS" = 100, "RAND-36 subscale Physical Functioning" = 100
+)
+
+#create reverse scoring variable
+#binary variable: do higher scores indicate better functioning? 0=no; 1=yes.
+measReverse <- c("FIQ", "NHP", "NHP: PA", "Norfunk (0-3)", "RDQ", "QBPDS",
+                 "DRI (0-100)", "PDI", "ODI (0-1)", "MPI: pain interference",
+                 "RMDQ", "ODI", "QBPRS", "DPQ: Daily activities", "LBPRS",
+                 "DRI", "SIP", "ADS (german scale of CES-D)", "HADS-D",
+                 "BDI", "SCL90-D", "Depression index (DEPS)", "DASS", "BDI-II",
+                 "Zung", "HADS-A", "VAS Anxiety (0-100)", "SCL90-A", "STAI", 
+                 "NHP: Emotional reactions", "DPQ: anxiety/depression",
+                 "SCL-90: Hostility", "DPQ: social life", "VAS (0-10)", 
+                 "NRS (0-10)", "VAS", "NRS", "Likert pain intensity", 
+                 "MPI: pain severity", "PRI", "NPRS", "NRS (0-100)"
+                 )
+
+#questionnaires in the current dataset for which higher scores indicate increased functioning: 
+#"EuroQol-5D-3L", "LiSat-11", "WHQOL-BREF", "HFAQ", "MPI: GA",
+#"SF-36 subscale Physical Functioning", "RAND-36 subscale Physical Functioning",
+#"SF-36: mental health", "PSEQ", "SF-36: social functioning", "German Life Satisfaction Questionnaire".
+
+ts_long$rev_score = 0
+logical <- ts_long$instrument_name %in% measReverse
+ts_long$rev_score[logical] = 1
+
+
+#reverse scoring
+ts_long$rev_score_m <- (ts_long$max_scale)-ts_long$m 
+
+#combining rev_score and normal score on contion of ts_long$rev_score
+
+ts_long$m_final <- ts_long$m
+
+for (row in 1:nrow(ts_long)) {
+  if (ts_long[row, "rev_score"] == 1 & !is.na(ts_long[row, "rev_score"])) {
+    # replace value by ts_long$rev_score_m
+    ts_long[row, "m_final"] <- ts_long[row, "rev_score_m"]
+  }
+}
+
+
+#standardize mean
+ts_long$m_stand = (ts_long$m_final/ts_long$max_scale)*100
+
+
+
+#create plot
+p <- ggplot(ts_long, aes(x=t, y=m_stand, group=cohort, color=cohort, text = 
+                           paste("Author: ", author,
+                                 "<br>Year: ", year,
+                                 "<br>Cohort ID: ", cohort_id,
+                                 "<br>Instrument: ", instrument_name,
+                                 "<br>Raw mean: ", m,
+                                 "<br>Raw SD: ", sd,
+                                 "<br>Standardized score ", m_stand
+                           ))) +
+  labs(y= "outcome standardized (0-100)") +
+  geom_line(data=ts_long[!is.na(ts_long$m_stand),]) + 
+  geom_point() +
+  scale_x_continuous(name = "Time (months)",
+                     breaks = c(-20, 0, 3, 6, 12, 24, 60, 120),
+                     labels = c("pre", "post", "3m", "6m", "12m", "24m", "60m", "120m"),
+                     limits = c(-20, 200))
+
+ggplotly(p, tooltip = "text") %>%
+  layout(
+    xaxis = list(
+      tickvals = c(-20, 0, 3, 6, 12, 24, 60, 120),
+      ticktext = c("pre", "post", "3m", "6m", "12m", "24m", "60m", "120m"),
+      ticklen = 5,
+      tickwidth = 2,
+      tickcolor = toRGB("blue"),
+      range=c(-22, 26)
+    ),
+    yaxis = list(
+      range=c(0, 100))
+  ) 
+```
+
+Row {data-height=600}
+-------------------------------------
+### Time series: anger
+
+```{r}
+#Input
+url <- 'https://docs.google.com/spreadsheets/d/1DE08OpdFC2eH8VwAV-xLmsFByGh2VvL0DRDjPLhyo9U/edit?usp=sharing'
+
+#read data
+dat <- gsheet2tbl(url)
+
+### ANGER ###
+
+#create time_series datafile
+dat_clean <- dat %>%
+  filter(!is.na(author) & !author == "test" & !author == 0)
+dat_clean$cohort <- paste(dat_clean$author, dat_clean$year, dat_clean$cohort_id, sep = "_")
+
+
+#create input value
+input <- "ang"
+
+#input <- as.data.frame(c("pintens", "pf"))  
+#for (row in 1:nrow(input)) { 
+
+if (input == "ang") { 
+  
+  dat_ang <- dat_clean %>%
+    filter(measurements_anger == "Yes")  
+  
+  ts_m <- select (dat_ang, cohort, author, year, cohort_id, ang_pre_m, ang_post_m, ang_fu1_m,
+                  ang_fu2_m, ang_fu3_m, measurements_anger, ang_name_measurement_instrument) %>%
+    rename(instrument_name = ang_name_measurement_instrument, 
+           pre_m = ang_pre_m,
+           post_m = ang_post_m,
+           fu1_m = ang_fu1_m,
+           fu2_m = ang_fu2_m,
+           fu3_m = ang_fu3_m,
+           instrument_present = measurements_anger)
+  
+  ts_sd <- select (dat_ang, cohort, ang_pre_sd, ang_post_sd, ang_fu1_sd,
+                   ang_fu2_sd, ang_fu3_sd) %>%
+    rename( pre_sd = ang_pre_sd,
+            post_sd = ang_post_sd,
+            fu1_sd = ang_fu1_sd,
+            fu2_sd = ang_fu2_sd,
+            fu3_sd = ang_fu3_sd)
+  
+  ts_t <- select (dat_ang, cohort, ang_fu1_t, ang_fu2_t, ang_fu3_t) %>%
+    rename( fu1_t = ang_fu1_t,
+            fu2_t = ang_fu2_t,
+            fu3_t = ang_fu3_t)
+}  
+
+ts_t$pre_t = -20
+ts_t$post_t = 0
+
+#change SD columns to numeric
+cols.num <- c("pre_sd","post_sd", "fu1_sd", "fu2_sd", "fu3_sd")
+ts_sd[cols.num] <- sapply(ts_sd[cols.num],as.numeric)
+#sapply(ts_sd, class)
+
+
+#convert to long dataset
+# The arguments to gather():
+# - data: Data object
+# - key: Name of new key column (made from names of data columns)
+# - value: Name of new value column
+# - ...: Names of source columns that contain values
+# - factor_key: Treat the new key column as a factor (instead of character vector)
+ts_m_long <- pivot_longer(ts_m, 
+                          cols = c("pre_m", "post_m", "fu1_m", "fu2_m", "fu2_m", "fu3_m"),
+                          names_to = "timepoint",
+                          values_to = "m")
+
+ts_sd_long <- pivot_longer(ts_sd, 
+                           cols = c("pre_sd", "post_sd", "fu1_sd", "fu2_sd", "fu2_sd", "fu3_sd"),
+                           names_to = "timepoint",
+                           values_to = "sd")
+
+
+ts_t_long <- pivot_longer(ts_t,
+                          cols = c("pre_t", "post_t", "fu1_t", "fu2_t", "fu3_t"),
+                          names_to = "timepoint",
+                          values_to = "t")
+
+
+#merge long datasets
+ts_sd_long$timepoint <-  gsub("\\_sd*$","",ts_sd_long$timepoint)
+ts_t_long$timepoint <- gsub("\\_t*$","",ts_t_long$timepoint)
+ts_m_long$timepoint <- gsub("\\_m*$","",ts_m_long$timepoint)
+
+ts_sdt_long <- merge(ts_sd_long, ts_t_long, c("cohort", "timepoint"))
+ts_long <- merge(ts_sdt_long, ts_m_long, c("cohort", "timepoint"))
+
+#unique(ts_long$instrument_name)
+
+#create max_score column
+
+ts_long$max_scale = ts_long$instrument_name
+ts_long$max_scale <- recode(ts_long$max_scale, 
+                            "VAS" = 100, "VAS (0-100)" = 100,"PRI" = 78, "MPI: pain severity" = 7,
+                            "NRS" = 10, "NPRS" = 10, "NRS (0-10)" = 10, "VAS (0-10)"= 10, "NRS (0-100)" = 100,
+                            "Likert pain intensity" = 6, "RDQ" = 24, "QBPDS" = 100, "LBPRS" = 30, "DRI" = 1200,
+                            "DRI (0-100)" = 100, "MPI: pain interference" = 6, "ODI" = 100, "ODI (0-1)" = 1, "PDI" = 70, "RMDQ" = 24,
+                            "DPQ: Daily activities" = 100, "SF-36 subscale Physical Functioning" = 100, "NHP: PA" = 100,
+                            "HFAQ" = 100, "MPI: GA" = 6, "Norfunk (0-3)" = 3, "ADS (german scale of CES-D)" =60, "HADS-D" =21,
+                            "DASS" = 42, "BDI-II" =63, "Zung" =100,"BDI" =63, "depression index (DEPS)" =30, "SCL90-D" = 52,
+                            "HADS-A"= 21, "VAS Anxiety (0-100)" = 100, "SCL90-A" = 40, "STAI" = 80,
+                            "NHP: Emotional reactions" = 100, "SF-36: mental health" = 100,"DPQ: anxiety/depression" = 100,
+                            "SCL-90: Hostility" = 24, "PSEQ" = 60, "DPQ: social life" = 100, "SF-36: social functioning" = 100, 
+                            "SIP" = 9608, "QBPRS" = 100
+)
+
+#create reverse scoring variable
+#binary variable: do higher scores indicate better functioning? 0=no; 1=yes.
+measReverse <- c("FIQ", "NHP", "NHP: PA", "Norfunk (0-3)", "RDQ", "QBPDS",
+                 "DRI (0-100)", "PDI", "ODI (0-1)", "MPI: pain interference",
+                 "RMDQ", "ODI", "QBPRS", "DPQ: Daily activities", "LBPRS",
+                 "DRI", "SIP", "ADS (german scale of CES-D)", "HADS-D",
+                 "BDI", "SCL90-D", "Depression index (DEPS)", "DASS", "BDI-II",
+                 "Zung", "HADS-A", "VAS Anxiety (0-100)", "SCL90-A", "STAI", 
+                 "NHP: Emotional reactions", "DPQ: anxiety/depression",
+                 "SCL-90: Hostility", "DPQ: social life", "VAS (0-10)", 
+                 "NRS (0-10)", "VAS", "NRS", "Likert pain intensity", 
+                 "MPI: pain severity", "PRI", "NPRS", "NRS (0-100)")
+
+#questionnaires in the current dataset for which higher scores indicate increased functioning: 
+#"EuroQol-5D-3L", "LiSat-11", "WHQOL-BREF", "HFAQ", "MPI: GA",
+#"SF-36 subscale Physical Functioning", "RAND-36 subscale Physical Functioning",
+#"SF-36: mental health", "PSEQ", "SF-36: social functioning", "German Life Satisfaction Questionnaire".
+
+ts_long$rev_score = 0
+logical <- ts_long$instrument_name %in% measReverse
+ts_long$rev_score[logical] = 1
+
+
+#reverse scoring
+ts_long$rev_score_m <- (ts_long$max_scale)-ts_long$m 
+
+#combining rev_score and normal score on contion of ts_long$rev_score
+
+ts_long$m_final <- ts_long$m
+
+for (row in 1:nrow(ts_long)) {
+  if (ts_long[row, "rev_score"] == 1 & !is.na(ts_long[row, "rev_score"])) {
+    # replace value by ts_long$rev_score_m
+    ts_long[row, "m_final"] <- ts_long[row, "rev_score_m"]
+  }
+}
+
+
+#standardize mean
+ts_long$m_stand = (ts_long$m_final/ts_long$max_scale)*100
+
+
+
+#create plot
+p <- ggplot(ts_long, aes(x=t, y=m_stand, group=cohort, color=cohort, text = 
+                           paste("Author: ", author,
+                                 "<br>Year: ", year,
+                                 "<br>Cohort ID: ", cohort_id,
+                                 "<br>Instrument: ", instrument_name,
+                                 "<br>Raw mean: ", m,
+                                 "<br>Raw SD: ", sd,
+                                 "<br>Standardized score ", m_stand
+                           ))) +
+  labs(y= "outcome standardized (0-100)") +
+  geom_line(data=ts_long[!is.na(ts_long$m_stand),]) + 
+  geom_point() +
+  scale_x_continuous(name = "Time (months)",
+                     breaks = c(-20, 0, 3, 6, 12, 24, 60, 120),
+                     labels = c("pre", "post", "3m", "6m", "12m", "24m", "60m", "120m"),
+                     limits = c(-20, 200))
+
+ggplotly(p, tooltip = "text") %>%
+  layout(
+    xaxis = list(
+      tickvals = c(-20, 0, 3, 6, 12, 24, 60, 120),
+      ticktext = c("pre", "post", "3m", "6m", "12m", "24m", "60m", "120m"),
+      ticklen = 5,
+      tickwidth = 2,
+      tickcolor = toRGB("blue"),
+      range=c(-22, 26)
+    ),
+    yaxis = list(
+      range=c(0, 100))
+  ) 
+
+```
+
+Row {data-height=600}
+-------------------------------------
+### Time series: self-efficacy
+
+```{r}
+#Input
+url <- 'https://docs.google.com/spreadsheets/d/1DE08OpdFC2eH8VwAV-xLmsFByGh2VvL0DRDjPLhyo9U/edit?usp=sharing'
+
+#read data
+dat <- gsheet2tbl(url)
+
+### SELF-EFFICACY ###
+
+#create time_series datafile
+dat_clean <- dat %>%
+  filter(!is.na(author) & !author == "test" & !author == 0)
+dat_clean$cohort <- paste(dat_clean$author, dat_clean$year, dat_clean$cohort_id, sep = "_")
+
+
+#create input value
+input <- "se"
+
+#input <- as.data.frame(c("pintens", "pf"))  
+#for (row in 1:nrow(input)) { 
+
+if (input == "se") { 
+  
+  dat_se <- dat_clean %>%
+    filter(measurements_self_efficacy == "Yes")  
+  
+  ts_m <- select (dat_se, cohort, author, year, cohort_id, se_pre_m, se_post_m, se_fu1_m,
+                  se_fu2_m, se_fu3_m, measurements_self_efficacy, se_name_measurement_instrument) %>%
+    rename(instrument_name = se_name_measurement_instrument, 
+           pre_m = se_pre_m,
+           post_m = se_post_m,
+           fu1_m = se_fu1_m,
+           fu2_m = se_fu2_m,
+           fu3_m = se_fu3_m,
+           instrument_present = measurements_self_efficacy)
+  
+  ts_sd <- select (dat_se, cohort, se_pre_sd, se_post_sd, se_fu1_sd,
+                   se_fu2_sd, se_fu3_sd) %>%
+    rename( pre_sd = se_pre_sd,
+            post_sd = se_post_sd,
+            fu1_sd = se_fu1_sd,
+            fu2_sd = se_fu2_sd,
+            fu3_sd = se_fu3_sd)
+  
+  ts_t <- select (dat_se, cohort, se_fu1_t, se_fu2_t, se_fu3_t) %>%
+    rename( fu1_t = se_fu1_t,
+            fu2_t = se_fu2_t,
+            fu3_t = se_fu3_t)
+}  
+
+ts_t$pre_t = -20
+ts_t$post_t = 0
+
+#change SD columns to numeric
+cols.num <- c("pre_sd","post_sd", "fu1_sd", "fu2_sd", "fu3_sd")
+ts_sd[cols.num] <- sapply(ts_sd[cols.num],as.numeric)
+#sapply(ts_sd, class)
+
+
+#convert to long dataset
+# The arguments to gather():
+# - data: Data object
+# - key: Name of new key column (made from names of data columns)
+# - value: Name of new value column
+# - ...: Names of source columns that contain values
+# - factor_key: Treat the new key column as a factor (instead of character vector)
+ts_m_long <- pivot_longer(ts_m, 
+                          cols = c("pre_m", "post_m", "fu1_m", "fu2_m", "fu2_m", "fu3_m"),
+                          names_to = "timepoint",
+                          values_to = "m")
+
+ts_sd_long <- pivot_longer(ts_sd, 
+                           cols = c("pre_sd", "post_sd", "fu1_sd", "fu2_sd", "fu2_sd", "fu3_sd"),
+                           names_to = "timepoint",
+                           values_to = "sd")
+
+
+ts_t_long <- pivot_longer(ts_t,
+                          cols = c("pre_t", "post_t", "fu1_t", "fu2_t", "fu3_t"),
+                          names_to = "timepoint",
+                          values_to = "t")
+
+
+#merge long datasets
+ts_sd_long$timepoint <-  gsub("\\_sd*$","",ts_sd_long$timepoint)
+ts_t_long$timepoint <- gsub("\\_t*$","",ts_t_long$timepoint)
+ts_m_long$timepoint <- gsub("\\_m*$","",ts_m_long$timepoint)
+
+ts_sdt_long <- merge(ts_sd_long, ts_t_long, c("cohort", "timepoint"))
+ts_long <- merge(ts_sdt_long, ts_m_long, c("cohort", "timepoint"))
+
+#unique(ts_long$instrument_name)
+
+#create max_score column
+
+ts_long$max_scale = ts_long$instrument_name
+ts_long$max_scale <- recode(ts_long$max_scale, 
+                            "VAS" = 100, "VAS (0-100)" = 100,"PRI" = 78, "MPI: pain severity" = 7,
+                            "NRS" = 10, "NPRS" = 10, "NRS (0-10)" = 10, "VAS (0-10)"= 10, "NRS (0-100)" = 100,
+                            "Likert pain intensity" = 6, "RDQ" = 24, "QBPDS" = 100, "LBPRS" = 30, "DRI" = 1200,
+                            "DRI (0-100)" = 100, "MPI: pain interference" = 6, "ODI" = 100, "ODI (0-1)" = 1, "PDI" = 70, "RMDQ" = 24,
+                            "DPQ: Daily activities" = 100, "SF-36 subscale Physical Functioning" = 100, "NHP: PA" = 100,
+                            "HFAQ" = 100, "MPI: GA" = 6, "Norfunk (0-3)" = 3, "ADS (german scale of CES-D)" =60, "HADS-D" =21,
+                            "DASS" = 42, "BDI-II" =63, "Zung" =100,"BDI" =63, "depression index (DEPS)" =30, "SCL90-D" = 52,
+                            "HADS-A"= 21, "VAS Anxiety (0-100)" = 100, "SCL90-A" = 40, "STAI" = 80,
+                            "NHP: Emotional reactions" = 100, "SF-36: mental health" = 100,"DPQ: anxiety/depression" = 100,
+                            "SCL-90: Hostility" = 24, "PSEQ" = 60, "DPQ: social life" = 100, "SF-36: social functioning" = 100, 
+                            "SIP" = 9608, "QBPRS" = 100
+)
+
+#create reverse scoring variable
+#binary variable: do higher scores indicate better functioning? 0=no; 1=yes.
+measReverse <- c("FIQ", "NHP", "NHP: PA", "Norfunk (0-3)", "RDQ", "QBPDS",
+                 "DRI (0-100)", "PDI", "ODI (0-1)", "MPI: pain interference",
+                 "RMDQ", "ODI", "QBPRS", "DPQ: Daily activities", "LBPRS",
+                 "DRI", "SIP", "ADS (german scale of CES-D)", "HADS-D",
+                 "BDI", "SCL90-D", "Depression index (DEPS)", "DASS", "BDI-II",
+                 "Zung", "HADS-A", "VAS Anxiety (0-100)", "SCL90-A", "STAI", 
+                 "NHP: Emotional reactions", "DPQ: anxiety/depression",
+                 "SCL-90: Hostility", "DPQ: social life", "VAS (0-10)", 
+                 "NRS (0-10)", "VAS", "NRS", "Likert pain intensity", 
+                 "MPI: pain severity", "PRI", "NPRS", "NRS (0-100)")
+
+#questionnaires in the current dataset for which higher scores indicate increased functioning: 
+#"EuroQol-5D-3L", "LiSat-11", "WHQOL-BREF", "HFAQ", "MPI: GA",
+#"SF-36 subscale Physical Functioning", "RAND-36 subscale Physical Functioning",
+#"SF-36: mental health", "PSEQ", "SF-36: social functioning", "German Life Satisfaction Questionnaire".
+
+ts_long$rev_score = 0
+logical <- ts_long$instrument_name %in% measReverse
+ts_long$rev_score[logical] = 1
+
+
+#reverse scoring
+ts_long$rev_score_m <- (ts_long$max_scale)-ts_long$m 
+
+#combining rev_score and normal score on contion of ts_long$rev_score
+
+ts_long$m_final <- ts_long$m
+
+for (row in 1:nrow(ts_long)) {
+  if (ts_long[row, "rev_score"] == 1 & !is.na(ts_long[row, "rev_score"])) {
+    # replace value by ts_long$rev_score_m
+    ts_long[row, "m_final"] <- ts_long[row, "rev_score_m"]
+  }
+}
+
+
+#standardize mean
+ts_long$m_stand = (ts_long$m_final/ts_long$max_scale)*100
+
+
+
+#create plot
+p <- ggplot(ts_long, aes(x=t, y=m_stand, group=cohort, color=cohort, text = 
+                           paste("Author: ", author,
+                                 "<br>Year: ", year,
+                                 "<br>Cohort ID: ", cohort_id,
+                                 "<br>Instrument: ", instrument_name,
+                                 "<br>Raw mean: ", m,
+                                 "<br>Raw SD: ", sd,
+                                 "<br>Standardized score ", m_stand
+                           ))) +
+  labs(y= "outcome standardized (0-100)") +
+  geom_line(data=ts_long[!is.na(ts_long$m_stand),]) + 
+  geom_point() +
+  scale_x_continuous(name = "Time (months)",
+                     breaks = c(-20, 0, 3, 6, 12, 24, 60, 120),
+                     labels = c("pre", "post", "3m", "6m", "12m", "24m", "60m", "120m"),
+                     limits = c(-20, 200))
+
+ggplotly(p, tooltip = "text") %>%
+  layout(
+    xaxis = list(
+      tickvals = c(-20, 0, 3, 6, 12, 24, 60, 120),
+      ticktext = c("pre", "post", "3m", "6m", "12m", "24m", "60m", "120m"),
+      ticklen = 5,
+      tickwidth = 2,
+      tickcolor = toRGB("blue"),
+      range=c(-22, 26)
+    ),
+    yaxis = list(
+      range=c(0, 100))
+  ) 
+```
+
+Row {data-height=600}
+-------------------------------------
+### Time series: social role functioning
+
+```{r}
+#Input
+url <- 'https://docs.google.com/spreadsheets/d/1DE08OpdFC2eH8VwAV-xLmsFByGh2VvL0DRDjPLhyo9U/edit?usp=sharing'
+
+#read data
+dat <- gsheet2tbl(url)
+
+#create time_series datafile
+dat_clean <- dat %>%
+  filter(!is.na(author) & !author == "test" & !author == 0)
+dat_clean$cohort <- paste(dat_clean$author, dat_clean$year, dat_clean$cohort_id, sep = "_")
+
+
+#create input value
+input <- "srf"
+
+#input <- as.data.frame(c("pintens", "pf"))  
+#for (row in 1:nrow(input)) { 
+
+if (input == "srf") { 
+  
+  dat_srf <- dat_clean %>%
+    filter(measurements_social_role_functioning == "Yes")  
+  
+  ts_m <- select (dat_srf, cohort, author, year, cohort_id, srf_pre_m, srf_post_m, srf_fu1_m,
+                  srf_fu2_m, srf_fu3_m, measurements_social_role_functioning, srf_name_measurement_instrument) %>%
+    rename(instrument_name = srf_name_measurement_instrument, 
+           pre_m = srf_pre_m,
+           post_m = srf_post_m,
+           fu1_m = srf_fu1_m,
+           fu2_m = srf_fu2_m,
+           fu3_m = srf_fu3_m
+           )
+  
+  ts_sd <- select (dat_srf, cohort, srf_pre_sd, srf_post_sd, srf_fu1_sd,
+                   srf_fu2_sd, srf_fu3_sd) %>%
+    rename( pre_sd = srf_pre_sd,
+            post_sd = srf_post_sd,
+            fu1_sd = srf_fu1_sd,
+            fu2_sd = srf_fu2_sd,
+            fu3_sd = srf_fu3_sd)
+  
+  ts_t <- select (dat_srf, cohort, srf_fu1_t, srf_fu2_t, srf_fu3_t) %>%
+    rename( fu1_t = srf_fu1_t,
+            fu2_t = srf_fu2_t,
+            fu3_t = srf_fu3_t)
+}  
+
+ts_t$pre_t = -20
+ts_t$post_t = 0
+
+#change SD columns to numeric
+cols.num <- c("pre_sd","post_sd", "fu1_sd", "fu2_sd", "fu3_sd")
+ts_sd[cols.num] <- sapply(ts_sd[cols.num],as.numeric)
+#sapply(ts_sd, class)
+
+
+#convert to long dataset
+# The arguments to gather():
+# - data: Data object
+# - key: Name of new key column (made from names of data columns)
+# - value: Name of new value column
+# - ...: Names of source columns that contain values
+# - factor_key: Treat the new key column as a factor (instead of character vector)
+ts_m_long <- pivot_longer(ts_m, 
+                          cols = c("pre_m", "post_m", "fu1_m", "fu2_m", "fu2_m", "fu3_m"),
+                          names_to = "timepoint",
+                          values_to = "m")
+
+ts_sd_long <- pivot_longer(ts_sd, 
+                           cols = c("pre_sd", "post_sd", "fu1_sd", "fu2_sd", "fu2_sd", "fu3_sd"),
+                           names_to = "timepoint",
+                           values_to = "sd")
+
+
+ts_t_long <- pivot_longer(ts_t,
+                          cols = c("pre_t", "post_t", "fu1_t", "fu2_t", "fu3_t"),
+                          names_to = "timepoint",
+                          values_to = "t")
+
+
+#merge long datasets
+ts_sd_long$timepoint <-  gsub("\\_sd*$","",ts_sd_long$timepoint)
+ts_t_long$timepoint <- gsub("\\_t*$","",ts_t_long$timepoint)
+ts_m_long$timepoint <- gsub("\\_m*$","",ts_m_long$timepoint)
+
+ts_sdt_long <- merge(ts_sd_long, ts_t_long, c("cohort", "timepoint"))
+ts_long <- merge(ts_sdt_long, ts_m_long, c("cohort", "timepoint"))
+
+#unique(ts_long$instrument_name)
+
+#create max_score column
+
+ts_long$max_scale = ts_long$instrument_name
+ts_long$max_scale <- recode(ts_long$max_scale, 
+                            "VAS" = 100, "VAS (0-100)" = 100,"PRI" = 78, "MPI: pain severity" = 7,
+                            "NRS" = 10, "NPRS" = 10, "NRS (0-10)" = 10, "VAS (0-10)"= 10, "NRS (0-100)" = 100,
+                            "Likert pain intensity" = 6, "RDQ" = 24, "QBPDS" = 100, "LBPRS" = 30, "DRI" = 1200,
+                            "DRI (0-100)" = 100, "MPI: pain interference" = 6, "ODI" = 100, "ODI (0-1)" = 1, "PDI" = 70, "RMDQ" = 24,
+                            "DPQ: Daily activities" = 100, "SF-36 subscale Physical Functioning" = 100, "NHP: PA" = 100,
+                            "HFAQ" = 100, "MPI: GA" = 6, "Norfunk (0-3)" = 3, "ADS (german scale of CES-D)" =60, "HADS-D" =21,
+                            "DASS" = 42, "BDI-II" =63, "Zung" =100,"BDI" =63, "depression index (DEPS)" =30, "SCL90-D" = 52,
+                            "HADS-A"= 21, "VAS Anxiety (0-100)" = 100, "SCL90-A" = 40, "STAI" = 80,
+                            "NHP: Emotional reactions" = 100, "SF-36: mental health" = 100,"DPQ: anxiety/depression" = 100,
+                            "SCL-90: Hostility" = 24, "PSEQ" = 60, "DPQ: social life" = 100, "SF-36: social functioning" = 100, 
+                            "SIP" = 9608, "QBPRS" = 100
+)
+
+#create reverse scoring variable
+#binary variable: do higher scores indicate better functioning? 0=no; 1=yes.
+measReverse <- c("FIQ", "NHP", "NHP: PA", "Norfunk (0-3)", "RDQ", "QBPDS",
+                 "DRI (0-100)", "PDI", "ODI (0-1)", "MPI: pain interference",
+                 "RMDQ", "ODI", "QBPRS", "DPQ: Daily activities", "LBPRS",
+                 "DRI", "SIP", "ADS (german scale of CES-D)", "HADS-D",
+                 "BDI", "SCL90-D", "Depression index (DEPS)", "DASS", "BDI-II",
+                 "Zung", "HADS-A", "VAS Anxiety (0-100)", "SCL90-A", "STAI", 
+                 "NHP: Emotional reactions", "DPQ: anxiety/depression",
+                 "SCL-90: Hostility", "DPQ: social life", "VAS (0-10)", 
+                 "NRS (0-10)", "VAS", "NRS", "Likert pain intensity", 
+                 "MPI: pain severity", "PRI", "NPRS", "NRS (0-100)")
+
+#questionnaires in the current dataset for which higher scores indicate increased functioning: 
+#"EuroQol-5D-3L", "LiSat-11", "WHQOL-BREF", "HFAQ", "MPI: GA",
+#"SF-36 subscale Physical Functioning", "RAND-36 subscale Physical Functioning",
+#"SF-36: mental health", "PSEQ", "SF-36: social functioning", "German Life Satisfaction Questionnaire".
+
+ts_long$rev_score = 0
+logical <- ts_long$instrument_name %in% measReverse
+ts_long$rev_score[logical] = 1
+
+
+#reverse scoring
+ts_long$rev_score_m <- (ts_long$max_scale)-ts_long$m 
+
+#combining rev_score and normal score on contion of ts_long$rev_score
+
+ts_long$m_final <- ts_long$m
+
+for (row in 1:nrow(ts_long)) {
+  if (ts_long[row, "rev_score"] == 1 & !is.na(ts_long[row, "rev_score"])) {
+    # replace value by ts_long$rev_score_m
+    ts_long[row, "m_final"] <- ts_long[row, "rev_score_m"]
+  }
+}
+
+
+#standardize mean
+ts_long$m_stand = (ts_long$m_final/ts_long$max_scale)*100
+
+
+
+#create plot
+p <- ggplot(ts_long, aes(x=t, y=m_stand, group=cohort, color=cohort, text = 
+                           paste("Author: ", author,
+                                 "<br>Year: ", year,
+                                 "<br>Cohort ID: ", cohort_id,
+                                 "<br>Instrument: ", instrument_name,
+                                 "<br>Raw mean: ", m,
+                                 "<br>Raw SD: ", sd,
+                                 "<br>Standardized score ", m_stand
+                           ))) +
+  labs(y= "outcome standardized (0-100)") +
+  geom_line(data=ts_long[!is.na(ts_long$m_stand),]) + 
+  geom_point() +
+  scale_x_continuous(name = "Time (months)",
+                     breaks = c(-20, 0, 3, 6, 12, 24, 60, 120),
+                     labels = c("pre", "post", "3m", "6m", "12m", "24m", "60m", "120m"),
+                     limits = c(-20, 200))
+
+ggplotly(p, tooltip = "text") %>%
+  layout(
+    xaxis = list(
+      tickvals = c(-20, 0, 3, 6, 12, 24, 60, 120),
+      ticktext = c("pre", "post", "3m", "6m", "12m", "24m", "60m", "120m"),
+      ticklen = 5,
+      tickwidth = 2,
+      tickcolor = toRGB("blue"),
+      range=c(-22, 26)
+    ),
+    yaxis = list(
+      range=c(0, 100))
+  ) 
+```
+
+Forest Plots
+=======================================================================
+
+### Shiny forest plots 
+
+```{r, forest plots, echo=FALSE}
+##Read Excel table from Google Sheet
+#Input
+url <- 'https://docs.google.com/spreadsheets/d/1DE08OpdFC2eH8VwAV-xLmsFByGh2VvL0DRDjPLhyo9U/edit?usp=sharing'
+
+#read data
+dat_gsheet <- gsheet2tbl(url) # keep dat_gsheet as in Google Sheets
+dat <- dat_gsheet # We'll continue with dataset in variable 'dat'
+
+##clean dataset
+logical <- is.na(dat$author) | dat$author == "test" | dat$author == 0 # correct for incorrect authors
+dat <- dat[!logical,]
+dat[dat=="na"] <- NA
+dat[dat=="Yes"] <- "yes"
+dat[dat=="No"] <- "no"
+
+# rename variables (could be done in Google Sheets?)
+dat <- dat %>%
+  rename(pf_name_measurement_instrument = pf_measurement_name,
+         meas_hrqol = measurement_of_hrqol,
+         meas_pf = measurements_physical_functioning,
+         meas_pinter = measurements_pain_interference,
+         meas_dep = measurements_depression,
+         meas_anx = measurements_anxiety,
+         meas_ef = measurements_general_emotional_functioning,
+         meas_ang = measurements_anger,
+         meas_se = measurements_self_efficacy,
+         meas_srf = measurements_social_role_functioning,
+         meas_pintens = measurements_pain_intensity)
+
+# create variables 
+dat$char_age_sd <- as.character(dat$age_sd)
+dat$char_age_m <- as.character(dat$age_m)
+dat$char_age_sd <- paste("(", dat$char_age_sd, ")", sep = "")
+dat$age_m_sd <- paste(dat$char_age_m, dat$char_age_sd, sep = " ")
+dat$age_m_sd[dat$age_m_sd=="NA (NA)"] <- NA
+dat$char_year <- paste("(", dat$year, ")", sep="")
+dat$author_year <- paste(dat$author, dat$char_year, sep = " ")
+
+#calculate attrition
+dat$attrition_post <- round(100-((dat$sample_size_post/dat$sample_size_pre)*100), 2)
+dat$attrition_fu <- round(100-((dat$sample_size_fu/dat$sample_size_post)*100), 2)
+
+#next lines should be corrected in Google Sheet
+dat$sample_size_post[dat$author == "Olason" & dat$year == 2004] = NA # incorrect sample_size_post, Olason (2004)
+
+#create variable cohort
+dat$cohort <- paste(dat$author, dat$year, dat$cohort_id, sep = "_")
+
+#get info from study with cohort_id > 1 from same study with cohort_id = 1
+copyVarsFromCohort_id1 <- c("nationality","patient_group") # TO DO: variables need to be added
+for (ind1 in which(dat$cohort_id > 1)) {
+  #find same study (Author,year) but with cohort_id = 1
+  ind2 <- which(dat$author == dat$author[ind1] & dat$year == dat$year[ind1]  & dat$cohort_id == 1)
+  for (v in copyVarsFromCohort_id1) {
+    eval(parse(text=paste('dat$', v, '[', ind1, ']=dat$', v, '[', ind2, ']', sep = "")))
+  }
+}
+
+# meetinstrumenten
+meetinstrumenten <- c("hrqol","pf","pinter","dep","anx","ef","ang","se","srf","pintens") # TO DO: outcomes need to be added
+
+#determine last follow-up (last_fu)
+for (mi in meetinstrumenten) {
+  v1 <- paste(mi, '_last_fu', sep = "") 
+  dat[v1] = 1 # initialise, <meetinstrument>_last_fu = 1
+  
+  # Was there even a second follow-up?
+  v2 <- paste('meas', mi, sep = "_")
+  v3 <- paste(mi, '_measurement_after_fu1', sep = "")
+  ind <- which( dat[v2] == "yes" & dat[v3] == "yes" )
+  dat[ind,v1] = 2
+  
+  # Was there even a third follow-up?
+  v2 <- paste('meas', mi, sep = "_")
+  v3 <- paste(mi, '_measurement_after_fu2', sep = "")
+  ind <- which( dat[v2] == "yes" & dat[v3] == "yes" )
+  dat[ind,v1] = 3
+}
+
+##check
+#mi <- "pf"
+#dat <- dat[dat$author == "Thieme",] 
+
+#replace missing 'n' from outcomes (pre/post) with generic 'n'
+for (mi in meetinstrumenten) {
+  v1 <- paste('meas', mi, sep = "_")
+  
+  # pre/post
+  for (p in c("pre","post")) {
+    #if <meetinstrument>_<pre/post>_n is missing: <meetinstrument>_<pre/post>_n = sample_size_<pre/post>
+    v2 <- paste(mi, p, 'n', sep = "_")
+    v3 <- paste('sample_size', p, sep = "_")
+    ind <- which(dat[v1] == "yes" & is.na(dat[v2]))
+    if (length(ind) > 0) {
+      dat[ind,v2] <- dat[ind,v3]
+    }
+    
+    #if <meetinstrument>_<pre/post>_n is (still) missing: <meetinstrument>_<pre/post>_n = sample_size
+    ind <- which(dat[v1] == "yes" & is.na(dat[v2]))
+    if (length(ind) > 0) {
+      dat[ind,v2] <- dat[ind,"sample_size"]
+    }
+    
+    
+  }
+  
+  # follow-up (try to fill missings 'n' of the last follow-up with sample_size_fu)
+  for (f in 1:3) {
+    v1 <- paste(mi, '_fu', f ,'_n', sep = "")
+    v2 <- paste(mi, '_last_fu', sep = "")
+    ind <- which( is.na(dat[v1]) & dat[v2] == f )
+    dat[ind,v1] <- dat$sample_size_fu[ind]
+  }
+  
+  # follow-up (if still missing, get the general sample_size)
+  for (f in 1:3) {
+    v1 <- paste(mi, '_fu', f ,'_n', sep = "")
+    v2 <- paste(mi, '_last_fu', sep = "")
+    ind <- which( is.na(dat[v1]) & dat[v2] == f )
+    dat[ind,v1] <- dat$sample_size[ind]
+  }
+}
+
+## Forest plots
+contrasts <- data.frame(left = c("pre","post","pre"), right = c("post","fu","fu"))
+
+# remove data_long if it already exists from previous run
+if (exists("data_long")) {
+  rm(data_long)
+}
+
+for (mi in meetinstrumenten) {
+  for (i in 1:dim(contrasts)[1]) {
+    contrast <- paste(contrasts$left[i], contrasts$right[i], sep="-")
+    
+    # add <mi>_last_fu<m/n/sd> based on <mi>_fu<last_fu>
+    v1 <- paste(mi, '_last_fu', sep = "") 
+    for (ind in 1:dim(dat)[1]){
+      for (w in c("m","n","sd","t")) {
+        v2 <- paste(mi, '_fu', dat[ind,v1], '_', w, sep="")
+        v3 <- paste(mi, '_last_fu_', w, sep="")
+        dat[ind,v3] <- dat[ind,v2]     
+      }
+    }
+    
+    left <- contrasts$left[i]
+    right <- contrasts$right[i]
+    
+    # rename 'fu' to 'last_fu'
+    left <- str_replace(left,"fu","last_fu")
+    right <- str_replace(right,"fu","last_fu")
+    
+    v1 <- paste('meas', mi, sep = "_")
+    v2 <- paste(mi, left, 'm', sep = "_")
+    v3 <- paste(mi, right, 'm', sep = "_")
+    
+    logical <- dat[v1] == "yes" & !is.na(dat[v2]) & !is.na(dat[v3])
+    data_fp <- dat[logical,]
+    
+    #data_fp <- as_tibble(data_fp)   # dit is niet nodig?
+    data_fp$fu_month <- 0
+    data_fp$ri <- .54
+    
+    v1 <- paste(mi, right, 'm', sep = "_")  # m1i ??? Klopt originele volgorde wel?? m1i=m_post, m2i=m_pre, sd1i=sd_pre, ni=n_post 
+    v2 <- paste(mi, left, 'm', sep = "_") # m2i
+    v3 <- paste(mi, left, 'sd', sep = "_") # sd1i
+    v4 <- paste(mi, right, 'n', sep = "_") # ni
+    
+    data_fp <- data_fp %>%
+      mutate(m1i := eval(parse(text=v1)))
+    data_fp <- data_fp %>%
+      mutate(m2i := eval(parse(text=v2)))
+    data_fp <- data_fp %>%
+      mutate(sd1i := eval(parse(text=v3)))
+    data_fp <- data_fp %>%
+      mutate(ni := eval(parse(text=v4)))
+    
+    data_fp_meta <- escalc(measure="SMCR", m1i=m1i, m2i=m2i, sd1i=sd1i, ni=ni, ri=ri, data=data_fp)
+    fp_meta <- metafor::summary.escalc(data_fp_meta)
+    
+    fp_meta$tabletext <- cbind(fp_meta$author, fp_meta$year, fp_meta$n_pre, fp_meta$measure, 
+                               fp_meta$fu_month)
+    
+   
+    
+    ## make dataset to compare with Stefans Excel file
+    check_var <- paste('check', mi, contrast, sep="_")
+    
+    v1 <- paste(mi, 'name_measurement_instrument',sep="_")
+    v2 <- paste(mi, 'last_fu_t',sep="_")
+    data_fp <- data_fp %>%
+      mutate(name_measurement_instrument := eval(parse(text=v1)),
+             fu_month := eval(parse(text=v2)))
+    
+    # left
+    v <- paste(mi, left, 'n', sep = "_")
+    data_fp <- data_fp %>% mutate(left_n := eval(parse(text=v)))
+    v <- paste(mi, left, 'sd', sep = "_")
+    data_fp <- data_fp %>% mutate(left_sd := eval(parse(text=v)))
+    v <- paste(mi, left, 'm', sep = "_")
+    data_fp <- data_fp %>% mutate(left_m := eval(parse(text=v)))
+    
+    # right
+    v <- paste(mi, right, 'n', sep = "_")
+    data_fp <- data_fp %>% mutate(right_n := eval(parse(text=v)))
+    v <- paste(mi, right, 'sd', sep = "_")
+    data_fp <- data_fp %>% mutate(right_sd := eval(parse(text=v)))
+    v <- paste(mi, right, 'm', sep = "_")
+    data_fp <- data_fp %>% mutate(right_m := eval(parse(text=v)))
+    
+    data_fp_sub <- data_fp %>%
+      select(author, year, cohort_id, cohort_name, name_measurement_instrument, fu_month, left_m, left_sd, left_n, right_m, right_sd, right_n)
+    
+    # change 1 or 2 into "a" or "b"
+    data_fp_sub$cohort_id <-letters[data_fp_sub$cohort_id]
+    
+    # add column with contrast in first column
+    data_fp_sub <- add_column(data_fp_sub, contrast = contrast, .before = 1)
+    
+    # add column with outcome in first column
+    data_fp_sub <- add_column(data_fp_sub, outcome = mi, .before = 1)
+    
+    # now we can compare the data in e.g. 'check_hrqol_pre-post' with Stefans Excel-sheet
+    assign(check_var,data_fp_sub)
+    
+    ## Eerst had ik de code gemaakt om de verschillende forester plots te maken, later bleek dat je graag de tabel in 'long format' wilde,
+    ## daarom zit dat er nu op deze manier in. Achteraf gezien had dit gedaan kunnen worden voordat je de forestplots gaat maken.
+    
+    # combine all 'check_'-variable into one 'long format' 
+    ifelse(exists("data_long"), 
+           data_long <- rbind(data_long,data_fp_sub),
+           data_long <- data_fp_sub)
+    
+  }
+}
+
+
+# reversed scoring. Reverse the contrast in case higher scores indicate decreased functioning.  
+## to be added? probably "other" >> "NHP: GLOBAL", "DPQ: dailty activities", "PCL (negative SE)", "No sick. leave days", "NRS (0-10), average pain"
+## to be checked carefully  
+measReverse <- c("FIQ", "NHP", "NHP: PA", "Norfunk (0-3)", "RDQ", "QBPDS",
+                 "DRI (0-100)", "PDI", "ODI (0-1)", "MPI: pain interference",
+                 "RMDQ", "ODI", "QBPRS", "DPQ: Daily activities", "LBPRS",
+                 "DRI", "SIP", "ADS (german scale of CES-D)", "HADS-D",
+                 "BDI", "SCL90-D", "Depression index (DEPS)", "DASS", "BDI-II",
+                 "Zung", "HADS-A", "VAS Anxiety (0-100)", "SCL90-A", "STAI", 
+                 "NHP: Emotional reactions", "DPQ: anxiety/depression",
+                 "SCL-90: Hostility", "DPQ: social life", "VAS (0-10)", 
+                 "NRS (0-10)", "VAS", "NRS", "Likert pain intensity", 
+                 "MPI: pain severity", "PRI", "NPRS", "NRS (0-100)")
+
+#questionnaires in the current dataset for which higher scores indicate increased functioning: 
+#"EuroQol-5D-3L", "LiSat-11", "WHQOL-BREF", "HFAQ", "MPI: GA",
+#"SF-36 subscale Physical Functioning", "RAND-36 subscale Physical Functioning",
+#"SF-36: mental health", "PSEQ", "SF-36: social functioning", "German Life Satisfaction Questionnaire".
+
+data_long$rev_scoring = 0
+logical <- data_long$name_measurement_instrument %in% measReverse
+data_long$rev_scoring[logical] = 1
+
+
+
+## reverse scoring procedure ##
+data <- data_long
+# return: new dataframe with corrected stds and means.
+correct_rev_score <- function(data) {
+  # Create new copy of data
+  rev_corrected_data <- data.frame(data)
+  
+  # Iterate over each row in data
+  for (row in 1:nrow(data)) {
+    if (data[row, "rev_scoring"] == 1) {
+      # Replace pre by post
+      rev_corrected_data[row, "left_m"] <- data[row, "right_m"]
+      rev_corrected_data[row, "left_sd"] <- data[row, "right_sd"]
+      rev_corrected_data[row, "left_n"] <- data[row, "right_n"]
+      
+      # Replace post by pre
+      rev_corrected_data[row, "right_m"] <- data[row, "left_m"]
+      rev_corrected_data[row, "right_sd"] <- data[row, "left_sd"]
+      rev_corrected_data[row, "right_n"] <- data[row, "left_n"]
+    }
+  }
+  return(rev_corrected_data)
+}
+corrected_data <- correct_rev_score(data)
+
+#rename outcomes
+corrected_data$outcome <- corrected_data$outcome %>% recode(
+  "hrqol" = "health related quality of life",
+  "pf" = "physical function",
+  "pinter" = "pain interference",
+  "dep" =  "depression",
+  "anx" = "anxiety",
+  "ef" = "general emotional functioning",
+  "ang" = "anger",
+  "se" = "self-efficacy",
+  "srf" = "social functioning",
+  "pintens" = "pain intensity"
+)
+
+corrected_data <- corrected_data %>%
+  mutate(fu_month = if_else(contrast == "pre-post", 0, fu_month))
+
+
+## create static app ##
+
+
+## create shinyapp ##
+
+#step1: create tibble for corrected data
+data_fp <- as_tibble(corrected_data)
+
+#step 2: create Shinyapp
+ui <- fluidPage(
+  
+  # App title ----
+  headerPanel("Forest plot systematic review"),
+  
+      # Main panel for displaying outputs ----
+    mainPanel(
+      # Input: Slider for the number of bins ----
+      sliderInput(inputId = "r_value",
+                  label = "R Correction Value:",
+                  min = 0,
+                  max = 1,
+                  value = 0,
+                  step = 0.1),
+      
+      selectInput(inputId = "outcome",
+                  label = "select ouctome:",
+                  choices = c("health related quality of life", "physical function", "pain interference", "depression", "anxiety",   
+                              "self-efficacy", "social functioning", "pain intensity", "anger", "general emotional functioning"),
+                  selected = "pain interference"),
+      
+      selectInput(inputId = "contrast",
+                  label = "select contrast:",
+                  choices = c("pre-post", "post-fu", "pre-fu"),
+                  selected = "pre-post")
+    ),
+      
+      # Output: Histogram ----
+      plotOutput("forestplot")
+      
+    )
+
+
+# Define server logic required to draw a histogram ----
+server <- function(input, output, session) {
+  
+  
+  output$forestplot <- renderPlot({
+    
+    data_fp$ri <- input$r_value
+    data_fp_meta <- escalc(measure="SMCR", m1i=right_m, m2i=left_m, sd1i=left_sd, ni=right_n, ri=ri, data=data_fp)
+    fp_meta <- metafor::summary.escalc(data_fp_meta)
+    fp_meta2 <- filter(fp_meta, contrast == input$contrast & outcome == input$outcome)
+    fp_meta2$tabletext <- cbind(fp_meta2$author, fp_meta2$year, fp_meta2$right_n, fp_meta2$name_measurement_instrument, 
+                                fp_meta2$fu_month)
+    
+    forestplot(fp_meta2$tabletext, fp_meta2$yi, fp_meta2$ci.lb, fp_meta2$ci.ub,
+               xlab = "<---favors---     ---favors post--->",
+               txt_gp=fpTxtGp(label=gpar(cex=1),
+                              ticks=gpar(cex=.6),
+                              xlab=gpar(cex = 1),
+                              title=gpar(cex = 1.1)),
+               col=fpColors(box="black", lines="black", zero = "gray50"),
+               zero=0, cex=0.5, lineheight = unit(1, "cm"), boxsize=0.3,
+               lwd.ci=2, ci.vertices=TRUE, ci.vertices.height = .1, grid=TRUE,
+               align = "l",
+               graph.pos = "right",
+               clip = c(-4, 4),
+               alim = c(-4,4)
+    ) 
+  })
+  
+}
+
+shinyApp(ui=ui, server=server)
+```
+
+
+Risk of Bias forms {data-orientation=rows}
+=======================================================================
+
+Row {data-height=1200}
+-------------------------------------
+
+### Risk of Bias
+
+```{r}
+#Input
+url_rob <- 'https://docs.google.com/spreadsheets/d/1HLicE5rhMrt2IE3SnHxNr8o5ih_v3WKlKnjCBulgF5k/edit?usp=sharing'
+
+#read data
+dat <- gsheet2tbl(url_rob) %>%
+  filter(assessor == "SKSE")
+
+#create table
+t_rob <- select(dat, `study id`, author, year, 6:17)
+
+reactable(t_rob,
+          defaultSorted = "author",
+          defaultSortOrder = "asc",
+          defaultColGroup = colGroup(headerClass = "header"),
+          style = list(fontFamily = "Arial Narrow", fontSize = "14px"),
+          defaultColDef = colDef(
+            header = function(value) gsub("_", " ", value, fixed = TRUE),
+            cell = function(value) format(value, nsmall = 0),
+            align = "left",
+            minWidth = 70,
+            headerStyle = list(background = "#f7f7f8")
+          ),
+          columns = list(
+            `study id` = colDef(minWidth = 50),
+            author = colDef(minWidth = 80),
+            year = colDef(minWidth = 50)
+          ),
+          bordered = FALSE,
+          highlight = FALSE,
+          striped = FALSE,
+          searchable = TRUE,
+          showPageSizeOptions = TRUE,
+          onClick = "expand"
+)
+```
+
+
+
+
+Data extraction forms 
+=======================================================================
+
+### data extraction forms
+
+```{r}
+#read data
+dat <- gsheet2tbl(url)
+
+author_list <- (dat$author) %>%
+  as.data.frame() %>%
+  unique() 
+  
+
+ui <- fluidPage(
+  
+  # App title ----
+  titlePanel("data extraction forms"),
+  
+  # Sidebar layout with input and output definitions ----
+  sidebarLayout(
+    
+    # Sidebar panel for inputs ----
+    sidebarPanel(
+      
+      # Input: Slider for the number of bins ----
+      selectInput(inputId = "author",
+                  label = "select author:",
+                  choices = author_list,
+                  selected = NULL)
+      
+    ),
+    
+    # Main panel for displaying outputs ----
+    mainPanel(
+      
+      # Output: Histogram ----
+      formattableOutput(outputId = "data_extraction_table")
+      
+    )
+  )
+)
+
+# Define server logic required to draw a histogram ----
+server <- function(input, output, session) {
+  
+    output$data_extraction_table <- renderFormattable({
+    
+    extraction_data <- as.data.frame(t(dplyr::filter(dat, author == input$author)))
+    library(formattable)
+    formattable(extraction_data)   
+  
+  })
+  
+}
+
+shinyApp(ui, server)
+
+```
+
+

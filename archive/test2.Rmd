@@ -1,0 +1,219 @@
+---
+title: "IMPT_results"
+output: html_notebook
+runtime: shiny
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r, include=FALSE}
+#load packages
+library(gsheet)
+library(dplyr)
+library(formattable)
+library(magrittr)
+library(tidyverse)
+library(tidyr)
+library(ggplot2)
+library(tidyverse)
+library(lessR)
+library(plotly)
+library(wesanderson)
+library(PRISMAstatement)
+library(psych)
+library(shiny)
+library(metafor)
+library(forestplot)
+library(meta)
+library(readxl)
+library(DiagrammeR)
+library(data.table)
+library(htmltools)
+library(reactable)
+```
+
+# results
+
+### forestplot
+```{r forestplot, echo=FALSE}
+prisma(29911, 90, 16548, 16548, 16199, 349, 297, 52, 52)
+```
+
+### Study Characteristics
+```{r table 1, include=FALSE}
+url <- 'https://docs.google.com/spreadsheets/d/1DE08OpdFC2eH8VwAV-xLmsFByGh2VvL0DRDjPLhyo9U/edit?usp=sharing'
+dat <- gsheet2tbl(url)
+
+dat_clean <- dat %>%
+  filter(!is.na(author) & !author == "test" & !author == 0)
+dat_clean$cohort <- paste(dat_clean$author, dat_clean$year, dat_clean$cohort_id, sep = "_")
+
+```
+
+```{r, echo=FALSE}
+t_1 <- select(dat, author, year, cohort_id, cohort_name, sample_size, sample_size_pre, sample_size_post, sample_size_fu, 
+              nationality, female_gender, age_m, age_sd, patient_group, minimum_pain_duration, pain_duration_months_m, 
+              pain_duration_sd, id) %>%
+  filter(!is.na(author) & !author == "test" & !author == 0)
+
+t_2 <- select(dat, author, year, cohort_id, treatment_aim, treatment_modalities, healthcare_providers, in_out_patient, type_of_contact, group_size,
+              mode_of_delivery_subinfo, setting, time_span, hours, minutes, tailoring, followup_sessions_provided, 
+              followup_sessions_description, other_healthcare_providers, other_procedures) %>%
+  filter(!is.na(author) & !author == "test" & !author == 0)
+
+#recode cohort_id
+t_1$cohort_id <- t_1$cohort_id %>% dplyr::recode("1" = "a", "2" = "b")
+t_2$cohort_id <- t_2$cohort_id %>% dplyr::recode("1" = "a", "2" = "b")
+
+#merge mean and sd
+as.character(t_1$age_sd)
+as.character(t_1$age_m)
+t_1$age_sd <- paste("(", t_1$age_sd, ")", sep = "")
+t_1$age_m_sd <- paste(t_1$age_m, t_1$age_sd, sep = " ")
+t_1$year <- paste("(", t_1$year, ")", sep="")
+t_1$author_year <- paste(t_1$author, t_2$year, sep = " ")
+t_2$year <- paste("(", t_2$year, ")", sep="")
+t_2$author_year <- paste(t_2$author, t_2$year, sep = " ")
+t_1$author_year <- paste(t_1$author, t_1$year, sep = " ")
+
+
+#calculate attrition
+
+t_1$attrition_post <- round(100-((t_1$sample_size_post/t_1$sample_size_pre)*100), 2)
+t_1$attrition_fu <- round(100-((t_1$sample_size_fu/t_1$sample_size_post)*100), 2)
+
+
+
+#change column order
+t1 <- select(t_1, author_year, cohort_id, cohort_name, sample_size, sample_size_pre, 
+              sample_size_post, sample_size_fu, attrition_post, attrition_fu, 
+              nationality, female_gender, age_m_sd, age_m, age_sd, patient_group, 
+              minimum_pain_duration, pain_duration_months_m, id
+             )
+
+#change column names
+t1 <- t1 %>% 
+  dplyr::rename(
+    "study sample size" = "sample_size",
+    "cohort sample size (pre)" = "sample_size_pre",
+    "cohort sample size (post)" = "sample_size_post",
+    "cohort sample size (final follow-up)" = "sample_size_fu",
+    "attrition rate post intervention" = "attrition_post",
+    "attrition rate at final follow-up" = "attrition_fu",
+    "% females" = "female_gender",
+    "patient group" = "patient_group",
+    "minimum pain duration" = "minimum_pain_duration",
+    "mean pain duration in months" = "pain_duration_months_m",
+    "mean age (sd)" = "age_m_sd",
+    "cohort name" = "cohort_name",
+    "author (year)" = "author_year"
+  ) 
+
+t1 <- t1 %>% arrange(`author (year)`)
+
+sample_cols <- c("study sample size", "cohort sample size (pre)", "cohort sample size (post)",
+                 "cohort sample size (final follow-up)", "attrition rate post intervention",
+                 "attrition rate at final follow-up")
+
+patient_cols <- c("% females", "patient group", "minimum pain duration",
+                  "mean pain duration in months", "mean age (sd)"
+                  )
+
+#create table 1 with reactable
+reactable(t1,
+          columns = list(
+            "author (year)" = colDef(minWidth = 105),
+            cohort_id = colDef(maxWidth = 30, name = "ID"),
+            "cohort name" = colDef(minWidth = 105),
+            "study sample size" = colDef(format = colFormat(digits = 0)),
+            "id" = colDef(show = FALSE)
+          ),
+          defaultColGroup = colGroup(headerClass = "header"),
+          style = list(fontFamily = "Arial Narrow", fontSize = "14px"),
+          columnGroups = list(
+            colGroup(name = "sample size", columns = sample_cols),
+            colGroup(name = "patient characteristics", columns = patient_cols)
+          ),
+          defaultColDef = colDef(
+            header = function(value) gsub("_", " ", value, fixed = TRUE),
+            cell = function(value) format(value),
+            align = "left",
+            minWidth = 70
+            )
+          )
+          
+#create t2 with reactable
+#create unique variable for each treatment modality
+t2 <- select(t_2, author_year, cohort_id, other_procedures, in_out_patient, type_of_contact, group_size, setting, 
+             time_span, hours, minutes, tailoring)
+
+reactable(t2,
+          defaultColGroup = colGroup(headerClass = "header"),
+          style = list(fontFamily = "Arial Narrow", fontSize = "14px"),
+          defaultColDef = colDef(
+            header = function(value) gsub("_", " ", value, fixed = TRUE),
+            cell = function(value) format(value, nsmall = 1),
+            align = "left",
+            minWidth = 70,
+            headerStyle = list(background = "#f7f7f8")
+            ),
+          columns = list(
+            author_year = colDef(minWidth = 105),
+            other_procedures = colDef(minWidth = 200),
+            cohort_id = colDef(maxWidth = 30, name = "ID")
+            ),
+          bordered = FALSE,
+          highlight = FALSE,
+          striped = FALSE,
+          searchable = TRUE,
+          showPageSizeOptions = TRUE,
+          onClick = "expand"
+          )
+```
+
+```{r, table 1 descriptive data analysis, include=FALSE}
+
+#obtain descriptives of the sample sizes at various timepoints
+qqnorm(t1$`cohort sample size (pre)`)
+qqline(t1$`cohort sample size (pre)`)
+qqnorm(t1$`% females`)
+qqline(t1$`% females`)
+
+describe(t1)
+#conclusion: cohort sample size is not normally distributed, so use median and range.
+
+#calculate proportion of the sample from non-western studies
+#for each additional non-western study, add the id below to update the calculation
+
+t1$n_west <- if_else(t1$id == 1 | t1$id == 185 | t1$id == 144, 1, 0)
+
+#sum of all non-western sample sizes divided by the total sample size * 100
+100 - (t1$`cohort sample size (pre)` %>% subset(t1$n_west == 1) %>%
+  sum() / (sum(t1$`cohort sample size (pre)`, na.rm = TRUE)) * 100)
+```
+
+```{r, table 2 descriptive data analysis, include=FALSE}
+
+#obtain descriptives of the sample sizes at various timepoints
+qqnorm(t2$time_span)
+qqline(t2$time_span)
+qqnorm(t2$hours)
+qqline(t2$hours)
+
+describe(t2)
+#conclusion: time span is not normally distributed, so use median and range. hours is normally distributed, so use mean (sd)
+
+table(t2$in_out_patient)
+table(t2$type_of_contact)
+table(t2$tailoring)
+table(t2$ed)
+
+is.na(t2$tailoring)
+
+#calculate proportion of the sample from non-western studies
+#for each additional non-western study, add the id below to update the calculation
+
+```
