@@ -1,0 +1,227 @@
+---
+title: "flexdashboard: IMPT meta analysis"
+output: 
+  flexdashboard::flex_dashboard:
+    social: menu
+    source_code: embed 
+    vertical_layout: scroll
+    runtime: shiny
+---
+
+```{r setup, include=FALSE, echo=FALSE}
+require("knitr")
+opts_knit$set(root.dir = "~/impt.meta_analysis/") #set root for Knitr
+```
+
+```{r load packages, include=FALSE}
+source("R/load_packages.R", local = knitr::knit_global())
+```
+
+```{r load data, include=FALSE}
+source("R/load_data.R", local = knitr::knit_global())
+```
+
+```{r prepare descriptive tables, include=FALSE}
+source("R/descriptive_tables_md.R", local = knitr::knit_global())
+```
+
+
+Flow Chart {data-orientation=rows}
+=======================================================================
+
+Row {data-height=1200}
+-------------------------------------
+### flow chart
+```{r}
+prisma(29911, 90, 16548, 16548, 16199, 349, 297, 52, 52)
+```
+
+Study/patient characteristics {data-orientation=rows}
+=======================================================================
+
+Row {data-height=1000}
+-------------------------------------
+### Study and patient characteristics
+
+```{r}
+#create table 1 with reactable
+reactable(t1,
+          columns = list(
+            "author (year)" = colDef(minWidth = 105),
+            cohort_id = colDef(maxWidth = 30, name = "ID"),
+            "cohort name" = colDef(minWidth = 105),
+            "study sample size" = colDef(format = colFormat(digits = 0))
+          ),
+          defaultColGroup = colGroup(headerClass = "header"),
+          style = list(fontFamily = "Arial Narrow", fontSize = "14px"),
+          columnGroups = list(
+            colGroup(name = "sample size", columns = sample_cols),
+            colGroup(name = "patient characteristics", columns = patient_cols)
+          ),
+          defaultColDef = colDef(
+            header = function(value) gsub("_", " ", value, fixed = TRUE),
+            cell = function(value) format(value),
+            align = "left",
+            minWidth = 70
+            ),
+          searchable = TRUE,
+          showPageSizeOptions = TRUE
+          )
+          
+```
+
+Intervention characteristics {data-orientation=rows}
+=======================================================================
+
+Row {data-height=1000}
+-------------------------------------
+### table intervention characteristics
+
+```{r}
+#create table 2 with reactable
+reactable(t2,
+          defaultSorted = "author_year",
+          defaultSortOrder = "asc",
+          defaultColGroup = colGroup(headerClass = "header"),
+          style = list(fontFamily = "Arial Narrow", fontSize = "14px"),
+          columnGroups = list(
+            colGroup(name = "Treatment modalities", columns = procedure_cols),
+            colGroup(name = "Healthcare providers", columns = hcp_cols)
+            ),
+          defaultColDef = colDef(
+            header = function(value) gsub("_", " ", value, fixed = TRUE),
+            cell = function(value) format(value, nsmall = 1),
+            align = "left",
+            minWidth = 70,
+            headerStyle = list(background = "#f7f7f8")
+            ),
+          columns = list(
+            author_year = colDef(minWidth = 105),
+            other_procedures = colDef(minWidth = 200),
+            other_healthcare_providers = colDef(minWidth = 110),
+            followup_sessions_description = colDef(minWidth = 150),
+            cohort_id = colDef(maxWidth = 30, name = "ID"),
+            ed = colDef(maxWidth = 30, cell = function(value) {
+              # Render as ✘ or ✓
+              if (value == 0) "\u2718" else "\u2713"
+              }, style = function(value){
+                if (value == 0) {color <- '#ABB2B9'} else {color <- '#28B463'}
+                list(background = color)
+              }),
+            ex = colDef(maxWidth = 30, cell = function(value) {
+              # Render as ✘ or ✓
+              if (value == 0) "\u2718" else "\u2713"
+            }, style = function(value){
+              if (value == 0) {color <- '#ABB2B9'} else {color <- '#28B463'}
+              list(background = color)
+              }),
+            ga = colDef(maxWidth = 30, cell = function(value) {
+              # Render as ✘ or ✓
+              if (value == 0) "\u2718" else "\u2713"
+            }, style = function(value){
+              if (value == 0) {color <- '#ABB2B9'} else {color <- '#28B463'}
+              list(background = color)
+            }),
+            ph = colDef(maxWidth = 30, cell = function(value) {
+              # Render as ✘ or ✓
+              if (value == 0) "\u2718" else "\u2713"
+            }, style = function(value){
+              if (value == 0) {color <- '#ABB2B9'} else {color <- '#28B463'}
+              list(background = color)
+            }),
+            wo = colDef(maxWidth = 30, cell = function(value) {
+              # Render as ✘ or ✓
+              if (value == 0) "\u2718" else "\u2713"
+            }, style = function(value){
+              if (value == 0) {color <- '#ABB2B9'} else {color <- '#28B463'}
+              list(background = color)
+            }),
+            bt = colDef(maxWidth = 30, cell = function(value) {
+              # Render as ✘ or ✓
+              if (value == 0) "\u2718" else "\u2713"
+            }, style = function(value){
+              if (value == 0) {color <- '#ABB2B9'} else {color <- '#28B463'}
+              list(background = color)
+            }),
+            pm = colDef(maxWidth = 30, cell = function(value) {
+              # Render as ✘ or ✓
+              if (value == 0) "\u2718" else "\u2713"
+            }, style = function(value){
+              if (value == 0) {color <- '#ABB2B9'} else {color <- '#28B463'}
+              list(background = color)
+            }),
+            ba = colDef(maxWidth = 30, cell = function(value) {
+              # Render as ✘ or ✓
+              if (value == 0) "\u2718" else "\u2713"
+            }, style = function(value){
+              if (value == 0) {color <- '#ABB2B9'} else {color <- '#28B463'}
+              list(background = color)
+            }),
+            te = colDef(maxWidth = 30, cell = function(value) {
+              # Render as ✘ or ✓
+              if (value == 0) "\u2718" else "\u2713"
+            }, style = function(value){
+              if (value == 0) {color <- '#ABB2B9'} else {color <- '#28B463'}
+              list(background = color)
+            }),
+            re = colDef(maxWidth = 30, cell = function(value) {
+              # Render as ✘ or ✓
+              if (value == 0) "\u2718" else "\u2713"
+            }, style = function(value){
+              if (value == 0) {color <- '#ABB2B9'} else {color <- '#28B463'}
+              list(background = color)
+            }),
+            phy = colDef(maxWidth = 30, cell = function(value) {
+              # Render as ✘ or ✓
+              if (value == 0) "\u2718" else "\u2713"
+            }, style = function(value){
+              if (value == 0) {color <- '#ABB2B9'} else {color <- '#28B463'}
+              list(background = color)
+            }),
+            psy = colDef(maxWidth = 30, cell = function(value) {
+              # Render as ✘ or ✓
+              if (value == 0) "\u2718" else "\u2713"
+            }, style = function(value){
+              if (value == 0) {color <- '#ABB2B9'} else {color <- '#28B463'}
+              list(background = color)
+            }),
+            pt = colDef(maxWidth = 30, cell = function(value) {
+              # Render as ✘ or ✓
+              if (value == 0) "\u2718" else "\u2713"
+            }, style = function(value){
+              if (value == 0) {color <- '#ABB2B9'} else {color <- '#28B463'}
+              list(background = color)
+            }),
+            ot = colDef(maxWidth = 30, cell = function(value) {
+              # Render as ✘ or ✓
+              if (value == 0) "\u2718" else "\u2713"
+            }, style = function(value){
+              if (value == 0) {color <- '#ABB2B9'} else {color <- '#28B463'}
+              list(background = color)
+            }),
+            nur = colDef(maxWidth = 30, cell = function(value) {
+              # Render as ✘ or ✓
+              if (value == 0) "\u2718" else "\u2713"
+            }, style = function(value){
+              if (value == 0) {color <- '#ABB2B9'} else {color <- '#28B463'}
+              list(background = color)
+            }),
+            swo = colDef(maxWidth = 30, cell = function(value) {
+              # Render as ✘ or ✓
+              if (value == 0) "\u2718" else "\u2713"
+            }, style = function(value){
+              if (value == 0) {color <- '#ABB2B9'} else {color <- '#28B463'}
+              list(background = color)
+            })
+          ),
+          bordered = FALSE,
+          highlight = FALSE,
+          striped = FALSE,
+          searchable = TRUE,
+          showPageSizeOptions = TRUE,
+          onClick = "expand"
+          )
+```
+
+
+

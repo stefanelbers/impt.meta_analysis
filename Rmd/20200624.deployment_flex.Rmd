@@ -28,8 +28,44 @@ invisible(lapply(packages, library, character.only = TRUE))
 ```
 
 ```{r}
-source("R/load_data.R")
+#Input
+url <- 'https://docs.google.com/spreadsheets/d/1DE08OpdFC2eH8VwAV-xLmsFByGh2VvL0DRDjPLhyo9U/edit?usp=sharing'
+url_rob <- 'https://docs.google.com/spreadsheets/d/1HLicE5rhMrt2IE3SnHxNr8o5ih_v3WKlKnjCBulgF5k/edit?usp=sharing'
 
+#read data
+dat_gsheet <- gsheet2tbl(url) # keep dat_gsheet as in Google Sheets
+dat <- dat_gsheet # We'll continue with dataset in variable 'dat'
+
+dat_clean <- dat %>%
+  filter(!is.na(author) & !author == "test" & !author == 0)
+dat_clean$cohort <- paste(dat_clean$author, dat_clean$year, dat_clean$cohort_id, sep = "_")
+
+##clean dataset
+logical <- is.na(dat$author) | dat$author == "test" | dat$author == 0 # correct for incorrect authors
+dat <- dat[!logical,]
+dat[dat=="na"] <- NA
+dat[dat=="Yes"] <- "yes"
+dat[dat=="No"] <- "no"
+
+##check assessor names
+unique(dat_clean$assessor)
+
+##filter on double checked entries
+dat_clean <- dat_clean %>% filter(assessor == "SKSE" | assessor == "SEMK" | assessor == "UKSE" | assessor == "UKMK")
+
+#read ROB data
+dat_rob <- gsheet2tbl(url_rob)
+
+#check assessor names
+unique(dat_rob$assessor)
+
+## filter double checked entries
+dat_rob <- dat_rob %>% filter(assessor == "SKSE" | assessor == "SEMK")
+
+#check double entries
+table(dat_rob$`study id`)
+table(dat_rob$author)
+table(dat_rob$year)
 ```
 
 
@@ -450,7 +486,7 @@ ts_long$max_scale <- recode(ts_long$max_scale,
                             "DPQ: Daily activities" = 100, "SF-36 subscale Physical Functioning" = 100, "NHP: PA" = 100,
                             "HFAQ" = 100, "MPI: GA" = 6, "Norfunk (0-3)" = 3, "ADS (german scale of CES-D)" =60, "HADS-D" =21,
                             "DASS" = 42, "BDI-II" =63, "Zung" =100,"BDI" =63, "depression index (DEPS)" =30, "SCL90-D" = 52,
-                            "HADS-A"= 21, "VAS Anxiety (0-100)" = 100, "SCL90-A" = 40, "STAI" = 80,
+                            "HADS-A"= 21, "VAS Anxiety (0-100)" = 100, "SCL90-A" = 40, "STAI" = 80, "FRI" = 100,
                             "NHP: Emotional reactions" = 100, "SF-36: mental health" = 100,"DPQ: anxiety/depression" = 100,
                             "SCL-90: Hostility" = 24, "PSEQ" = 60, "DPQ: social life" = 100, "SF-36: social functioning" = 100, 
                             "SIP" = 9608, "QBPRS" = 100
@@ -467,7 +503,7 @@ measReverse <- c("FIQ", "NHP", "NHP: PA", "Norfunk (0-3)", "RDQ", "QBPDS",
                  "NHP: Emotional reactions", "DPQ: anxiety/depression",
                  "SCL-90: Hostility", "DPQ: social life", "VAS (0-10)", 
                  "NRS (0-10)", "VAS", "NRS", "Likert pain intensity", 
-                 "MPI: pain severity", "PRI", "NPRS", "NRS (0-100)")
+                 "MPI: pain severity", "PRI", "NPRS", "NRS (0-100)", "FRI")
 
 #questionnaires in the current dataset for which higher scores indicate increased functioning: 
 #"EuroQol-5D-3L", "LiSat-11", "WHQOL-BREF", "HFAQ", "MPI: GA",
@@ -626,7 +662,7 @@ ts_long$max_scale <- recode(ts_long$max_scale,
                             "DPQ: Daily activities" = 100, "SF-36 subscale Physical Functioning" = 100, "NHP: PA" = 100,
                             "HFAQ" = 100, "MPI: GA" = 6, "Norfunk (0-3)" = 3, "ADS (german scale of CES-D)" =60, "HADS-D" =21,
                             "DASS" = 42, "BDI-II" =63, "Zung" =100,"BDI" =63, "depression index (DEPS)" =30, "SCL90-D" = 52,
-                            "HADS-A"= 21, "VAS Anxiety (0-100)" = 100, "SCL90-A" = 40, "STAI" = 80,
+                            "HADS-A"= 21, "VAS Anxiety (0-100)" = 100, "SCL90-A" = 40, "STAI" = 80, "FRI" = 100,
                             "NHP: Emotional reactions" = 100, "SF-36: mental health" = 100,"DPQ: anxiety/depression" = 100,
                             "SCL-90: Hostility" = 24, "PSEQ" = 60, "DPQ: social life" = 100, "SF-36: social functioning" = 100, 
                             "SIP" = 9608, "QBPRS" = 100
@@ -640,7 +676,7 @@ measReverse <- c("FIQ", "NHP", "NHP: PA", "Norfunk (0-3)", "RDQ", "QBPDS",
                  "DRI", "SIP", "ADS (german scale of CES-D)", "HADS-D",
                  "BDI", "SCL90-D", "Depression index (DEPS)", "DASS", "BDI-II",
                  "Zung", "HADS-A", "VAS Anxiety (0-100)", "SCL90-A", "STAI", 
-                 "NHP: Emotional reactions", "DPQ: anxiety/depression",
+                 "NHP: Emotional reactions", "DPQ: anxiety/depression", "FRI",
                  "SCL-90: Hostility", "DPQ: social life", "VAS (0-10)", 
                  "NRS (0-10)", "VAS", "NRS", "Likert pain intensity", 
                  "MPI: pain severity", "PRI", "NPRS", "NRS (0-100)")
@@ -797,8 +833,8 @@ ts_long$max_scale <- recode(ts_long$max_scale,
                             "VAS" = 100, "VAS (0-100)" = 100,"PRI" = 78, "MPI: pain severity" = 7,
                             "NRS" = 10, "NPRS" = 10, "NRS (0-10)" = 10, "VAS (0-10)"= 10, "NRS (0-100)" = 100,
                             "Likert pain intensity" = 6, "RDQ" = 24, "QBPDS" = 100, "LBPRS" = 30, "DRI" = 1200,
-                            "DRI (0-100)" = 100, "MPI: pain interference" = 6, "ODI" = 100, "ODI (0-1)" = 1, "PDI" = 70, "RMDQ" = 24,
-                            "DPQ: Daily activities" = 100, "SF-36 subscale Physical Functioning" = 100, "NHP: PA" = 100,
+                            "DRI (0-100)" = 100, "MPI: pain interference" = 6, "ODI" = 100, "ODI (0-1)" = 1, "PDI" = 70,
+                            "RMDQ" = 24, "FRI" = 100, "DPQ: Daily activities" = 100, "SF-36 subscale Physical Functioning" = 100, "NHP: PA" = 100,
                             "HFAQ" = 100, "MPI: GA" = 6, "Norfunk (0-3)" = 3, "ADS (german scale of CES-D)" =60, "HADS-D" =21,
                             "DASS" = 42, "BDI-II" =63, "Zung" =100,"BDI" =63, "depression index (DEPS)" =30, "SCL90-D" = 52,
                             "HADS-A"= 21, "VAS Anxiety (0-100)" = 100, "SCL90-A" = 40, "STAI" = 80,
@@ -814,7 +850,7 @@ measReverse <- c("FIQ", "NHP", "NHP: PA", "Norfunk (0-3)", "RDQ", "QBPDS",
                  "RMDQ", "ODI", "QBPRS", "DPQ: Daily activities", "LBPRS",
                  "DRI", "SIP", "ADS (german scale of CES-D)", "HADS-D",
                  "BDI", "SCL90-D", "Depression index (DEPS)", "DASS", "BDI-II",
-                 "Zung", "HADS-A", "VAS Anxiety (0-100)", "SCL90-A", "STAI", 
+                 "Zung", "HADS-A", "FRI", "VAS Anxiety (0-100)", "SCL90-A", "STAI", 
                  "NHP: Emotional reactions", "DPQ: anxiety/depression",
                  "SCL-90: Hostility", "DPQ: social life", "VAS (0-10)", 
                  "NRS (0-10)", "VAS", "NRS", "Likert pain intensity", 
@@ -977,7 +1013,7 @@ ts_long$max_scale <- recode(ts_long$max_scale,
                             "DPQ: Daily activities" = 100, "SF-36 subscale Physical Functioning" = 100, "NHP: PA" = 100,
                             "HFAQ" = 100, "MPI: GA" = 6, "Norfunk (0-3)" = 3, "ADS (german scale of CES-D)" =60, "HADS-D" =21,
                             "DASS" = 42, "BDI-II" =63, "Zung" =100,"BDI" =63, "depression index (DEPS)" =30, "SCL90-D" = 52,
-                            "HADS-A"= 21, "VAS Anxiety (0-100)" = 100, "SCL90-A" = 40, "STAI" = 80,
+                            "HADS-A"= 21, "VAS Anxiety (0-100)" = 100, "SCL90-A" = 40, "STAI" = 80, "FRI" = 100,
                             "NHP: Emotional reactions" = 100, "SF-36: mental health" = 100,"DPQ: anxiety/depression" = 100,
                             "SCL-90: Hostility" = 24, "PSEQ" = 60, "DPQ: social life" = 100, "SF-36: social functioning" = 100, 
                             "SIP" = 9608, "QBPRS" = 100
@@ -986,7 +1022,7 @@ ts_long$max_scale <- recode(ts_long$max_scale,
 #create reverse scoring variable
 #binary variable: do higher scores indicate better functioning? 0=no; 1=yes.
 measReverse <- c("FIQ", "NHP", "NHP: PA", "Norfunk (0-3)", "RDQ", "QBPDS",
-                 "DRI (0-100)", "PDI", "ODI (0-1)", "MPI: pain interference",
+                 "DRI (0-100)", "PDI", "FRI", "ODI (0-1)", "MPI: pain interference",
                  "RMDQ", "ODI", "QBPRS", "DPQ: Daily activities", "LBPRS",
                  "DRI", "SIP", "ADS (german scale of CES-D)", "HADS-D",
                  "BDI", "SCL90-D", "Depression index (DEPS)", "DASS", "BDI-II",
@@ -1153,7 +1189,7 @@ ts_long$max_scale <- recode(ts_long$max_scale,
                             "DPQ: Daily activities" = 100, "SF-36 subscale Physical Functioning" = 100, "NHP: PA" = 100,
                             "HFAQ" = 100, "MPI: GA" = 6, "Norfunk (0-3)" = 3, "ADS (german scale of CES-D)" =60, "HADS-D" =21,
                             "DASS" = 42, "BDI-II" =63, "Zung" =100,"BDI" =63, "depression index (DEPS)" =30, "SCL90-D" = 52,
-                            "HADS-A"= 21, "VAS Anxiety (0-100)" = 100, "SCL90-A" = 40, "STAI" = 80,
+                            "HADS-A"= 21, "VAS Anxiety (0-100)" = 100, "SCL90-A" = 40, "STAI" = 80, "FRI" = 100,
                             "NHP: Emotional reactions" = 100, "SF-36: mental health" = 100,"DPQ: anxiety/depression" = 100,
                             "SCL-90: Hostility" = 24, "PSEQ" = 60, "DPQ: social life" = 100, "SF-36: social functioning" = 100, 
                             "SIP" = 9608, "QBPRS" = 100
@@ -1164,7 +1200,7 @@ ts_long$max_scale <- recode(ts_long$max_scale,
 measReverse <- c("FIQ", "NHP", "NHP: PA", "Norfunk (0-3)", "RDQ", "QBPDS",
                  "DRI (0-100)", "PDI", "ODI (0-1)", "MPI: pain interference",
                  "RMDQ", "ODI", "QBPRS", "DPQ: Daily activities", "LBPRS",
-                 "DRI", "SIP", "ADS (german scale of CES-D)", "HADS-D",
+                 "DRI", "SIP", "ADS (german scale of CES-D)", "HADS-D", "FRI",
                  "BDI", "SCL90-D", "Depression index (DEPS)", "DASS", "BDI-II",
                  "Zung", "HADS-A", "VAS Anxiety (0-100)", "SCL90-A", "STAI", 
                  "NHP: Emotional reactions", "DPQ: anxiety/depression",
@@ -1330,7 +1366,7 @@ ts_long$max_scale <- recode(ts_long$max_scale,
                             "DPQ: Daily activities" = 100, "SF-36 subscale Physical Functioning" = 100, "NHP: PA" = 100,
                             "HFAQ" = 100, "MPI: GA" = 6, "Norfunk (0-3)" = 3, "ADS (german scale of CES-D)" =60, "HADS-D" =21,
                             "DASS" = 42, "BDI-II" =63, "Zung" =100,"BDI" =63, "depression index (DEPS)" =30, "SCL90-D" = 52,
-                            "HADS-A"= 21, "VAS Anxiety (0-100)" = 100, "SCL90-A" = 40, "STAI" = 80,
+                            "HADS-A"= 21, "VAS Anxiety (0-100)" = 100, "SCL90-A" = 40, "STAI" = 80, "FRI" = 100,
                             "NHP: Emotional reactions" = 100, "SF-36: mental health" = 100,"DPQ: anxiety/depression" = 100,
                             "SCL-90: Hostility" = 24, "PSEQ" = 60, "DPQ: social life" = 100, "SF-36: social functioning" = 100, 
                             "SIP" = 9608, "QBPRS" = 100, "RAND-36 subscale Physical Functioning" = 100
@@ -1345,7 +1381,7 @@ measReverse <- c("FIQ", "NHP", "NHP: PA", "Norfunk (0-3)", "RDQ", "QBPDS",
                  "BDI", "SCL90-D", "Depression index (DEPS)", "DASS", "BDI-II",
                  "Zung", "HADS-A", "VAS Anxiety (0-100)", "SCL90-A", "STAI", 
                  "NHP: Emotional reactions", "DPQ: anxiety/depression",
-                 "SCL-90: Hostility", "DPQ: social life", "VAS (0-10)", 
+                 "SCL-90: Hostility", "DPQ: social life", "VAS (0-10)", "FRI",
                  "NRS (0-10)", "VAS", "NRS", "Likert pain intensity", 
                  "MPI: pain severity", "PRI", "NPRS", "NRS (0-100)"
                  )
@@ -1509,7 +1545,7 @@ ts_long$max_scale <- recode(ts_long$max_scale,
                             "DPQ: Daily activities" = 100, "SF-36 subscale Physical Functioning" = 100, "NHP: PA" = 100,
                             "HFAQ" = 100, "MPI: GA" = 6, "Norfunk (0-3)" = 3, "ADS (german scale of CES-D)" =60, "HADS-D" =21,
                             "DASS" = 42, "BDI-II" =63, "Zung" =100,"BDI" =63, "depression index (DEPS)" =30, "SCL90-D" = 52,
-                            "HADS-A"= 21, "VAS Anxiety (0-100)" = 100, "SCL90-A" = 40, "STAI" = 80,
+                            "HADS-A"= 21, "VAS Anxiety (0-100)" = 100, "SCL90-A" = 40, "STAI" = 80, "FRI" = 100,
                             "NHP: Emotional reactions" = 100, "SF-36: mental health" = 100,"DPQ: anxiety/depression" = 100,
                             "SCL-90: Hostility" = 24, "PSEQ" = 60, "DPQ: social life" = 100, "SF-36: social functioning" = 100, 
                             "SIP" = 9608, "QBPRS" = 100
@@ -1525,7 +1561,7 @@ measReverse <- c("FIQ", "NHP", "NHP: PA", "Norfunk (0-3)", "RDQ", "QBPDS",
                  "Zung", "HADS-A", "VAS Anxiety (0-100)", "SCL90-A", "STAI", 
                  "NHP: Emotional reactions", "DPQ: anxiety/depression",
                  "SCL-90: Hostility", "DPQ: social life", "VAS (0-10)", 
-                 "NRS (0-10)", "VAS", "NRS", "Likert pain intensity", 
+                 "NRS (0-10)", "VAS", "NRS", "Likert pain intensity", "FRI", 
                  "MPI: pain severity", "PRI", "NPRS", "NRS (0-100)")
 
 #questionnaires in the current dataset for which higher scores indicate increased functioning: 
@@ -1686,7 +1722,7 @@ ts_long$max_scale <- recode(ts_long$max_scale,
                             "DPQ: Daily activities" = 100, "SF-36 subscale Physical Functioning" = 100, "NHP: PA" = 100,
                             "HFAQ" = 100, "MPI: GA" = 6, "Norfunk (0-3)" = 3, "ADS (german scale of CES-D)" =60, "HADS-D" =21,
                             "DASS" = 42, "BDI-II" =63, "Zung" =100,"BDI" =63, "depression index (DEPS)" =30, "SCL90-D" = 52,
-                            "HADS-A"= 21, "VAS Anxiety (0-100)" = 100, "SCL90-A" = 40, "STAI" = 80,
+                            "HADS-A"= 21, "VAS Anxiety (0-100)" = 100, "SCL90-A" = 40, "STAI" = 80, "FRI" = 100,
                             "NHP: Emotional reactions" = 100, "SF-36: mental health" = 100,"DPQ: anxiety/depression" = 100,
                             "SCL-90: Hostility" = 24, "PSEQ" = 60, "DPQ: social life" = 100, "SF-36: social functioning" = 100, 
                             "SIP" = 9608, "QBPRS" = 100
@@ -1700,7 +1736,7 @@ measReverse <- c("FIQ", "NHP", "NHP: PA", "Norfunk (0-3)", "RDQ", "QBPDS",
                  "DRI", "SIP", "ADS (german scale of CES-D)", "HADS-D",
                  "BDI", "SCL90-D", "Depression index (DEPS)", "DASS", "BDI-II",
                  "Zung", "HADS-A", "VAS Anxiety (0-100)", "SCL90-A", "STAI", 
-                 "NHP: Emotional reactions", "DPQ: anxiety/depression",
+                 "NHP: Emotional reactions", "DPQ: anxiety/depression", "FRI",
                  "SCL-90: Hostility", "DPQ: social life", "VAS (0-10)", 
                  "NRS (0-10)", "VAS", "NRS", "Likert pain intensity", 
                  "MPI: pain severity", "PRI", "NPRS", "NRS (0-100)")
@@ -1862,7 +1898,7 @@ ts_long$max_scale <- recode(ts_long$max_scale,
                             "DPQ: Daily activities" = 100, "SF-36 subscale Physical Functioning" = 100, "NHP: PA" = 100,
                             "HFAQ" = 100, "MPI: GA" = 6, "Norfunk (0-3)" = 3, "ADS (german scale of CES-D)" =60, "HADS-D" =21,
                             "DASS" = 42, "BDI-II" =63, "Zung" =100,"BDI" =63, "depression index (DEPS)" =30, "SCL90-D" = 52,
-                            "HADS-A"= 21, "VAS Anxiety (0-100)" = 100, "SCL90-A" = 40, "STAI" = 80,
+                            "HADS-A"= 21, "VAS Anxiety (0-100)" = 100, "SCL90-A" = 40, "STAI" = 80, "FRI" = 100,
                             "NHP: Emotional reactions" = 100, "SF-36: mental health" = 100,"DPQ: anxiety/depression" = 100,
                             "SCL-90: Hostility" = 24, "PSEQ" = 60, "DPQ: social life" = 100, "SF-36: social functioning" = 100, 
                             "SIP" = 9608, "QBPRS" = 100
@@ -1876,7 +1912,7 @@ measReverse <- c("FIQ", "NHP", "NHP: PA", "Norfunk (0-3)", "RDQ", "QBPDS",
                  "DRI", "SIP", "ADS (german scale of CES-D)", "HADS-D",
                  "BDI", "SCL90-D", "Depression index (DEPS)", "DASS", "BDI-II",
                  "Zung", "HADS-A", "VAS Anxiety (0-100)", "SCL90-A", "STAI", 
-                 "NHP: Emotional reactions", "DPQ: anxiety/depression",
+                 "NHP: Emotional reactions", "DPQ: anxiety/depression", "FRI",
                  "SCL-90: Hostility", "DPQ: social life", "VAS (0-10)", 
                  "NRS (0-10)", "VAS", "NRS", "Likert pain intensity", 
                  "MPI: pain severity", "PRI", "NPRS", "NRS (0-100)")
@@ -2178,7 +2214,7 @@ for (mi in meetinstrumenten) {
 measReverse <- c("FIQ", "NHP", "NHP: PA", "Norfunk (0-3)", "RDQ", "QBPDS",
                  "DRI (0-100)", "PDI", "ODI (0-1)", "MPI: pain interference",
                  "RMDQ", "ODI", "QBPRS", "DPQ: Daily activities", "LBPRS",
-                 "DRI", "SIP", "ADS (german scale of CES-D)", "HADS-D",
+                 "DRI", "SIP", "ADS (german scale of CES-D)", "HADS-D", "FRI",
                  "BDI", "SCL90-D", "Depression index (DEPS)", "DASS", "BDI-II",
                  "Zung", "HADS-A", "VAS Anxiety (0-100)", "SCL90-A", "STAI", 
                  "NHP: Emotional reactions", "DPQ: anxiety/depression",

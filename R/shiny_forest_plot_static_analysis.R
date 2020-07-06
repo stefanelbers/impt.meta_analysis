@@ -251,7 +251,7 @@ measReverse <- c("FIQ", "NHP", "NHP: PA", "Norfunk (0-3)", "RDQ", "QBPDS",
                  "Zung", "HADS-A", "VAS Anxiety (0-100)", "SCL90-A", "STAI", 
                  "NHP: Emotional reactions", "DPQ: anxiety/depression",
                  "SCL-90: Hostility", "DPQ: social life", "VAS (0-10)", 
-                 "NRS (0-10)", "VAS", "NRS", "Likert pain intensity", 
+                 "NRS (0-10)", "VAS", "NRS", "Likert pain intensity", "FRI", 
                  "MPI: pain severity", "PRI", "NPRS", "NRS (0-100)")
 
 #questionnaires in the current dataset for which higher scores indicate increased functioning: 
@@ -751,6 +751,32 @@ pintens_es_scale$weighted <- pintens_es_scale$right_sd * pintens_es_scale$right_
 sum(pintens_es_scale$weighted) / sum(pintens_es_scale$right_n) # this is the weighted SD of the most commonly used instrument.
 
 
+## create static forest plot for testing lay-out
+data_testfp <- escalc(measure="SMCR", m1i=right_m, m2i=left_m, sd1i=left_sd, ni=right_n, ri=ri, data=static_ma) %>%
+  metafor::summary.escalc() %>%
+  filter(contrast == "pre-post" & outcome == "physical function")
+
+
+tabletext <- cbind(c("author", data_testfp$author),
+                   c("year", data_testfp$year))
+
+forestplot(tabletext, data_testfp$yi, data_testfp$ci.lb, data_testfp$ci.ub,
+           xlab = "<---favors pre---     ---favors post--->",
+           txt_gp=fpTxtGp(label=gpar(cex=1),
+                          ticks=gpar(cex=.6),
+                          xlab=gpar(cex = 1),
+                          title=gpar(cex = 1.1)),
+           col=fpColors(box="black", lines="black", zero = "gray50"),
+           zero=0, cex=0.5, lineheight = unit(1, "cm"), boxsize=0.3,
+           lwd.ci=2, ci.vertices=TRUE, ci.vertices.height = .1, grid=TRUE,
+           align = "l",
+           graph.pos = "right",
+           clip = c(-4, 4),
+           alim = c(-4,4))
+
+
+
+
 ## create shinyapp ##
 
 #step1: create tibble for corrected data
@@ -829,5 +855,10 @@ server <- function(input, output, session) {
 }
 
 shinyApp(ui=ui, server=server)
+
+
+#test sorting dataset
+pf_meta_prpo <- filter(meta_dat, contrast == "pre-post" & outcome == "physical function")
+pf_meta_prpo <- pf_meta_prpo[order(pf_meta_prpo$right_n) ,]
 
 

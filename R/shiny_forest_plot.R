@@ -293,7 +293,7 @@ for (mi in meetinstrumenten) {
 ## to be checked carefully  
 measReverse <- c("FIQ", "NHP", "NHP: PA", "Norfunk (0-3)", "RDQ", "QBPDS",
                  "DRI (0-100)", "PDI", "ODI (0-1)", "MPI: pain interference",
-                 "RMDQ", "ODI", "QBPRS", "DPQ: Daily activities", "LBPRS",
+                 "RMDQ", "ODI", "QBPRS", "DPQ: Daily activities", "LBPRS", "FRI",
                  "DRI", "SIP", "ADS (german scale of CES-D)", "HADS-D",
                  "BDI", "SCL90-D", "Depression index (DEPS)", "DASS", "BDI-II",
                  "Zung", "HADS-A", "VAS Anxiety (0-100)", "SCL90-A", "STAI", 
