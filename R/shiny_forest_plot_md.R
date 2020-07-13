@@ -1,69 +1,4 @@
-#install packages
-# install.packages('forestplot')
-# install.packages('dplyr')
-# install.packages('formattable')
-# install.packages('magrittr')
-# install.packages('tidyverse')
-# install.packages('tidyr')
-# install.packages('ggplot2')
-# install.packages('tidyverse')
-# install.packages('lessR')
-# install.packages('plotly')
-# install.packages('wesanderson')
-# install.packages('PRISMAstatement')
-# install.packages('psych')
-# install.packages('shiny')
-# install.packages('metafor')
-# install.packages('forestplot')
-# install.packages('meta')
-# install.packages('readxl')
-# install.packages('DiagrammeR')
-# install.packages('data.table')
-# install.packages('htmltools')
-# install.packages('gsheet')
-
-
-#library
-library(forestplot)
-library(dplyr)
-library(formattable)
-library(magrittr)
-library(tidyverse)
-library(tidyr)
-library(ggplot2)
-library(tidyverse)
-library(lessR)
-library(plotly)
-library(wesanderson)
-library(PRISMAstatement)
-library(psych)
-library(shiny)
-library(metafor)
-library(forestplot)
-library(meta)
-library(readxl)
-library(DiagrammeR)
-library(data.table)
-library(htmltools)
-library(gsheet)
-
-##Read Excel table from Google Sheet
-#Input
-url <- 'https://docs.google.com/spreadsheets/d/1DE08OpdFC2eH8VwAV-xLmsFByGh2VvL0DRDjPLhyo9U/edit?usp=sharing'
-
-#read data
-dat_gsheet <- gsheet2tbl(url) # keep dat_gsheet as in Google Sheets
-dat <- dat_gsheet # We'll continue with dataset in variable 'dat'
-
-##clean dataset
-logical <- is.na(dat$author) | dat$author == "test" | dat$author == 0 # correct for incorrect authors
-dat <- dat[!logical,]
-dat[dat=="na"] <- NA
-dat[dat=="Yes"] <- "yes"
-dat[dat=="No"] <- "no"
-
-# rename variables (could be done in Google Sheets?)
-dat <- dat %>%
+dat <- dat_clean %>%
   rename(pf_name_measurement_instrument = pf_measurement_name,
          meas_hrqol = measurement_of_hrqol,
          meas_pf = measurements_physical_functioning,
@@ -88,9 +23,6 @@ dat$author_year <- paste(dat$author, dat$char_year, sep = " ")
 #calculate attrition
 dat$attrition_post <- round(100-((dat$sample_size_post/dat$sample_size_pre)*100), 2)
 dat$attrition_fu <- round(100-((dat$sample_size_fu/dat$sample_size_post)*100), 2)
-
-#next lines should be corrected in Google Sheet
-dat$sample_size_post[dat$author == "Olason" & dat$year == 2004] = NA # incorrect sample_size_post, Olason (2004)
 
 #create variable cohort
 dat$cohort <- paste(dat$author, dat$year, dat$cohort_id, sep = "_")
@@ -150,11 +82,7 @@ for (mi in meetinstrumenten) {
       dat[ind,v2] <- dat[ind,"sample_size"]
     }
     
-    #if <meetinstrument>_<pre/post>_n is (still) missing: print warning 
-    ind <- which(dat[v1] == "yes" & is.na(dat[v2]))
-    if (length(ind) > 0) {
-      print(paste('Sample sizes (sample_size_', p, ' and sample_size) are missing for study: ', dat$author[ind], ' (', dat$year[ind], ') - ', mi ,sep = ''))
-    }
+    
   }
   
   # follow-up (try to fill missings 'n' of the last follow-up with sample_size_fu)
@@ -234,7 +162,7 @@ for (mi in meetinstrumenten) {
     fp_meta$tabletext <- cbind(fp_meta$author, fp_meta$year, fp_meta$n_pre, fp_meta$measure, 
                                fp_meta$fu_month)
     
-   
+    
     
     ## make dataset to compare with Stefans Excel file
     check_var <- paste('check', mi, contrast, sep="_")
@@ -294,7 +222,7 @@ for (mi in meetinstrumenten) {
 measReverse <- c("FIQ", "NHP", "NHP: PA", "Norfunk (0-3)", "RDQ", "QBPDS",
                  "DRI (0-100)", "PDI", "ODI (0-1)", "MPI: pain interference",
                  "RMDQ", "ODI", "QBPRS", "DPQ: Daily activities", "LBPRS",
-                 "DRI", "SIP", "ADS (german scale of CES-D)", "HADS-D",
+                 "DRI", "SIP", "ADS (german scale of CES-D)", "HADS-D", "FRI",
                  "BDI", "SCL90-D", "Depression index (DEPS)", "DASS", "BDI-II",
                  "Zung", "HADS-A", "VAS Anxiety (0-100)", "SCL90-A", "STAI", 
                  "NHP: Emotional reactions", "DPQ: anxiety/depression",
@@ -311,7 +239,7 @@ data_long$rev_scoring = 0
 logical <- data_long$name_measurement_instrument %in% measReverse
 data_long$rev_scoring[logical] = 1
 
-
+data_long$rev_scoring <- questionnaires$reverse_scoring[match(as.character(data_long$name_measurement_instrument), as.character(questionnaires$q))]
 
 ## reverse scoring procedure ##
 data <- data_long
@@ -352,37 +280,11 @@ corrected_data$outcome <- corrected_data$outcome %>% recode(
   "pintens" = "pain intensity"
 )
 
-## create static forest plot pain interference pre-post, to 
-fp_static_meta <- corrected_data
-fp_static_meta$ri <- .51
+corrected_data <- corrected_data %>%
+  mutate(fu_month = if_else(contrast == "pre-post", 0, fu_month))
 
-fp_static_meta <- escalc(measure="SMCR", m1i=right_m, m2i=left_m, sd1i=left_sd, ni=right_n, ri=ri, data=fp_static_meta) %>%
-  metafor::summary.escalc()
 
-fp_pinter_pp <- filter(fp_static_meta, outcome == "pain interference" & contrast == "pre-post")
-fp_pinter_pp$tabletext <- cbind(fp_pinter_pp$author, fp_pinter_pp$year, fp_pinter_pp$right_n, fp_pinter_pp$name_measurement_instrument, 
-                            fp_pinter_pp$fu_month)
-
-forestplot(labeltext = fp_pinter_pp$tabletext, 
-           mean = fp_pinter_pp$yi, 
-           lower = fp_pinter_pp$ci.lb,
-           upper = fp_pinter_pp$ci.ub,
-           title = "Standardized Mean Difference",
-           xlab = "<---favors pre---     ---favors post--->",
-           txt_gp=fpTxtGp(label=gpar(cex=1),
-                          ticks=gpar(cex=.6),
-                          xlab=gpar(cex = 1),
-                          title=gpar(cex = 1.1)),
-           hrzl_lines=list("3" = gpar(lwd=30, lineend="butt", columns=c(1:6), col="#99999922")),
-           col=fpColors(box="black", lines="black", zero = "gray50"),
-           zero=0, cex=0.5, lineheight = "auto", boxsize=0.3, colgap=unit(6,"mm"),
-           lwd.ci=2, ci.vertices=TRUE, ci.vertices.height = .1, grid=TRUE,
-           align = "l",
-           graph.pos = "right",
-           clip = c(-4, 4)
-)
-
-rma(yi, vi, data=fp_pinter_pp, method="HE")
+## create static app ##
 
 
 ## create shinyapp ##
@@ -396,41 +298,34 @@ ui <- fluidPage(
   # App title ----
   headerPanel("Forest plot systematic review"),
   
-  # Sidebar layout with input and output definitions ----
-  sidebarLayout(
+  # Main panel for displaying outputs ----
+  mainPanel(
+    # Input: Slider for the number of bins ----
+    sliderInput(inputId = "r_value",
+                label = "R Correction Value:",
+                min = 0,
+                max = 1,
+                value = 0,
+                step = 0.1),
     
-    # Sidebar panel for inputs ----
-    sidebarPanel(
-      
-      # Input: Slider for the number of bins ----
-      sliderInput(inputId = "r_value",
-                  label = "R Correction Value:",
-                  min = 0,
-                  max = 1,
-                  value = 0,
-                  step = 0.1),
-      
-      selectInput(inputId = "outcome",
-                  label = "select ouctome:",
-                  choices = c("health related quality of life", "physical function", "pain interference", "depression", "anxiety",   
-                              "self-efficacy", "social functioning", "pain intensity", "anger", "general emotional functioning"),
-                  selected = "pain interference"),
-      
-      selectInput(inputId = "contrast",
-                  label = "select contrast:",
-                  choices = c("pre-post", "post-fu", "pre-fu"),
-                  selected = "pre-fu")
-    ),
+    selectInput(inputId = "outcome",
+                label = "select ouctome:",
+                choices = c("health related quality of life", "physical function", "pain interference", "depression", "anxiety",   
+                            "self-efficacy", "social functioning", "pain intensity", "anger", "general emotional functioning"),
+                selected = "pain interference"),
     
-    # Main panel for displaying outputs ----
-    mainPanel(
-      
-      # Output: Histogram ----
-      plotOutput("forestplot", height = "1300px"), width = 12
-      
-    )
-  )
+    selectInput(inputId = "contrast",
+                label = "select contrast:",
+                choices = c("pre-post", "post-fu", "pre-fu"),
+                selected = "pre-post")
+  ),
+  
+  # Output: Histogram ----
+  plotOutput("forestplot")
+  
 )
+
+
 # Define server logic required to draw a histogram ----
 server <- function(input, output, session) {
   
@@ -457,11 +352,9 @@ server <- function(input, output, session) {
                graph.pos = "right",
                clip = c(-4, 4),
                alim = c(-4,4)
-    )
+    ) 
   })
   
 }
 
 shinyApp(ui=ui, server=server)
-
-
