@@ -364,12 +364,12 @@ modality_desc <- t2[3:12]
 
 for (i in seq_along(modality_desc)) {            # 2. sequence
   print(colnames(modality_desc[i]))
-  print(Freq(modality_desc[i]))
+  print(summarytools::freq(modality_desc[i]))
 }
 
 modality_desc <- modality_desc %>% replace(is.na(.), 0) %>% mutate(sum = rowSums(.[1:10]))
 summary(modality_desc$sum)
-Freq(modality_desc$sum)
+summarytools::freq(modality_desc$sum)
 
 #summary statistics HCP
 hcp_desc <- t2[14:19]

@@ -10,7 +10,7 @@ output:
 
 ```{r setup, include=FALSE, echo=FALSE}
 require("knitr")
-opts_knit$set(root.dir = "~/impt.meta_analysis/") #set root for Knitr
+opts_knit$set(root.dir = "~/impt.meta_analysis/deployment/") #set root for Knitr
 ```
 
 ```{r load packages, include=FALSE}
@@ -54,6 +54,14 @@ The R scripts and dataset will be made available via Github along with the publi
 
 For questions or comments, please contact the corresponding author via stefan.elbers@hu.nl
 
+Column
+-------------------------------------
+
+```{r}
+img = readPNG("input/fp_pic.png")
+```
+
+
 Flow Chart {data-orientation=rows}
 =======================================================================
 
@@ -61,7 +69,7 @@ Row {data-height=1200}
 -------------------------------------
 ### flow chart
 ```{r}
-prisma(29911, 90, 16548, 16548, 16199, 349, 297, 52, 52)
+prisma(31894, 90, 17955, 17955, 17588, 367, 304, 63, 55)
 ```
 
 Study/patient characteristics {data-orientation=rows}
@@ -1448,7 +1456,7 @@ Row {data-height=700}
 
 ```{r}
 ## create shinyapp ##
-    renderPlot({
+renderPlot({
     
     data_fp$ri <- input$r_value
     data_fp_meta <- escalc(measure="SMCR", m1i=right_m, m2i=left_m, sd1i=left_sd, ni=right_n, ri=ri, data=data_fp)

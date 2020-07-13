@@ -1,25 +1,7 @@
-#install packages
-#install.packages("schoolmath")
+#preparation R script for Shiny forest plots
+#FIRST: LOAD load_data.r and questionnaires_dataframe.R
 
-#library("schoolmath")
-
-##Read Excel table from Google Sheet
-#Input
-url <- 'https://docs.google.com/spreadsheets/d/1DE08OpdFC2eH8VwAV-xLmsFByGh2VvL0DRDjPLhyo9U/edit?usp=sharing'
-
-#read data
-dat_gsheet <- gsheet2tbl(url) # keep dat_gsheet as in Google Sheets
-dat <- dat_gsheet # We'll continue with dataset in variable 'dat'
-
-##clean dataset
-logical <- is.na(dat$author) | dat$author == "test" | dat$author == 0 # correct for incorrect authors
-dat <- dat[!logical,]
-dat[dat=="na"] <- NA
-dat[dat=="Yes"] <- "yes"
-dat[dat=="No"] <- "no"
-
-# rename variables (could be done in Google Sheets?)
-dat <- dat %>%
+dat <- dat_clean %>%
   rename(pf_name_measurement_instrument = pf_measurement_name,
          meas_hrqol = measurement_of_hrqol,
          meas_pf = measurements_physical_functioning,
@@ -44,9 +26,6 @@ dat$author_year <- paste(dat$author, dat$char_year, sep = " ")
 #calculate attrition
 dat$attrition_post <- round(100-((dat$sample_size_post/dat$sample_size_pre)*100), 2)
 dat$attrition_fu <- round(100-((dat$sample_size_fu/dat$sample_size_post)*100), 2)
-
-#next lines should be corrected in Google Sheet
-dat$sample_size_post[dat$author == "Olason" & dat$year == 2004] = NA # incorrect sample_size_post, Olason (2004)
 
 #create variable cohort
 dat$cohort <- paste(dat$author, dat$year, dat$cohort_id, sep = "_")
@@ -180,11 +159,7 @@ for (mi in meetinstrumenten) {
     data_fp <- data_fp %>%
       mutate(ni := eval(parse(text=v4)))
     
-    data_fp_meta <- escalc(measure="SMCR", m1i=m1i, m2i=m2i, sd1i=sd1i, ni=ni, ri=ri, data=data_fp)
-    fp_meta <- metafor::summary.escalc(data_fp_meta)
     
-    fp_meta$tabletext <- cbind(fp_meta$author, fp_meta$year, fp_meta$n_pre, fp_meta$measure, 
-                               fp_meta$fu_month)
     
     
     
@@ -241,29 +216,7 @@ for (mi in meetinstrumenten) {
 
 
 # reversed scoring. Reverse the contrast in case higher scores indicate decreased functioning.  
-## to be added? probably "other" >> "NHP: GLOBAL", "DPQ: dailty activities", "PCL (negative SE)", "No sick. leave days", "NRS (0-10), average pain"
-## to be checked carefully  
-measReverse <- c("FIQ", "NHP", "NHP: PA", "Norfunk (0-3)", "RDQ", "QBPDS",
-                 "DRI (0-100)", "PDI", "ODI (0-1)", "MPI: pain interference",
-                 "RMDQ", "ODI", "QBPRS", "DPQ: Daily activities", "LBPRS",
-                 "DRI", "SIP", "ADS (german scale of CES-D)", "HADS-D",
-                 "BDI", "SCL90-D", "Depression index (DEPS)", "DASS", "BDI-II",
-                 "Zung", "HADS-A", "VAS Anxiety (0-100)", "SCL90-A", "STAI", 
-                 "NHP: Emotional reactions", "DPQ: anxiety/depression",
-                 "SCL-90: Hostility", "DPQ: social life", "VAS (0-10)", 
-                 "NRS (0-10)", "VAS", "NRS", "Likert pain intensity", "FRI", 
-                 "MPI: pain severity", "PRI", "NPRS", "NRS (0-100)")
-
-#questionnaires in the current dataset for which higher scores indicate increased functioning: 
-#"EuroQol-5D-3L", "LiSat-11", "WHQOL-BREF", "HFAQ", "MPI: GA",
-#"SF-36 subscale Physical Functioning", "RAND-36 subscale Physical Functioning",
-#"SF-36: mental health", "PSEQ", "SF-36: social functioning", "German Life Satisfaction Questionnaire".
-
-data_long$rev_scoring = 0
-logical <- data_long$name_measurement_instrument %in% measReverse
-data_long$rev_scoring[logical] = 1
-
-
+data_long$rev_scoring <- questionnaires$reverse_scoring[match(as.character(data_long$name_measurement_instrument), as.character(questionnaires$q))]
 
 ## reverse scoring procedure ##
 data <- data_long
@@ -307,10 +260,11 @@ corrected_data$outcome <- corrected_data$outcome %>% recode(
 corrected_data <- corrected_data %>%
   mutate(fu_month = if_else(contrast == "pre-post", 0, fu_month))
 
+
 ### static meta analysis ###
 
 static_ma <- corrected_data
-static_ma$ri = .54
+static_ma$ri = .59
 
 data_meta <- escalc(measure="SMCR", m1i=right_m, m2i=left_m, sd1i=left_sd, ni=right_n, ri=ri, data=static_ma)
 meta_dat <- metafor::summary.escalc(data_meta)
@@ -343,6 +297,41 @@ srf_meta_pof <- filter(meta_dat, contrast == "post-fu" & outcome == "social func
 srf_meta_prf <- filter(meta_dat, contrast == "pre-fu" & outcome == "social functioning")
 
 metavars <- c("author", "year", "cohort_id", "yi", "zi", "ci.lb", "ci.ub")
+metavars2 <- c("author", "year", "cohort_id", "outcome", "yi", "zi", "ci.lb", "ci.ub")
+
+#statistical significance of all ES combined.
+meta_dat_prpo <- filter(meta_dat, contrast == "pre-post")
+summarytools::freq(meta_dat_prpo$ci.lb > 0) # + pre-follow-up pattern
+summarytools::freq(meta_dat_prpo$ci.lb < 0 & meta_dat_prpo$ci.ub > 0) # 0 pre-follow-up pattern
+summarytools::freq(meta_dat_prpo$ci.ub < 0) # - pre follow-up pattern
+
+meta_dat_pof <- filter(meta_dat, contrast == "post-fu")
+
+#pattern total
+merge_prpo <- meta_dat_prpo[metavars2]
+merge_pof <- meta_dat_pof[metavars2]
+meta_merge <- merge(merge_prpo, merge_pof, by = c("author", "year", "cohort_id", "outcome"))
+
+#pattern pre-fu
+meta_dat_prf <- filter(meta_dat, contrast == "pre-fu")
+summarytools::freq(meta_dat_prf$ci.lb > 0) # + pre-follow-up pattern
+summarytools::freq(meta_dat_prf$ci.lb < 0 & meta_dat_prf$ci.ub > 0) # 0 pre-follow-up pattern
+summarytools::freq(meta_dat_prf$ci.ub < 0) # - pre follow-up pattern
+
+#statistical significance of all ES combined.
+
+total_patterns <- c(
+sum(meta_merge$ci.lb.x > 0 & meta_merge$ci.lb.y > 0, na.rm=TRUE), # ++ pattern
+sum(meta_merge$ci.lb.x > 0 & meta_merge$ci.lb.y < 0 & meta_merge$ci.ub.y > 0, na.rm=TRUE), # +0 pattern
+sum(meta_merge$ci.lb.x > 0 & meta_merge$ci.ub.y < 0, na.rm=TRUE), # +- pattern
+sum(meta_merge$ci.lb.x < 0 & meta_merge$ci.ub.x > 0 & meta_merge$ci.lb.y > 0, na.rm=TRUE), # 0+ pattern
+sum(meta_merge$ci.lb.x < 0 & meta_merge$ci.ub.x > 0 & meta_merge$ci.lb.y < 0 & meta_merge$ci.ub.y > 0, na.rm=TRUE), # 00 pattern
+sum(meta_merge$ci.lb.x < 0 & meta_merge$ci.ub.x > 0 & meta_merge$ci.ub.y < 0, na.rm=TRUE), # 0- pattern
+sum(meta_merge$ci.ub.x < 0 & meta_merge$ci.lb.y > 0, na.rm=TRUE), # -+ pattern
+sum(meta_merge$ci.ub.x < 0 & meta_merge$ci.lb.y < 0 & meta_merge$ci.ub.y > 0, na.rm=TRUE), # -0 pattern
+sum(meta_merge$ci.ub.x < 0 & meta_merge$ci.ub.y < 0, na.rm=TRUE) # -- pattern 
+) %>% print()
+
 
 #pattern pf
 pf_merge_prpo <- pf_meta_prpo[metavars]
@@ -361,9 +350,9 @@ sum(pf_merged$ci.ub.x < 0 & pf_merged$ci.lb.y < 0 & pf_merged$ci.ub.y > 0, na.rm
 sum(pf_merged$ci.ub.x < 0 & pf_merged$ci.ub.y < 0, na.rm=TRUE) # -- pattern
 
 #pf: pre-fu patterns
-Freq(pf_meta_prf$ci.lb > 0) # + pre-follow-up pattern
-Freq(pf_meta_prf$ci.lb < 0 & pf_meta_prf$ci.ub > 0) # 0 pre-follow-up pattern
-Freq(pf_meta_prf$ci.ub < 0) # - pre follow-up pattern
+summarytools::freq(pf_meta_prf$ci.lb > 0) # + pre-follow-up pattern
+summarytools::freq(pf_meta_prf$ci.lb < 0 & pf_meta_prf$ci.ub > 0) # 0 pre-follow-up pattern
+summarytools::freq(pf_meta_prf$ci.ub < 0) # - pre follow-up pattern
 
 
 #pattern pinter
@@ -383,9 +372,9 @@ sum(pinter_merged$ci.ub.x < 0 & pinter_merged$ci.lb.y < 0 & pinter_merged$ci.ub.
 sum(pinter_merged$ci.ub.x < 0 & pinter_merged$ci.ub.y < 0, na.rm=TRUE) # -- pattern
 
 #pinter: pre-fu patterns
-Freq(pinter_meta_prf$ci.lb > 0) # + pre-follow-up pattern
-Freq(pinter_meta_prf$ci.lb < 0 & pinter_meta_prf$ci.ub > 0) # 0 pre-follow-up pattern
-Freq(pinter_meta_prf$ci.ub < 0) # - pre follow-up pattern
+summarytools::freq(pinter_meta_prf$ci.lb > 0) # + pre-follow-up pattern
+summarytools::freq(pinter_meta_prf$ci.lb < 0 & pinter_meta_prf$ci.ub > 0) # 0 pre-follow-up pattern
+summarytools::freq(pinter_meta_prf$ci.ub < 0) # - pre follow-up pattern
 
 
 #pattern dep
@@ -405,9 +394,9 @@ sum(dep_merged$ci.ub.x < 0 & dep_merged$ci.lb.y < 0 & dep_merged$ci.ub.y > 0, na
 sum(dep_merged$ci.ub.x < 0 & dep_merged$ci.ub.y < 0, na.rm=TRUE) # -- pattern
 
 #dep: pre-fu patterns
-Freq(dep_meta_prf$ci.lb > 0) # + pre-follow-up pattern
-Freq(dep_meta_prf$ci.lb < 0 & dep_meta_prf$ci.ub > 0) # 0 pre-follow-up pattern
-Freq(dep_meta_prf$ci.ub < 0) # - pre follow-up pattern
+summarytools::freq(dep_meta_prf$ci.lb > 0) # + pre-follow-up pattern
+summarytools::freq(dep_meta_prf$ci.lb < 0 & dep_meta_prf$ci.ub > 0) # 0 pre-follow-up pattern
+summarytools::freq(dep_meta_prf$ci.ub < 0) # - pre follow-up pattern
 
 #pattern anx
 anx_merge_prpo <- anx_meta_prpo[metavars]
@@ -426,9 +415,9 @@ sum(anx_merged$ci.ub.x < 0 & anx_merged$ci.lb.y < 0 & anx_merged$ci.ub.y > 0, na
 sum(anx_merged$ci.ub.x < 0 & anx_merged$ci.ub.y < 0, na.rm=TRUE) # -- pattern
 
 #anx: pre-fu patterns
-Freq(anx_meta_prf$ci.lb > 0) # + pre-follow-up pattern
-Freq(anx_meta_prf$ci.lb < 0 & anx_meta_prf$ci.ub > 0) # 0 pre-follow-up pattern
-Freq(anx_meta_prf$ci.ub < 0) # - pre follow-up pattern
+summarytools::freq(anx_meta_prf$ci.lb > 0) # + pre-follow-up pattern
+summarytools::freq(anx_meta_prf$ci.lb < 0 & anx_meta_prf$ci.ub > 0) # 0 pre-follow-up pattern
+summarytools::freq(anx_meta_prf$ci.ub < 0) # - pre follow-up pattern
 
 #pattern ef
 ef_merge_prpo <- ef_meta_prpo[metavars]
@@ -447,9 +436,9 @@ sum(ef_merged$ci.ub.x < 0 & ef_merged$ci.lb.y < 0 & ef_merged$ci.ub.y > 0, na.rm
 sum(ef_merged$ci.ub.x < 0 & ef_merged$ci.ub.y < 0, na.rm=TRUE) # -- pattern
 
 #ef: pre-fu patterns
-Freq(ef_meta_prf$ci.lb > 0) # + pre-follow-up pattern
-Freq(ef_meta_prf$ci.lb < 0 & ef_meta_prf$ci.ub > 0) # 0 pre-follow-up pattern
-Freq(ef_meta_prf$ci.ub < 0) # - pre follow-up pattern
+summarytools::freq(ef_meta_prf$ci.lb > 0) # + pre-follow-up pattern
+summarytools::freq(ef_meta_prf$ci.lb < 0 & ef_meta_prf$ci.ub > 0) # 0 pre-follow-up pattern
+summarytools::freq(ef_meta_prf$ci.ub < 0) # - pre follow-up pattern
 
 #pattern ang
 ang_merge_prpo <- ang_meta_prpo[metavars]
@@ -468,9 +457,9 @@ sum(ang_merged$ci.ub.x < 0 & ang_merged$ci.lb.y < 0 & ang_merged$ci.ub.y > 0, na
 sum(ang_merged$ci.ub.x < 0 & ang_merged$ci.ub.y < 0, na.rm=TRUE) # -- pattern
 
 #ang: pre-fu patterns
-Freq(ang_meta_prf$ci.lb > 0) # + pre-follow-up pattern
-Freq(ang_meta_prf$ci.lb < 0 & ang_meta_prf$ci.ub > 0) # 0 pre-follow-up pattern
-Freq(ang_meta_prf$ci.ub < 0) # - pre follow-up pattern
+summarytools::freq(ang_meta_prf$ci.lb > 0) # + pre-follow-up pattern
+summarytools::freq(ang_meta_prf$ci.lb < 0 & ang_meta_prf$ci.ub > 0) # 0 pre-follow-up pattern
+summarytools::freq(ang_meta_prf$ci.ub < 0) # - pre follow-up pattern
 
 #pattern se
 se_merge_prpo <- se_meta_prpo[metavars]
@@ -489,9 +478,9 @@ sum(se_merged$ci.ub.x < 0 & se_merged$ci.lb.y < 0 & se_merged$ci.ub.y > 0, na.rm
 sum(se_merged$ci.ub.x < 0 & se_merged$ci.ub.y < 0, na.rm=TRUE) # -- pattern
 
 #se: pre-fu patterns
-Freq(se_meta_prf$ci.lb > 0) # + pre-follow-up pattern
-Freq(se_meta_prf$ci.lb < 0 & se_meta_prf$ci.ub > 0) # 0 pre-follow-up pattern
-Freq(se_meta_prf$ci.ub < 0) # - pre follow-up pattern
+summarytools::freq(se_meta_prf$ci.lb > 0) # + pre-follow-up pattern
+summarytools::freq(se_meta_prf$ci.lb < 0 & se_meta_prf$ci.ub > 0) # 0 pre-follow-up pattern
+summarytools::freq(se_meta_prf$ci.ub < 0) # - pre follow-up pattern
 
 #pattern srf
 srf_merge_prpo <- srf_meta_prpo[metavars]
@@ -510,9 +499,9 @@ sum(srf_merged$ci.ub.x < 0 & srf_merged$ci.lb.y < 0 & srf_merged$ci.ub.y > 0, na
 sum(srf_merged$ci.ub.x < 0 & srf_merged$ci.ub.y < 0, na.rm=TRUE) # -- pattern
 
 #srf: pre-fu patterns
-Freq(srf_meta_prf$ci.lb > 0) # + pre-follow-up pattern
-Freq(srf_meta_prf$ci.lb < 0 & srf_meta_prf$ci.ub > 0) # 0 pre-follow-up pattern
-Freq(srf_meta_prf$ci.ub < 0) # - pre follow-up pattern
+summarytools::freq(srf_meta_prf$ci.lb > 0) # + pre-follow-up pattern
+summarytools::freq(srf_meta_prf$ci.lb < 0 & srf_meta_prf$ci.ub > 0) # 0 pre-follow-up pattern
+summarytools::freq(srf_meta_prf$ci.ub < 0) # - pre follow-up pattern
 
 #pattern pintens
 pintens_merge_prpo <- pintens_meta_prpo[metavars]
@@ -531,28 +520,24 @@ sum(pintens_merged$ci.ub.x < 0 & pintens_merged$ci.lb.y < 0 & pintens_merged$ci.
 sum(pintens_merged$ci.ub.x < 0 & pintens_merged$ci.ub.y < 0, na.rm=TRUE) # -- pattern
 
 #pintens: pre-fu patterns
-Freq(pintens_meta_prf$ci.lb > 0) # + pre-follow-up pattern
-Freq(pintens_meta_prf$ci.lb < 0 & pintens_meta_prf$ci.ub > 0) # 0 pre-follow-up pattern
-Freq(pintens_meta_prf$ci.ub < 0) # - pre follow-up pattern
+summarytools::freq(pintens_meta_prf$ci.lb > 0) # + pre-follow-up pattern
+summarytools::freq(pintens_meta_prf$ci.lb < 0 & pintens_meta_prf$ci.ub > 0) # 0 pre-follow-up pattern
+summarytools::freq(pintens_meta_prf$ci.ub < 0) # - pre follow-up pattern
 
 
 #PF pre-post#
-summary(pf_meta_prpo$yi)
+sum_pf_prpo <- summary(pf_meta_prpo$yi) %>%
+  print()
+
+median_pf_prpo <- sum_pf_prpo[3] %>%
+  print()
+
+
 rma(yi, vi, data=pf_meta_prpo)
 
 
 fp_meta2$tabletext <- cbind(fp_meta_prpo$author, fp_meta_prpo$year, fp_meta_prpo$n_pre, fp_meta_prpo$measure, 
                             fp_meta_prpo$fu_month, fp_meta_prpo$yi, fp_meta_prpo$ci.lb, fp_meta_prpo$ci.ub)
-
-#forestplot(fp_meta2$tabletext, fp_meta_prpo$yi, fp_meta_prpo$ci.lb, fp_meta_prpo$ci.ub,
-#           zero = 0,
-#           cex = 2,
-#           lineheight = "auto",
-#           xlab = "SMD",
-#           lwd.ci= 3,
-#           col = fpColors(text="black", lines="#4393C3", box="#2166AC"),
-#           boxsize = .25
-#         )
 
 # PF post-fu #
 summary(pf_meta_pof$yi)
@@ -563,7 +548,12 @@ summary(pf_meta_prf$yi)
 rma(yi, vi, data=pf_meta_prf)
 
 #Pinter pre-post#
-summary(pinter_meta_prpo$yi)
+sum_pinter_prpo <- summary(pinter_meta_prpo$yi) %>%
+  print()
+
+median_pinter_prpo <- sum_pinter_prpo[3] %>%
+  print()
+
 rma(yi, vi, data=pinter_meta_prpo)
 unique(pinter_meta_prf$name_measurement_instrument)
 
@@ -576,7 +566,12 @@ summary(pinter_meta_prf$yi)
 rma(yi, vi, data=pinter_meta_prf)
 
 #Pintens pre-post#
-summary(pintens_meta_prpo$yi)
+sum_pintens_prpo <- summary(pintens_meta_prpo$yi) %>%
+  print()
+
+median_pintens_prpo <- sum_pintens_prpo[3] %>%
+  print()
+
 rma(yi, vi, data=pintens_meta_prpo)
 unique(pintens_meta_prf$name_measurement_instrument)
 
@@ -589,7 +584,12 @@ summary(pintens_meta_prf$yi)
 rma(yi, vi, data=pintens_meta_prf)
 
 #dep pre-post#
-summary(dep_meta_prpo$yi)
+sum_dep_prpo <- summary(dep_meta_prpo$yi) %>%
+  print()
+
+median_dep_prpo <- sum_dep_prpo[3] %>%
+  print()
+
 rma(yi, vi, data=dep_meta_prpo)
 unique(dep_meta_prf$name_measurement_instrument)
 
@@ -602,7 +602,13 @@ summary(dep_meta_prf$yi)
 rma(yi, vi, data=dep_meta_prf)
 
 #anx pre-post#
-summary(anx_meta_prpo$yi)
+sum_anx_prpo <- summary(anx_meta_prpo$yi) %>%
+  print()
+
+median_anx_prpo <- sum_anx_prpo[3] %>%
+  print()
+
+
 rma(yi, vi, data=anx_meta_prpo)
 unique(anx_meta_prf$name_measurement_instrument)
 
@@ -615,7 +621,13 @@ summary(anx_meta_prf$yi)
 rma(yi, vi, data=anx_meta_prf)
 
 #ef pre-post#
-summary(ef_meta_prpo$yi)
+sum_ef_prpo <- summary(ef_meta_prpo$yi) %>%
+  print()
+
+median_ef_prpo <- sum_ef_prpo[3] %>%
+  print()
+
+
 rma(yi, vi, data=ef_meta_prpo)
 unique(ef_meta_prf$name_measurement_instrument)
 
@@ -628,7 +640,12 @@ summary(ef_meta_prf$yi)
 rma(yi, vi, data=ef_meta_prf)
 
 #ang pre-post#
-summary(ang_meta_prpo$yi)
+sum_ang_prpo <- summary(ang_meta_prpo$yi) %>%
+  print()
+
+median_ang_prpo <- sum_ang_prpo[3] %>%
+  print()
+
 rma(yi, vi, data=ang_meta_prpo)
 unique(ang_meta_prf$name_measurement_instrument)
 
@@ -641,7 +658,12 @@ summary(ang_meta_prf$yi)
 rma(yi, vi, data=ang_meta_prf)
 
 #se pre-post#
-summary(se_meta_prpo$yi)
+sum_se_prpo <- summary(se_meta_prpo$yi) %>%
+  print()
+
+median_se_prpo <- sum_se_prpo[3] %>%
+  print()
+
 rma(yi, vi, data=se_meta_prpo)
 unique(se_meta_prf$name_measurement_instrument)
 
@@ -654,7 +676,13 @@ summary(se_meta_prf$yi)
 rma(yi, vi, data=se_meta_prf)
 
 #srf pre-post#
-summary(srf_meta_prpo$yi)
+sum_srf_prpo <- summary(srf_meta_prpo$yi) %>%
+  print()
+
+median_srf_prpo <- sum_srf_prpo[3] %>%
+  print()
+
+
 rma(yi, vi, data=srf_meta_prpo)
 unique(srf_meta_prf$name_measurement_instrument)
 
@@ -670,86 +698,112 @@ rma(yi, vi, data=srf_meta_prf)
 ## Re-express median ES on most common scale
 
 #PF prpo
-Freq(pf_meta_prpo$name_measurement_instrument)
+summarytools::freq(pf_meta_prpo$name_measurement_instrument)
 pf_es_scale <- filter(pf_meta_prpo, name_measurement_instrument == "SF-36 subscale Physical Functioning") %>%
   select(right_sd, right_n)
 
 pf_es_scale$weighted <- pf_es_scale$right_sd * pf_es_scale$right_n
 
-sum(pf_es_scale$weighted) / sum(pf_es_scale$right_n) # this is the weighted SD of the most commonly used instrument.
+weighted_sd_pf_prpo <- sum(pf_es_scale$weighted) / sum(pf_es_scale$right_n) # this is the weighted SD of the most commonly used instrument.
+print(weighted_sd_pf_prpo)
+
+median_pf_prpo * weighted_sd_pf_prpo # this is the conversion of the median effect size to the most frequently used instrument on that particular outcome.
 
 #Pinter prpo
-Freq(pinter_meta_prpo$name_measurement_instrument)
+summarytools::freq(pinter_meta_prpo$name_measurement_instrument)
 pinter_es_scale <- filter(pinter_meta_prpo, name_measurement_instrument == "RMDQ") %>%
   select(right_sd, right_n)
 
 pinter_es_scale$weighted <- pinter_es_scale$right_sd * pinter_es_scale$right_n
 
-sum(pinter_es_scale$weighted) / sum(pinter_es_scale$right_n) # this is the weighted SD of the most commonly used instrument.
+weighted_sd_pinter_prpo <- sum(pinter_es_scale$weighted) / sum(pinter_es_scale$right_n) # this is the weighted SD of the most commonly used instrument.
+print(weighted_sd_pinter_prpo)
+
+median_pinter_prpo * weighted_sd_pinter_prpo # this is the conversion of the median effect size to the most frequently used instrument on that particular outcome.
 
 #dep prpo
-Freq(dep_meta_prpo$name_measurement_instrument)
+summarytools::freq(dep_meta_prpo$name_measurement_instrument)
 dep_es_scale <- filter(dep_meta_prpo, name_measurement_instrument == "BDI") %>%
   select(right_sd, right_n)
 
 dep_es_scale$weighted <- dep_es_scale$right_sd * dep_es_scale$right_n
 
-sum(dep_es_scale$weighted) / sum(dep_es_scale$right_n) # this is the weighted SD of the most commonly used instrument.
+weighted_sd_dep_prpo <- sum(dep_es_scale$weighted) / sum(dep_es_scale$right_n) # this is the weighted SD of the most commonly used instrument.
+print(weighted_sd_dep_prpo)
+
+median_dep_prpo * weighted_sd_dep_prpo # this is the conversion of the median effect size to the most frequently used instrument on that particular outcome.
 
 #anx prpo
-Freq(anx_meta_prpo$name_measurement_instrument)
+summarytools::freq(anx_meta_prpo$name_measurement_instrument)
 anx_es_scale <- filter(anx_meta_prpo, name_measurement_instrument == "HADS-A") %>%
   select(right_sd, right_n)
 
 anx_es_scale$weighted <- anx_es_scale$right_sd * anx_es_scale$right_n
 
-sum(anx_es_scale$weighted) / sum(anx_es_scale$right_n) # this is the weighted SD of the most commonly used instrument.
+weighted_sd_anx_prpo <- sum(anx_es_scale$weighted) / sum(anx_es_scale$right_n) # this is the weighted SD of the most commonly used instrument. 
+print(weighted_sd_anx_prpo)
+
+median_anx_prpo * weighted_sd_anx_prpo # this is the conversion of the median effect size to the most frequently used instrument on that particular outcome.
 
 #ef prpo
-Freq(ef_meta_prpo$name_measurement_instrument)
+summarytools::freq(ef_meta_prpo$name_measurement_instrument)
 ef_es_scale <- filter(ef_meta_prpo, name_measurement_instrument == "SF-36: mental health") %>%
   select(right_sd, right_n)
 
 ef_es_scale$weighted <- ef_es_scale$right_sd * ef_es_scale$right_n
 
-sum(ef_es_scale$weighted) / sum(ef_es_scale$right_n) # this is the weighted SD of the most commonly used instrument.
+weighted_sd_ef_prpo <- sum(ef_es_scale$weighted) / sum(ef_es_scale$right_n) # this is the weighted SD of the most commonly used instrument.
+print(weighted_sd_ef_prpo)
+
+median_ef_prpo * weighted_sd_ef_prpo # this is the conversion of the median effect size to the most frequently used instrument on that particular outcome.
 
 #ang prpo
-Freq(ang_meta_prpo$name_measurement_instrument)
+summarytools::freq(ang_meta_prpo$name_measurement_instrument)
 ang_es_scale <- filter(ang_meta_prpo, name_measurement_instrument == "SCL-90: Hostility") %>%
   select(right_sd, right_n)
 
 ang_es_scale$weighted <- ang_es_scale$right_sd * ang_es_scale$right_n
 
-sum(ang_es_scale$weighted) / sum(ang_es_scale$right_n) # this is the weighted SD of the most commonly used instrument.
+weighted_sd_ang_prpo <- sum(ang_es_scale$weighted) / sum(ang_es_scale$right_n) # this is the weighted SD of the most commonly used instrument.
+print(weighted_sd_ang_prpo)
+
+median_ang_prpo * weighted_sd_ang_prpo # this is the conversion of the median effect size to the most frequently used instrument on that particular outcome.
 
 #SE prpo
-Freq(se_meta_prpo$name_measurement_instrument)
+summarytools::freq(se_meta_prpo$name_measurement_instrument)
 se_es_scale <- filter(se_meta_prpo, name_measurement_instrument == "PSEQ") %>%
   select(right_sd, right_n)
 
 se_es_scale$weighted <- se_es_scale$right_sd * se_es_scale$right_n
 
-sum(se_es_scale$weighted) / sum(se_es_scale$right_n) # this is the weighted SD of the most commonly used instrument.
+weighted_sd_se_prpo <- sum(se_es_scale$weighted) / sum(se_es_scale$right_n) # this is the weighted SD of the most commonly used instrument.
+print(weighted_sd_se_prpo)
+
+median_se_prpo * weighted_sd_se_prpo # this is the conversion of the median effect size to the most frequently used instrument on that particular outcome.
 
 #SRF prpo
-Freq(srf_meta_prpo$name_measurement_instrument)
+summarytools::freq(srf_meta_prpo$name_measurement_instrument)
 srf_es_scale <- filter(srf_meta_prpo, name_measurement_instrument == "SF-36: social functioning") %>%
   select(right_sd, right_n)
 
 srf_es_scale$weighted <- srf_es_scale$right_sd * srf_es_scale$right_n
 
-sum(srf_es_scale$weighted) / sum(srf_es_scale$right_n) # this is the weighted SD of the most commonly used instrument.
+weighted_sd_srf_prpo <- sum(srf_es_scale$weighted) / sum(srf_es_scale$right_n) # this is the weighted SD of the most commonly used instrument.
+print(weighted_sd_srf_prpo)
+
+median_srf_prpo * weighted_sd_srf_prpo # this is the conversion of the median effect size to the most frequently used instrument on that particular outcome.
 
 #Pintens prpo
-Freq(pintens_meta_prpo$name_measurement_instrument)
+summarytools::freq(pintens_meta_prpo$name_measurement_instrument)
 pintens_es_scale <- filter(pintens_meta_prpo, name_measurement_instrument == "VAS") %>%
   select(right_sd, right_n)
 
 pintens_es_scale$weighted <- pintens_es_scale$right_sd * pintens_es_scale$right_n
 
-sum(pintens_es_scale$weighted) / sum(pintens_es_scale$right_n) # this is the weighted SD of the most commonly used instrument.
+weighted_sd_pintens_prpo <- sum(pintens_es_scale$weighted) / sum(pintens_es_scale$right_n) # this is the weighted SD of the most commonly used instrument.
+print(weighted_sd_pintens_prpo)
 
+median_pintens_prpo * weighted_sd_pintens_prpo # this is the conversion of the median effect size to the most frequently used instrument on that particular outcome.
 
 ## create static forest plot for testing lay-out
 data_testfp <- escalc(measure="SMCR", m1i=right_m, m2i=left_m, sd1i=left_sd, ni=right_n, ri=ri, data=static_ma) %>%

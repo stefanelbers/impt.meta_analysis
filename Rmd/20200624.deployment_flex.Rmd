@@ -2013,9 +2013,6 @@ dat$author_year <- paste(dat$author, dat$char_year, sep = " ")
 dat$attrition_post <- round(100-((dat$sample_size_post/dat$sample_size_pre)*100), 2)
 dat$attrition_fu <- round(100-((dat$sample_size_fu/dat$sample_size_post)*100), 2)
 
-#next lines should be corrected in Google Sheet
-dat$sample_size_post[dat$author == "Olason" & dat$year == 2004] = NA # incorrect sample_size_post, Olason (2004)
-
 #create variable cohort
 dat$cohort <- paste(dat$author, dat$year, dat$cohort_id, sep = "_")
 
