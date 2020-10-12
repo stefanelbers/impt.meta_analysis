@@ -1,36 +1,60 @@
 ---
 title: "flexdashboard: IMPT meta analysis"
+runtime: shiny
 output: 
   flexdashboard::flex_dashboard:
     social: menu
     source_code: embed 
     vertical_layout: scroll
-    runtime: shiny
 ---
 
-```{r setup, include=FALSE, echo=FALSE}
-require("knitr")
-opts_knit$set(root.dir = "~/impt.meta_analysis/deployment/") #set root for Knitr
-```
 
 ```{r load packages, include=FALSE}
-source("R/load_packages.R", local = knitr::knit_global())
+# Package names
+
+library(dplyr)
+library(DiagrammeR)
+library(DT)
+library(flexdashboard)
+library(forestplot)
+library(formattable)
+library(data.table)
+library(gsheet)
+library(htmltools)
+library(Hmisc)
+library(lessR)
+library(magrittr)
+library(meta)
+library(metafor)
+library(plotly)
+library(png)
+library(PRISMAstatement)
+library(psych)
+library(reactable)
+library(readxl)
+library(rsconnect)
+library(shiny)
+library(stringr)
+library(summarytools)
+library(tidyr)
+library(tidyverse)
+library(wesanderson)
 ```
 
 ```{r load data, include=FALSE}
-source("R/load_data.R", local = knitr::knit_global())
+source("load_data.R", local = knitr::knit_global())
 ```
 
 ```{r prepare descriptive tables, include=FALSE}
-source("R/descriptive_tables_md.R", local = knitr::knit_global())
+source("descriptive_tables_md.R", local = knitr::knit_global())
 ```
 
 ```{r questionnaires dataframe, echo=FALSE}
-source("R/questionnaires_dataframe.R", local = knitr::knit_global())
+source("questionnaires_dataframe.R", local = knitr::knit_global())
 ```
 
 ```{r}
-source("R/shiny_fp_prep_md.R", local = knitr::knit_global())
+source("shiny_fp_prep_md.R", local = knitr::knit_global())
 ```
 
 Home {data-orientation=columns}
@@ -58,7 +82,7 @@ Column
 -------------------------------------
 
 ```{r}
-img = readPNG("input/fp_pic.png")
+img = readPNG("fp_pic.png")
 ```
 
 
@@ -69,7 +93,7 @@ Row {data-height=1200}
 -------------------------------------
 ### flow chart
 ```{r}
-prisma(31894, 90, 17955, 17955, 17588, 367, 304, 63, 55)
+prisma(31894, 90, 17955, 17955, 17588, 367, 304, 61, 54)
 ```
 
 Study/patient characteristics {data-orientation=rows}
@@ -1449,7 +1473,7 @@ selectInput(inputId = "contrast",
 ```
 
 
-Row {data-height=700}
+Row {data-height=1000}
 -------------------------------------
 
 ### Shiny forest plots

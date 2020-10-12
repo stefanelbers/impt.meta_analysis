@@ -49,6 +49,15 @@ summary(dat_n$attrition_post)
 summary(dat_n$attrition_fu)
 
 #leave out the studies that performed a complete case analysis
+#this is not yet complete. We have to reassess the data before completing this point.
+possible_complete_case_post <- dat_n %>%
+  na.omit() %>%
+  dplyr::filter(attrition_post <= 0)
+
+possible_complete_case_fu <- dat_n %>%
+  na.omit() %>%
+  dplyr::filter(attrition_fu <= 0)
+
 
 dat_n$f <- dat_n$attrition_post+dat_n$attrition_fu
 
@@ -167,6 +176,17 @@ summarytools::freq(dat_hcp$pt)
 summarytools::freq(dat_hcp$ot)
 summarytools::freq(dat_hcp$nur)
 summarytools::freq(dat_hcp$swo)
+
+
+#calculate % of studies that include 'other' HCP professions
+
+missing_hcp <- (sum(is.na(dat_hcp$other_healthcare_providers)))
+
+total_cohorts <- nrow(dat_hcp)
+
+#calculate percentage of studies that include other HCPs in their team
+missing_hcp/total_cohorts*100
+
 
 #describe follow-up and tailoring of treatment programs
 dat_fu <- dat_res %>%

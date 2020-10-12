@@ -46,6 +46,7 @@ questionnaires <- questionnaires %>%
     vector_NHP_pa <- c("NHP: PA", 0, 100, 1),
     vector_hfaq <- c("HFAQ", 0, 100, 0),
     vector_mpi_ga_06 <- c("MPI: GA (0-6)", 0, 6, 0),
+    vector_mpi_di_06 <- c("MPI:distress (0-6)", 0, 6, 1),
     vector_norfunk <- c("Norfunk (0-3)", 0, 3, 1),
     vector_ADS <- c("ADS (german scale of CES-D)", 0, 60, 1),
     vector_haDs <- c("HADS-D", 0, 21, 1),
@@ -81,7 +82,8 @@ questionnaires <- questionnaires %>%
     vector_rand_pf <- c("RAND-36 subscale Physical Functioning", 0, 100, 0),
     vector_dass_anx <- c("DASS: anxiety", 0, 42, 1),
     vector_mpi0_pi_0100 <- c("MPI: pain interference (0-100)", 0, 100, 1),
-    vector_GSE <- c("GSE (1-4)", 1, 4, 0)
+    vector_GSE <- c("GSE (1-4)", 1, 4, 0),
+    vector_DS <- c("DS (depressivitats-skala)", 0, 48, 1)
     )
 
 

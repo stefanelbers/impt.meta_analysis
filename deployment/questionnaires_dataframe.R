@@ -81,7 +81,8 @@ questionnaires <- questionnaires %>%
     vector_rand_pf <- c("RAND-36 subscale Physical Functioning", 0, 100, 0),
     vector_dass_anx <- c("DASS: anxiety", 0, 42, 1),
     vector_mpi0_pi_0100 <- c("MPI: pain interference (0-100)", 0, 100, 1),
-    vector_GSE <- c("GSE (1-4)", 1, 4, 0)
+    vector_GSE <- c("GSE (1-4)", 1, 4, 0),
+    vector_DSkala <- c("DS (depressivitats-skala)", 1, 10, 1)
     )
 
 

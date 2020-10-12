@@ -332,6 +332,18 @@ sum(meta_merge$ci.ub.x < 0 & meta_merge$ci.lb.y < 0 & meta_merge$ci.ub.y > 0, na
 sum(meta_merge$ci.ub.x < 0 & meta_merge$ci.ub.y < 0, na.rm=TRUE) # -- pattern 
 ) %>% print()
 
+#create dataframe to obtain absolute and relative numbers of total patterns over time across outcomes.
+
+sum_total_patterns <- sum(total_patterns)
+patterns <- c("++", "+0", "+-", "0+", "00", "0-", "-+", "-0", "--")
+patterns_table <- bind_cols (patterns, total_patterns)
+names(patterns_table)[1] <- "patterns"
+names(patterns_table)[2] <- "absolute_count"
+
+patterns_table$percentage <- patterns_table$absolute_count/sum_total_patterns*100
+sum(patterns_table$percentage)
+
+
 
 #pattern pf
 pf_merge_prpo <- pf_meta_prpo[metavars]
@@ -699,7 +711,7 @@ rma(yi, vi, data=srf_meta_prf)
 
 #PF prpo
 summarytools::freq(pf_meta_prpo$name_measurement_instrument)
-pf_es_scale <- filter(pf_meta_prpo, name_measurement_instrument == "SF-36 subscale Physical Functioning") %>%
+pf_es_scale <- filter(pf_meta_prpo, name_measurement_instrument == "HFAQ") %>%
   select(right_sd, right_n)
 
 pf_es_scale$weighted <- pf_es_scale$right_sd * pf_es_scale$right_n
