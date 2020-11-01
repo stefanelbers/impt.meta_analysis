@@ -64,6 +64,9 @@ dat_n$f <- dat_n$attrition_post+dat_n$attrition_fu
 dat_n_f <- dat_n %>%
   dplyr::filter(dat_n$f > 0)
 
+n_studies_dropout_analysis <- nrow(dat_n_f)
+print(n_studies_dropout_analysis)
+
 summary(dat_n_f$attrition_post)
 summary(dat_n_f$attrition_fu)
 

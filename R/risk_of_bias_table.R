@@ -69,7 +69,7 @@ t_rob_sum <- as.data.frame(t_rob_sum)
 rob_barplot <- rob.summary(t_rob_sum, name.high = "no", name.low = "yes", name.unclear = "unclear", studies = t_rob_sum$author_year, table = TRUE)
 
 
-#save rob figures to preferred EJP format (PDF)
+#save rob figures to preferred EJP format (PDF  )
 
-pdf(file='rob_figures.pdf', width = 39, height = 18) 
+pdf(file='figure2.pdf', width = 45, height = 18) 
 rob.summary(t_rob_sum, name.high = "no", name.low = "yes", name.unclear = "unclear", studies = t_rob_sum$author_year, table = TRUE); dev.off() 

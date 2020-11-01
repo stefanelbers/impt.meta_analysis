@@ -548,9 +548,6 @@ median_pf_prpo <- sum_pf_prpo[3] %>%
 rma(yi, vi, data=pf_meta_prpo)
 
 
-fp_meta2$tabletext <- cbind(fp_meta_prpo$author, fp_meta_prpo$year, fp_meta_prpo$n_pre, fp_meta_prpo$measure, 
-                            fp_meta_prpo$fu_month, fp_meta_prpo$yi, fp_meta_prpo$ci.lb, fp_meta_prpo$ci.ub)
-
 # PF post-fu #
 summary(pf_meta_pof$yi)
 rma(yi, vi, data=pf_meta_pof)
@@ -573,7 +570,7 @@ unique(pinter_meta_prf$name_measurement_instrument)
 summary(pinter_meta_pof$yi)
 rma(yi, vi, data=pinter_meta_pof)
 
-#Pinter post-fu#
+#Pinter pre-fu#
 summary(pinter_meta_prf$yi)
 rma(yi, vi, data=pinter_meta_prf)
 
@@ -591,7 +588,7 @@ unique(pintens_meta_prf$name_measurement_instrument)
 summary(pintens_meta_pof$yi)
 rma(yi, vi, data=pintens_meta_pof)
 
-#Pintens post-fu#
+#Pintens pre-fu#
 summary(pintens_meta_prf$yi)
 rma(yi, vi, data=pintens_meta_prf)
 
@@ -609,7 +606,7 @@ unique(dep_meta_prf$name_measurement_instrument)
 summary(dep_meta_pof$yi)
 rma(yi, vi, data=dep_meta_pof)
 
-#dep post-fu#
+#dep pre-fu#
 summary(dep_meta_prf$yi)
 rma(yi, vi, data=dep_meta_prf)
 
@@ -628,7 +625,7 @@ unique(anx_meta_prf$name_measurement_instrument)
 summary(anx_meta_pof$yi)
 rma(yi, vi, data=anx_meta_pof)
 
-#anx post-fu#
+#anx pre-fu#
 summary(anx_meta_prf$yi)
 rma(yi, vi, data=anx_meta_prf)
 
@@ -647,7 +644,7 @@ unique(ef_meta_prf$name_measurement_instrument)
 summary(ef_meta_pof$yi)
 rma(yi, vi, data=ef_meta_pof)
 
-#ef post-fu#
+#ef pre-fu#
 summary(ef_meta_prf$yi)
 rma(yi, vi, data=ef_meta_prf)
 
@@ -665,7 +662,7 @@ unique(ang_meta_prf$name_measurement_instrument)
 summary(ang_meta_pof$yi)
 rma(yi, vi, data=ang_meta_pof)
 
-#ang post-fu#
+#ang pre-fu#
 summary(ang_meta_prf$yi)
 rma(yi, vi, data=ang_meta_prf)
 

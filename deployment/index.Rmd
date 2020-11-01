@@ -93,7 +93,7 @@ Row {data-height=1200}
 -------------------------------------
 ### flow chart
 ```{r}
-prisma(31894, 90, 17955, 17955, 17588, 367, 304, 61, 54)
+prisma(31894, 90, 17955, 17955, 17588, 374, 311, 63, 56)
 ```
 
 Study/patient characteristics {data-orientation=rows}
@@ -362,6 +362,9 @@ ts_long <- merge(ts_sdt_long, ts_m_long, c("cohort", "timepoint"))
 #create max_score column
 ts_long$max_scale <- as.numeric(questionnaires$max_scale)[match(as.character(ts_long$instrument_name), as.character(questionnaires$q))]
 
+#create min_score column
+ts_long$min_scale <- as.numeric(questionnaires$min_scale)[match(as.character(ts_long$instrument_name), as.character(questionnaires$q))]
+
 #create reverse scoring variable
 ts_long$rev_score <- questionnaires$reverse_scoring[match(as.character(ts_long$instrument_name), as.character(questionnaires$q))]
 
@@ -380,7 +383,7 @@ for (row in 1:nrow(ts_long)) {
 }
 
 #standardize mean
-ts_long$m_stand = (ts_long$m_final/ts_long$max_scale)*100
+ts_long$m_stand = ((ts_long$m_final-ts_long$min_scale)/(ts_long$max_scale-ts_long$min_scale))*100
 
 #create plot
 p <- ggplot(ts_long, aes(x=t, y=m_stand, group=cohort, color=cohort, text = 
@@ -489,38 +492,41 @@ ts_long <- merge(ts_sdt_long, ts_m_long, c("cohort", "timepoint"))
 #create max_score column
 ts_long$max_scale <- as.numeric(questionnaires$max_scale)[match(as.character(ts_long$instrument_name), as.character(questionnaires$q))]
 
+#create min_score column
+ts_long$min_scale <- as.numeric(questionnaires$min_scale)[match(as.character(ts_long$instrument_name), as.character(questionnaires$q))]
+
 #create reverse scoring variable
 ts_long$rev_score <- questionnaires$reverse_scoring[match(as.character(ts_long$instrument_name), as.character(questionnaires$q))]
 
-#reverse scoring
-ts_long$rev_score_m <- (ts_long$max_scale)-ts_long$m 
+#reverse scoring and standardizing, using the following principle: distance between the mean score and the unfavorable end of the scale divided by the total scale distance, multiplied by 100.
+ts_long$m_rev_stand <- (ts_long$max_scale-ts_long$m)/(ts_long$max_scale-ts_long$min_scale)*100
+
+#standardize mean for data that does not have to be reversed
+ts_long$m_stand = ((ts_long$m-ts_long$min_scale)/(ts_long$max_scale-ts_long$min_scale))*100
 
 #combining rev_score and normal score on contion of ts_long$rev_score
 
-ts_long$m_final <- ts_long$m
+ts_long$m_final <- ts_long$m_stand
 
 for (row in 1:nrow(ts_long)) {
   if (ts_long[row, "rev_score"] == 1 & !is.na(ts_long[row, "rev_score"])) {
     # replace value by ts_long$rev_score_m
-    ts_long[row, "m_final"] <- ts_long[row, "rev_score_m"]
+    ts_long[row, "m_final"] <- ts_long[row, "m_rev_stand"]
   }
 }
 
-#standardize mean
-ts_long$m_stand = (ts_long$m_final/ts_long$max_scale)*100
-
 #create plot
-p <- ggplot(ts_long, aes(x=t, y=m_stand, group=cohort, color=cohort, text = 
+p <- ggplot(ts_long, aes(x=t, y=m_final, group=cohort, color=cohort, text = 
                            paste("Author: ", author,
                                  "<br>Year: ", year,
                                  "<br>Cohort ID: ", cohort_id,
                                  "<br>Instrument: ", instrument_name,
                                  "<br>Raw mean: ", m,
                                  "<br>Raw SD: ", sd,
-                                 "<br>Standardized score ", m_stand
+                                 "<br>Standardized score ", m_final
                            ))) +
   labs(y= "outcome standardized (0-100)") +
-  geom_line(data=ts_long[!is.na(ts_long$m_stand),]) + 
+  geom_line(data=ts_long[!is.na(ts_long$m_final),]) + 
   geom_point() +
   scale_x_continuous(name = "Time (months)",
                      breaks = c(-5, 0, 3, 6, 12, 24, 60, 120),
@@ -616,38 +622,41 @@ ts_long <- merge(ts_sdt_long, ts_m_long, c("cohort", "timepoint"))
 #create max_score column
 ts_long$max_scale <- as.numeric(questionnaires$max_scale)[match(as.character(ts_long$instrument_name), as.character(questionnaires$q))]
 
+#create min_score column
+ts_long$min_scale <- as.numeric(questionnaires$min_scale)[match(as.character(ts_long$instrument_name), as.character(questionnaires$q))]
+
 #create reverse scoring variable
 ts_long$rev_score <- questionnaires$reverse_scoring[match(as.character(ts_long$instrument_name), as.character(questionnaires$q))]
 
-#reverse scoring
-ts_long$rev_score_m <- (ts_long$max_scale)-ts_long$m 
+#reverse scoring and standardizing, using the following principle: distance between the mean score and the unfavorable end of the scale divided by the total scale distance, multiplied by 100.
+ts_long$m_rev_stand <- (ts_long$max_scale-ts_long$m)/(ts_long$max_scale-ts_long$min_scale)*100
+
+#standardize mean for data that does not have to be reversed
+ts_long$m_stand = ((ts_long$m-ts_long$min_scale)/(ts_long$max_scale-ts_long$min_scale))*100
 
 #combining rev_score and normal score on contion of ts_long$rev_score
 
-ts_long$m_final <- ts_long$m
+ts_long$m_final <- ts_long$m_stand
 
 for (row in 1:nrow(ts_long)) {
   if (ts_long[row, "rev_score"] == 1 & !is.na(ts_long[row, "rev_score"])) {
     # replace value by ts_long$rev_score_m
-    ts_long[row, "m_final"] <- ts_long[row, "rev_score_m"]
+    ts_long[row, "m_final"] <- ts_long[row, "m_rev_stand"]
   }
 }
 
-#standardize mean
-ts_long$m_stand = (ts_long$m_final/ts_long$max_scale)*100
-
 #create plot
-p <- ggplot(ts_long, aes(x=t, y=m_stand, group=cohort, color=cohort, text = 
+p <- ggplot(ts_long, aes(x=t, y=m_final, group=cohort, color=cohort, text = 
                            paste("Author: ", author,
                                  "<br>Year: ", year,
                                  "<br>Cohort ID: ", cohort_id,
                                  "<br>Instrument: ", instrument_name,
                                  "<br>Raw mean: ", m,
                                  "<br>Raw SD: ", sd,
-                                 "<br>Standardized score ", m_stand
+                                 "<br>Standardized score ", m_final
                            ))) +
   labs(y= "outcome standardized (0-100)") +
-  geom_line(data=ts_long[!is.na(ts_long$m_stand),]) + 
+  geom_line(data=ts_long[!is.na(ts_long$m_final),]) + 
   geom_point() +
   scale_x_continuous(name = "Time (months)",
                      breaks = c(-5, 0, 3, 6, 12, 24, 60, 120),
@@ -673,7 +682,7 @@ ggplotly(p, tooltip = "text") %>%
 ### Depression
 
 ```{r}
-#subset dataset with measurements on pain_interference
+#subset dataset with measurements on depression
 
 dat_dep <- dat_clean %>%
   dplyr::filter(measurements_depression == "yes")  
@@ -743,38 +752,41 @@ ts_long <- merge(ts_sdt_long, ts_m_long, c("cohort", "timepoint"))
 #create max_score column
 ts_long$max_scale <- as.numeric(questionnaires$max_scale)[match(as.character(ts_long$instrument_name), as.character(questionnaires$q))]
 
+#create min_score column
+ts_long$min_scale <- as.numeric(questionnaires$min_scale)[match(as.character(ts_long$instrument_name), as.character(questionnaires$q))]
+
 #create reverse scoring variable
 ts_long$rev_score <- questionnaires$reverse_scoring[match(as.character(ts_long$instrument_name), as.character(questionnaires$q))]
 
-#reverse scoring
-ts_long$rev_score_m <- (ts_long$max_scale)-ts_long$m 
+#reverse scoring and standardizing, using the following principle: distance between the mean score and the unfavorable end of the scale divided by the total scale distance, multiplied by 100.
+ts_long$m_rev_stand <- (ts_long$max_scale-ts_long$m)/(ts_long$max_scale-ts_long$min_scale)*100
+
+#standardize mean for data that does not have to be reversed
+ts_long$m_stand = ((ts_long$m-ts_long$min_scale)/(ts_long$max_scale-ts_long$min_scale))*100
 
 #combining rev_score and normal score on contion of ts_long$rev_score
 
-ts_long$m_final <- ts_long$m
+ts_long$m_final <- ts_long$m_stand
 
 for (row in 1:nrow(ts_long)) {
   if (ts_long[row, "rev_score"] == 1 & !is.na(ts_long[row, "rev_score"])) {
     # replace value by ts_long$rev_score_m
-    ts_long[row, "m_final"] <- ts_long[row, "rev_score_m"]
+    ts_long[row, "m_final"] <- ts_long[row, "m_rev_stand"]
   }
 }
 
-#standardize mean
-ts_long$m_stand = (ts_long$m_final/ts_long$max_scale)*100
-
 #create plot
-p <- ggplot(ts_long, aes(x=t, y=m_stand, group=cohort, color=cohort, text = 
+p <- ggplot(ts_long, aes(x=t, y=m_final, group=cohort, color=cohort, text = 
                            paste("Author: ", author,
                                  "<br>Year: ", year,
                                  "<br>Cohort ID: ", cohort_id,
                                  "<br>Instrument: ", instrument_name,
                                  "<br>Raw mean: ", m,
                                  "<br>Raw SD: ", sd,
-                                 "<br>Standardized score ", m_stand
+                                 "<br>Standardized score ", m_final
                            ))) +
   labs(y= "outcome standardized (0-100)") +
-  geom_line(data=ts_long[!is.na(ts_long$m_stand),]) + 
+  geom_line(data=ts_long[!is.na(ts_long$m_final),]) + 
   geom_point() +
   scale_x_continuous(name = "Time (months)",
                      breaks = c(-5, 0, 3, 6, 12, 24, 60, 120),
@@ -801,7 +813,7 @@ ggplotly(p, tooltip = "text") %>%
 ### Anxiety
 
 ```{r}
-#subset dataset with measurements on pain_interference
+#subset dataset with measurements on anxiety
 
 dat_anx <- dat_clean %>%
     dplyr::filter(measurements_anxiety == "yes")  
@@ -877,38 +889,41 @@ ts_long <- merge(ts_sdt_long, ts_m_long, c("cohort", "timepoint"))
 #create max_score column
 ts_long$max_scale <- as.numeric(questionnaires$max_scale)[match(as.character(ts_long$instrument_name), as.character(questionnaires$q))]
 
+#create min_score column
+ts_long$min_scale <- as.numeric(questionnaires$min_scale)[match(as.character(ts_long$instrument_name), as.character(questionnaires$q))]
+
 #create reverse scoring variable
 ts_long$rev_score <- questionnaires$reverse_scoring[match(as.character(ts_long$instrument_name), as.character(questionnaires$q))]
 
-#reverse scoring
-ts_long$rev_score_m <- (ts_long$max_scale)-ts_long$m 
+#reverse scoring and standardizing, using the following principle: distance between the mean score and the unfavorable end of the scale divided by the total scale distance, multiplied by 100.
+ts_long$m_rev_stand <- (ts_long$max_scale-ts_long$m)/(ts_long$max_scale-ts_long$min_scale)*100
+
+#standardize mean for data that does not have to be reversed
+ts_long$m_stand = ((ts_long$m-ts_long$min_scale)/(ts_long$max_scale-ts_long$min_scale))*100
 
 #combining rev_score and normal score on contion of ts_long$rev_score
 
-ts_long$m_final <- ts_long$m
+ts_long$m_final <- ts_long$m_stand
 
 for (row in 1:nrow(ts_long)) {
   if (ts_long[row, "rev_score"] == 1 & !is.na(ts_long[row, "rev_score"])) {
     # replace value by ts_long$rev_score_m
-    ts_long[row, "m_final"] <- ts_long[row, "rev_score_m"]
+    ts_long[row, "m_final"] <- ts_long[row, "m_rev_stand"]
   }
 }
 
-#standardize mean
-ts_long$m_stand = (ts_long$m_final/ts_long$max_scale)*100
-
 #create plot
-p <- ggplot(ts_long, aes(x=t, y=m_stand, group=cohort, color=cohort, text = 
+p <- ggplot(ts_long, aes(x=t, y=m_final, group=cohort, color=cohort, text = 
                            paste("Author: ", author,
                                  "<br>Year: ", year,
                                  "<br>Cohort ID: ", cohort_id,
                                  "<br>Instrument: ", instrument_name,
                                  "<br>Raw mean: ", m,
                                  "<br>Raw SD: ", sd,
-                                 "<br>Standardized score ", m_stand
+                                 "<br>Standardized score ", m_final
                            ))) +
   labs(y= "outcome standardized (0-100)") +
-  geom_line(data=ts_long[!is.na(ts_long$m_stand),]) + 
+  geom_line(data=ts_long[!is.na(ts_long$m_final),]) + 
   geom_point() +
   scale_x_continuous(name = "Time (months)",
                      breaks = c(-5, 0, 3, 6, 12, 24, 60, 120),
@@ -1004,38 +1019,41 @@ ts_long <- merge(ts_sdt_long, ts_m_long, c("cohort", "timepoint"))
 #create max_score column
 ts_long$max_scale <- as.numeric(questionnaires$max_scale)[match(as.character(ts_long$instrument_name), as.character(questionnaires$q))]
 
+#create min_score column
+ts_long$min_scale <- as.numeric(questionnaires$min_scale)[match(as.character(ts_long$instrument_name), as.character(questionnaires$q))]
+
 #create reverse scoring variable
 ts_long$rev_score <- questionnaires$reverse_scoring[match(as.character(ts_long$instrument_name), as.character(questionnaires$q))]
 
-#reverse scoring
-ts_long$rev_score_m <- (ts_long$max_scale)-ts_long$m 
+#reverse scoring and standardizing, using the following principle: distance between the mean score and the unfavorable end of the scale divided by the total scale distance, multiplied by 100.
+ts_long$m_rev_stand <- (ts_long$max_scale-ts_long$m)/(ts_long$max_scale-ts_long$min_scale)*100
+
+#standardize mean for data that does not have to be reversed
+ts_long$m_stand = ((ts_long$m-ts_long$min_scale)/(ts_long$max_scale-ts_long$min_scale))*100
 
 #combining rev_score and normal score on contion of ts_long$rev_score
 
-ts_long$m_final <- ts_long$m
+ts_long$m_final <- ts_long$m_stand
 
 for (row in 1:nrow(ts_long)) {
   if (ts_long[row, "rev_score"] == 1 & !is.na(ts_long[row, "rev_score"])) {
     # replace value by ts_long$rev_score_m
-    ts_long[row, "m_final"] <- ts_long[row, "rev_score_m"]
+    ts_long[row, "m_final"] <- ts_long[row, "m_rev_stand"]
   }
 }
 
-#standardize mean
-ts_long$m_stand = (ts_long$m_final/ts_long$max_scale)*100
-
 #create plot
-p <- ggplot(ts_long, aes(x=t, y=m_stand, group=cohort, color=cohort, text = 
+p <- ggplot(ts_long, aes(x=t, y=m_final, group=cohort, color=cohort, text = 
                            paste("Author: ", author,
                                  "<br>Year: ", year,
                                  "<br>Cohort ID: ", cohort_id,
                                  "<br>Instrument: ", instrument_name,
                                  "<br>Raw mean: ", m,
                                  "<br>Raw SD: ", sd,
-                                 "<br>Standardized score ", m_stand
+                                 "<br>Standardized score ", m_final
                            ))) +
   labs(y= "outcome standardized (0-100)") +
-  geom_line(data=ts_long[!is.na(ts_long$m_stand),]) + 
+  geom_line(data=ts_long[!is.na(ts_long$m_final),]) + 
   geom_point() +
   scale_x_continuous(name = "Time (months)",
                      breaks = c(-5, 0, 3, 6, 12, 24, 60, 120),
@@ -1128,38 +1146,41 @@ ts_long <- merge(ts_sdt_long, ts_m_long, c("cohort", "timepoint"))
 #create max_score column
 ts_long$max_scale <- as.numeric(questionnaires$max_scale)[match(as.character(ts_long$instrument_name), as.character(questionnaires$q))]
 
+#create min_score column
+ts_long$min_scale <- as.numeric(questionnaires$min_scale)[match(as.character(ts_long$instrument_name), as.character(questionnaires$q))]
+
 #create reverse scoring variable
 ts_long$rev_score <- questionnaires$reverse_scoring[match(as.character(ts_long$instrument_name), as.character(questionnaires$q))]
 
-#reverse scoring
-ts_long$rev_score_m <- (ts_long$max_scale)-ts_long$m 
+#reverse scoring and standardizing, using the following principle: distance between the mean score and the unfavorable end of the scale divided by the total scale distance, multiplied by 100.
+ts_long$m_rev_stand <- (ts_long$max_scale-ts_long$m)/(ts_long$max_scale-ts_long$min_scale)*100
+
+#standardize mean for data that does not have to be reversed
+ts_long$m_stand = ((ts_long$m-ts_long$min_scale)/(ts_long$max_scale-ts_long$min_scale))*100
 
 #combining rev_score and normal score on contion of ts_long$rev_score
 
-ts_long$m_final <- ts_long$m
+ts_long$m_final <- ts_long$m_stand
 
 for (row in 1:nrow(ts_long)) {
   if (ts_long[row, "rev_score"] == 1 & !is.na(ts_long[row, "rev_score"])) {
     # replace value by ts_long$rev_score_m
-    ts_long[row, "m_final"] <- ts_long[row, "rev_score_m"]
+    ts_long[row, "m_final"] <- ts_long[row, "m_rev_stand"]
   }
 }
 
-#standardize mean
-ts_long$m_stand = (ts_long$m_final/ts_long$max_scale)*100
-
 #create plot
-p <- ggplot(ts_long, aes(x=t, y=m_stand, group=cohort, color=cohort, text = 
+p <- ggplot(ts_long, aes(x=t, y=m_final, group=cohort, color=cohort, text = 
                            paste("Author: ", author,
                                  "<br>Year: ", year,
                                  "<br>Cohort ID: ", cohort_id,
                                  "<br>Instrument: ", instrument_name,
                                  "<br>Raw mean: ", m,
                                  "<br>Raw SD: ", sd,
-                                 "<br>Standardized score ", m_stand
+                                 "<br>Standardized score ", m_final
                            ))) +
   labs(y= "outcome standardized (0-100)") +
-  geom_line(data=ts_long[!is.na(ts_long$m_stand),]) + 
+  geom_line(data=ts_long[!is.na(ts_long$m_final),]) + 
   geom_point() +
   scale_x_continuous(name = "Time (months)",
                      breaks = c(-5, 0, 3, 6, 12, 24, 60, 120),
@@ -1255,38 +1276,41 @@ ts_long <- merge(ts_sdt_long, ts_m_long, c("cohort", "timepoint"))
 #create max_score column
 ts_long$max_scale <- as.numeric(questionnaires$max_scale)[match(as.character(ts_long$instrument_name), as.character(questionnaires$q))]
 
+#create min_score column
+ts_long$min_scale <- as.numeric(questionnaires$min_scale)[match(as.character(ts_long$instrument_name), as.character(questionnaires$q))]
+
 #create reverse scoring variable
 ts_long$rev_score <- questionnaires$reverse_scoring[match(as.character(ts_long$instrument_name), as.character(questionnaires$q))]
 
-#reverse scoring
-ts_long$rev_score_m <- (ts_long$max_scale)-ts_long$m 
+#reverse scoring and standardizing, using the following principle: distance between the mean score and the unfavorable end of the scale divided by the total scale distance, multiplied by 100.
+ts_long$m_rev_stand <- (ts_long$max_scale-ts_long$m)/(ts_long$max_scale-ts_long$min_scale)*100
+
+#standardize mean for data that does not have to be reversed
+ts_long$m_stand = ((ts_long$m-ts_long$min_scale)/(ts_long$max_scale-ts_long$min_scale))*100
 
 #combining rev_score and normal score on contion of ts_long$rev_score
 
-ts_long$m_final <- ts_long$m
+ts_long$m_final <- ts_long$m_stand
 
 for (row in 1:nrow(ts_long)) {
   if (ts_long[row, "rev_score"] == 1 & !is.na(ts_long[row, "rev_score"])) {
     # replace value by ts_long$rev_score_m
-    ts_long[row, "m_final"] <- ts_long[row, "rev_score_m"]
+    ts_long[row, "m_final"] <- ts_long[row, "m_rev_stand"]
   }
 }
 
-#standardize mean
-ts_long$m_stand = (ts_long$m_final/ts_long$max_scale)*100
-
 #create plot
-p <- ggplot(ts_long, aes(x=t, y=m_stand, group=cohort, color=cohort, text = 
+p <- ggplot(ts_long, aes(x=t, y=m_final, group=cohort, color=cohort, text = 
                            paste("Author: ", author,
                                  "<br>Year: ", year,
                                  "<br>Cohort ID: ", cohort_id,
                                  "<br>Instrument: ", instrument_name,
                                  "<br>Raw mean: ", m,
                                  "<br>Raw SD: ", sd,
-                                 "<br>Standardized score ", m_stand
+                                 "<br>Standardized score ", m_final
                            ))) +
   labs(y= "outcome standardized (0-100)") +
-  geom_line(data=ts_long[!is.na(ts_long$m_stand),]) + 
+  geom_line(data=ts_long[!is.na(ts_long$m_final),]) + 
   geom_point() +
   scale_x_continuous(name = "Time (months)",
                      breaks = c(-5, 0, 3, 6, 12, 24, 60, 120),
@@ -1382,38 +1406,41 @@ ts_long <- merge(ts_sdt_long, ts_m_long, c("cohort", "timepoint"))
 #create max_score column
 ts_long$max_scale <- as.numeric(questionnaires$max_scale)[match(as.character(ts_long$instrument_name), as.character(questionnaires$q))]
 
+#create min_score column
+ts_long$min_scale <- as.numeric(questionnaires$min_scale)[match(as.character(ts_long$instrument_name), as.character(questionnaires$q))]
+
 #create reverse scoring variable
 ts_long$rev_score <- questionnaires$reverse_scoring[match(as.character(ts_long$instrument_name), as.character(questionnaires$q))]
 
-#reverse scoring
-ts_long$rev_score_m <- (ts_long$max_scale)-ts_long$m 
+#reverse scoring and standardizing, using the following principle: distance between the mean score and the unfavorable end of the scale divided by the total scale distance, multiplied by 100.
+ts_long$m_rev_stand <- (ts_long$max_scale-ts_long$m)/(ts_long$max_scale-ts_long$min_scale)*100
+
+#standardize mean for data that does not have to be reversed
+ts_long$m_stand = ((ts_long$m-ts_long$min_scale)/(ts_long$max_scale-ts_long$min_scale))*100
 
 #combining rev_score and normal score on contion of ts_long$rev_score
 
-ts_long$m_final <- ts_long$m
+ts_long$m_final <- ts_long$m_stand
 
 for (row in 1:nrow(ts_long)) {
   if (ts_long[row, "rev_score"] == 1 & !is.na(ts_long[row, "rev_score"])) {
     # replace value by ts_long$rev_score_m
-    ts_long[row, "m_final"] <- ts_long[row, "rev_score_m"]
+    ts_long[row, "m_final"] <- ts_long[row, "m_rev_stand"]
   }
 }
 
-#standardize mean
-ts_long$m_stand = (ts_long$m_final/ts_long$max_scale)*100
-
 #create plot
-p <- ggplot(ts_long, aes(x=t, y=m_stand, group=cohort, color=cohort, text = 
+p <- ggplot(ts_long, aes(x=t, y=m_final, group=cohort, color=cohort, text = 
                            paste("Author: ", author,
                                  "<br>Year: ", year,
                                  "<br>Cohort ID: ", cohort_id,
                                  "<br>Instrument: ", instrument_name,
                                  "<br>Raw mean: ", m,
                                  "<br>Raw SD: ", sd,
-                                 "<br>Standardized score ", m_stand
+                                 "<br>Standardized score ", m_final
                            ))) +
   labs(y= "outcome standardized (0-100)") +
-  geom_line(data=ts_long[!is.na(ts_long$m_stand),]) + 
+  geom_line(data=ts_long[!is.na(ts_long$m_final),]) + 
   geom_point() +
   scale_x_continuous(name = "Time (months)",
                      breaks = c(-5, 0, 3, 6, 12, 24, 60, 120),
@@ -1438,7 +1465,11 @@ ggplotly(p, tooltip = "text") %>%
 
 Row {data-height=100}
 -------------------------------------
-Interactive timeseries with scores on a standardized scale that represents the scoring percentage on each respective measurement instrument. 
+Interactive timeseries with scores on a standardized scale that represents the scoring percentage on each respective measurement instrument. Standardization was applied using the following formula: [distance between value and unfavorable end of the scale]/[total distance of the scale]*100. <br />
+
+We also applied reverse scoring to ensure that higher scores indicate improved functioning or wellbeing. <br />
+
+
 <br /> **Instructions for use:** <br />
 1. Each outcome is displayed under a different tab. <br />
 2. hovering over a timepoint will reveal the raw scores, standard deviation, cohort information and used measurement instrument. <br />

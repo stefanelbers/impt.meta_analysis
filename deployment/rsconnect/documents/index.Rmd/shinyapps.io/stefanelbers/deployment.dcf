@@ -5,8 +5,8 @@ account: stefanelbers
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 2567024
-bundleId: 3387659
+bundleId: 3795703
 url: https://stefanelbers.shinyapps.io/deployment/
-when: 1594671008.71657
+when: 1603958783.23049
 asMultiple: FALSE
 asStatic: FALSE

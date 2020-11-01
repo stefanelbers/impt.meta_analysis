@@ -40,7 +40,7 @@ for (ind1 in which(dat$cohort_id > 1)) {
 }
 
 # meetinstrumenten
-meetinstrumenten <- c("hrqol","pf","pinter","dep","anx","ef","ang","se","srf","pintens") # TO DO: outcomes need to be added
+meetinstrumenten <- c("hrqol","pf","pinter","dep","anx","ef","ang","se","srf","pintens") 
 
 #determine last follow-up (last_fu)
 for (mi in meetinstrumenten) {
