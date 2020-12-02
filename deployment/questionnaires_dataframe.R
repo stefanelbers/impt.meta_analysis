@@ -69,6 +69,7 @@ questionnaires <- questionnaires %>%
     vector_dpq_sl <- c("DPQ: social life", 0, 100, 1),
     vector_sf36_sf <- c("SF-36: social functioning", 0, 100, 0),
     vector_sip <- c("SIP", 0, 9608, 1),
+    vector_sip_01 <- c("SIP: physical disability (0-1)", 0, 1, 1),
     vector_qbprs <- c("QBPRS", 0, 100, 1),
     vector_euroq_vas <- c("EuroQol-5D-3L (VAS 0-100)", 0, 100, 0),
     vector_mean_nhp <- c("mean NHP (0-100)", 0, 100, 1),
@@ -83,8 +84,13 @@ questionnaires <- questionnaires %>%
     vector_mpi0_pi_0100 <- c("MPI: pain interference (0-100)", 0, 100, 1),
     vector_GSE <- c("GSE (1-4)", 1, 4, 0),
     vector_DSkala <- c("DS (depressivitats-skala)", 0, 48, 1),
-    vector_MPI_di_06 <- c("MPI: distress (0-6)", 0, 6, 1)
+    vector_MPI_di_06 <- c("MPI: distress (0-6)", 0, 6, 1),
+    vector_BCMDI_080 <- c("British Columbia Major Depression Inventory (0-80)", 0, 80, 1),
+    vector_PASS20_0100 <- c("Pain Anxiety Symptoms Scale-20 (0-100)", 0, 100, 1),
+    vector_FfkA <- c("Freiburger questionnaire on physical activity (FfkA)", 0, 168 ,0)
     )
+
+#We chose hours in a week (168) as the upper limit of the FfkA scale. 
 
 
 #merge additional questionnaires to main set

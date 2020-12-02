@@ -120,3 +120,8 @@ t2 <- select(t_2, author_year, cohort_id, ed, ex, ga, bt, re, pm, ph, ba, wo, te
 
 procedure_cols <- c("ed", "ex", "ga", "bt", "re", "pm", "ph", "ba", "wo", "te", "other_procedures")
 hcp_cols <- c("phy", "psy", "pt", "ot", "nur", "swo", "other_healthcare_providers")
+
+#descriptive tabels for manuscript
+t3 <- select(t2, author_year, ed, ex, ga, bt, re, pm, ph, ba, wo, te, other_procedures, phy, psy, pt, ot, nur, swo, in_out_patient, type_of_contact, group_size, setting, time_span, hours, minutes, tailoring, followup_sessions_provided)
+
+
