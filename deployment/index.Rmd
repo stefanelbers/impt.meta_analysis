@@ -39,6 +39,7 @@ library(summarytools)
 library(tidyr)
 library(tidyverse)
 library(wesanderson)
+library(revtools)
 ```
 
 ```{r load data, include=FALSE}
@@ -55,6 +56,10 @@ source("questionnaires_dataframe.R", local = knitr::knit_global())
 
 ```{r}
 source("shiny_fp_prep_md.R", local = knitr::knit_global())
+```
+
+```{r}
+source("prep_ft_assessment_table.R", local = knitr::knit_global())
 ```
 
 Home {data-orientation=columns}
@@ -1601,5 +1606,36 @@ renderFormattable({
 })
 ```
 
+Fulltext assessment {data-orientation=rows}
+=======================================================================
+
+Row {data-height=1200}
+-------------------------------------
+
+### Fulltext assessment
+
+```{r}
+reactable(t_fulltext,
+          style = list(fontFamily = "Arial Narrow", fontSize = "14px"),
+          defaultSorted = "author",
+          defaultSortOrder = "asc",
+          columns = list(
+            author = colDef(minWidth = 105),
+            year = colDef(maxWidth = 70),
+            'study id' = colDef(maxWidth = 70),
+            decision = colDef(maxWidth = 70, cell = function(value) {
+              # Render as ✘ or ✓
+              if (value == 0) "\u2718" else "\u2713"
+            }, style = function(value){
+              if (value == 0) {color <- '#B62A3D'} else {color <- '#456355'}
+              list(background = color)})
+          ),
+          bordered = FALSE,
+          highlight = FALSE,
+          striped = FALSE,
+          searchable = TRUE,
+          showPageSizeOptions = TRUE,
+          ) 
+```
 
 

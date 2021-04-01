@@ -1,0 +1,262 @@
+﻿@article{RN69709,
+   author = {Asih, Sali and Mayer, Tom G and Williams, Mark and Choi, Yun Hee and Gatchel, Robert J},
+   title = {Does classification of chronic musculoskeletal disorder patients into psychosocial subgroups predict differential treatment responsiveness and 1-year outcomes after a functional restoration program?},
+   journal = {The Clinical journal of pain},
+   volume = {31},
+   number = {12},
+   pages = {1036-1045},
+   ISSN = {0749-8047},
+   year = {2015},
+   type = {Journal Article}
+}
+
+@inproceedings{RN69711,
+   author = {Caby, Isabelle and Olivier, Nicolas and Janik, Frédérick and Vanvelcenaher, Jacques and Pelayo, Patrick},
+   title = {A controlled and retrospective study of 144 chronic low back pain patients to evaluate the effectiveness of an intensive functional restoration program in France},
+   booktitle = {Healthcare},
+   publisher = {Multidisciplinary Digital Publishing Institute},
+   volume = {4},
+   pages = {23},
+   type = {Conference Proceedings}
+}
+
+@article{RN69718,
+   author = {Cecchi, Francesca and Molino-Lova, Raffaello and Chiti, Massimiliano and Pasquini, Guido and Paperini, Anita and Conti, Andrea A and Macchi, Claudio},
+   title = {Spinal manipulation compared with back school and with individually delivered physiotherapy for the treatment of chronic low back pain: a randomized trial with one-year follow-up},
+   journal = {Clinical rehabilitation},
+   volume = {24},
+   number = {1},
+   pages = {26-36},
+   ISSN = {0269-2155},
+   year = {2010},
+   type = {Journal Article}
+}
+
+@inproceedings{RN69714,
+   author = {Genêt, F and Poiraudeau, S and Revel, M},
+   title = {Étude de l’efficacité et de l’observance à un an d’un programme court de rééducation assorti d’un autoprogramme dans la lombalgie chronique},
+   booktitle = {Annales de réadaptation et de médecine physique},
+   publisher = {Elsevier},
+   volume = {45},
+   pages = {265-272},
+   ISBN = {0168-6054},
+   type = {Conference Proceedings}
+}
+
+@article{RN69728,
+   author = {Gustavsson, Catharina and von Koch, Lena},
+   title = {A 9-year follow-up of a self-management group intervention for persistent neck pain in primary health care: a randomized controlled trial},
+   journal = {Journal of pain research},
+   volume = {10},
+   pages = {53},
+   year = {2017},
+   type = {Journal Article}
+}
+
+@article{RN69731,
+   author = {Hansson, Tommy H and Hansson, Elisabeth K},
+   title = {The effects of common medical interventions on pain, back function, and work resumption in patients with chronic low back pain: A prospective 2-year cohort study in six countries},
+   journal = {Spine},
+   volume = {25},
+   number = {23},
+   pages = {3055-3064},
+   ISSN = {0362-2436},
+   year = {2000},
+   type = {Journal Article}
+}
+
+@article{RN69732,
+   author = {Harkapaa, Kristiina and Jarvikoski, Aiia and Mellin, Guy and Hurri, Heikki},
+   title = {A controlled study on the outcome of inpatient and outpatient treatment of low back pain},
+   journal = {Scand J Rehab Med},
+   volume = {21},
+   pages = {81-89},
+   year = {1989},
+   type = {Journal Article}
+}
+
+@article{RN69729,
+   author = {Keefe, Francis J and Caldwell, David S and Baucom, Donald and Salley, Al and Robinson, Elwood and Timmons, Kelly and Beaupre, Pat and Weisberg, James and Helms, Michael},
+   title = {Spouse‐assisted coping skills training in the management of osteoarthritic knee pain},
+   journal = {Arthritis & Rheumatism: Official Journal of the American College of Rheumatology},
+   volume = {9},
+   number = {4},
+   pages = {279-291},
+   ISSN = {0004-3591},
+   year = {1996},
+   type = {Journal Article}
+}
+
+@article{RN69724,
+   author = {Kell, Robert T and Asmundson, Gordon JG},
+   title = {A comparison of two forms of periodized exercise rehabilitation programs in the management of chronic nonspecific low-back pain},
+   journal = {The Journal of Strength & Conditioning Research},
+   volume = {23},
+   number = {2},
+   pages = {513-523},
+   ISSN = {1064-8011},
+   year = {2009},
+   type = {Journal Article}
+}
+
+@article{RN69715,
+   author = {Löfvander, Monica B},
+   title = {Cognitive-behavioural treatment of chronic pain in primary care: a three-year follow-up},
+   journal = {The European Journal of General Practice},
+   volume = {8},
+   number = {4},
+   pages = {151-158},
+   ISSN = {1381-4788},
+   year = {2002},
+   type = {Journal Article}
+}
+
+@article{RN69720,
+   author = {Luciano, Juan V and Martínez, Nuria and Peñarrubia-María, Maria Teresa and Fernandez-Vergel, Rita and García-Campayo, Javier and Verduras, Camino and Blanco, María E and Jimenez, Monica and Ruiz, Jose M and del Hoyo, Yolanda Lopez},
+   title = {Effectiveness of a psychoeducational treatment program implemented in general practice for fibromyalgia patients: a randomized controlled trial},
+   journal = {The Clinical journal of pain},
+   volume = {27},
+   number = {5},
+   pages = {383-391},
+   ISSN = {0749-8047},
+   year = {2011},
+   type = {Journal Article}
+}
+
+@article{RN69710,
+   author = {Maul, Irina and Läubli, Thomas and Oliveri, Michael and Krueger, Helmut},
+   title = {Long-term effects of supervised physical training in secondary prevention of low back pain},
+   journal = {European Spine Journal},
+   volume = {14},
+   number = {6},
+   pages = {599-611},
+   ISSN = {1432-0932},
+   year = {2005},
+   type = {Journal Article}
+}
+
+@inproceedings{RN69712,
+   author = {Maurice, M and Blanchard-Dauphin, A and Laurent, P and Thevenon, A and Tiffreau, V},
+   title = {Efficacité à court-et moyen terme d’un programme d’école du dos. Étude de cohorte rétrospective réalisée sur 328 lombalgiques chroniques de 1997 à 2004},
+   booktitle = {Annales de réadaptation et de médecine physique},
+   publisher = {Elsevier},
+   volume = {51},
+   pages = {292-300},
+   ISBN = {0168-6054},
+   type = {Conference Proceedings}
+}
+
+@article{RN69708,
+   author = {Mayer, TG and Gatchel, RJ and KisHiNo, NANCY and Keeley, JANICE and Capra, PATRICIA and Mayer, HOLLY and Barnett, J and Mooney, VERT},
+   title = {Objective assessment of spine function following industrial injury. A prospective study with comparison group and one-year follow-up},
+   journal = {Spine},
+   volume = {10},
+   number = {6},
+   pages = {482-493},
+   ISSN = {0362-2436},
+   year = {1985},
+   type = {Journal Article}
+}
+
+@article{RN69716,
+   author = {Petersen, Tom and Larsen, Kristian and Jacobsen, Soren},
+   title = {One-year follow-up comparison of the effectiveness of McKenzie treatment and strengthening training for patients with chronic low back pain: outcome and prognostic factors},
+   journal = {Spine},
+   volume = {32},
+   number = {26},
+   pages = {2948-2956},
+   ISSN = {0362-2436},
+   year = {2007},
+   type = {Journal Article}
+}
+
+@article{RN69730,
+   author = {Saarijärvi, S and Alanen, E and Rytökoski, U and Hyyppä, MT},
+   title = {Couple therapy improves mental well-being in chronic low back pain patients. A controlled, five year follow-up study},
+   journal = {Journal of psychosomatic research},
+   volume = {36},
+   number = {7},
+   pages = {651-656},
+   ISSN = {0022-3999},
+   year = {1992},
+   type = {Journal Article}
+}
+
+@article{RN69717,
+   author = {Saltychev, Mikhail and Laimi, Katri and Pentti, Jaana and Kivimäki, Mika and Vahtera, Jussi},
+   title = {Short-and long-term changes in perceived work ability after interdisciplinary rehabilitation of chronic musculoskeletal disorders: prospective cohort study among 854 rehabilitants},
+   journal = {Clinical rehabilitation},
+   volume = {28},
+   number = {6},
+   pages = {592-603},
+   ISSN = {0269-2155},
+   year = {2014},
+   type = {Journal Article}
+}
+
+@book{RN69725,
+   author = {Schmidt, Anne Mette},
+   title = {Comparison of Two Multidisciplinary Rehabilitation Programmes in Patients with Chronic Low Back Pain: A Randomiced Controlled Trial: PhD Dissertation},
+   publisher = {Health, Aarhus University},
+   year = {2020},
+   type = {Book}
+}
+
+@article{RN69727,
+   author = {Schmidt, Anne Mette and Terkildsen Maindal, Helle and Laurberg, Trine Bay and Schiøttz-Christensen, Berit and Ibsen, Charlotte and Bak Gulstad, Kirstine and Maribo, Thomas},
+   title = {The Sano study: justification and detailed description of a multidisciplinary biopsychosocial rehabilitation programme in patients with chronic low back pain},
+   journal = {Clinical rehabilitation},
+   volume = {32},
+   number = {11},
+   pages = {1431-1439},
+   ISSN = {0269-2155},
+   year = {2018},
+   type = {Journal Article}
+}
+
+@article{RN69713,
+   author = {Sorensen, Pia H and Bendix, Tom and Manniche, Claus and Korsholm, Lars and Lemvigh, Dorte and Indahl, Aage},
+   title = {An educational approach based on a non-injury model compared with individual symptom-based physical training in chronic LBP. A pragmatic, randomised trial with a one-year follow-up},
+   journal = {BMC musculoskeletal disorders},
+   volume = {11},
+   number = {1},
+   pages = {1-13},
+   ISSN = {1471-2474},
+   year = {2010},
+   type = {Journal Article}
+}
+
+@article{RN69722,
+   author = {Souza, Juliana Barcellos de and Bourgault, Patricia and Charest, Jacques and Marchand, Serge},
+   title = {Effectiveness of the interactional and interdisciplinary school of fibromyalgia: a long-term randomized control study},
+   journal = {BrJP},
+   volume = {3},
+   number = {2},
+   pages = {105-112},
+   ISSN = {2595-3192},
+   year = {2020},
+   type = {Journal Article}
+}
+
+@article{RN69726,
+   author = {Takahashi, Naoto and Takatsuki, Kozue and Kasahara, Satoshi and Yabuki, Shoji},
+   title = {Multidisciplinary pain management program for patients with chronic musculoskeletal pain in Japan: a cohort study},
+   journal = {Journal of pain research},
+   volume = {12},
+   pages = {2563},
+   year = {2019},
+   type = {Journal Article}
+}
+
+@article{RN69721,
+   author = {White, Douglas HN and Faull, Kieren and Jones, Peter BB},
+   title = {An exploratory study of long‐term health outcomes following an in‐patient multidisciplinary program for people with fibromyalgia syndrome},
+   journal = {International Journal of Rheumatic Diseases},
+   volume = {12},
+   number = {1},
+   pages = {52-56},
+   ISSN = {1756-1841},
+   year = {2009},
+   type = {Journal Article}
+}
+

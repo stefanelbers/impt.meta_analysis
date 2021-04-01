@@ -1,0 +1,499 @@
+﻿TY  - JOUR
+AN  - 27815771
+AU  - Aasdahl, L.
+AU  - Pape, K.
+AU  - Vasseljen, O.
+AU  - Johnsen, R.
+AU  - Gismervik, S.
+AU  - Jensen, C.
+AU  - Fimland, M. S.
+C1  - Aasdahl, Lene Pape, Kristine Vasseljen, Ottar Johnsen, Roar Gismervik, Sigmund Jensen, Chris Fimland, Marius Steiro RAYYAN-INCLUSION: {"Stefan"=>true, "Sophie"=>true} | RAYYAN-LABELS: fulltext
+IS  - 3
+KW  - Inpatients
+LB  - 172
+N1  - Almost 50% diagnosed with psychological or unspecified conditions, instead of musculoskeletal.
+PY  - 2017
+SN  - 1053-0487 1573-3688
+SP  - 456-466
+ST  - Effects of Inpatient Multicomponent Occupational Rehabilitation versus Less Comprehensive Outpatient Rehabilitation on Somatic and Mental Health: Secondary Outcomes of a Randomized Clinical Trial %J Journal of Occupational Rehabilitation
+TI  - Effects of Inpatient Multicomponent Occupational Rehabilitation versus Less Comprehensive Outpatient Rehabilitation on Somatic and Mental Health: Secondary Outcomes of a Randomized Clinical Trial %J Journal of Occupational Rehabilitation
+UR  - https://ovidsp.ovid.com/ovidweb.cgi?T=JS&CSC=Y&NEWS=N&PAGE=fulltext&D=med13&AN=27815771 https://maastrichtuniversity.on.worldcat.org/atoztitles/link?sid=OVID:medline&id=pmid:27815771&id=doi:10.1007%2Fs10926-016-9679-5&issn=1053-0487&isbn=&volume=27&issue=3&spage=456&pages=456-466&date=2017&title=Journal+of+Occupational+Rehabilitation&atitle=Effects+of+Inpatient+Multicomponent+Occupational+Rehabilitation+versus+Less+Comprehensive+Outpatient+Rehabilitation+on+Somatic+and+Mental+Health%3A+Secondary+Outcomes+of+a+Randomized+Clinical+Trial.&aulast=Aasdahl&pid=%3Cauthor%3EAasdahl+L%3BPape+K%3BVasseljen+O%3BJohnsen+R%3BGismervik+S%3BJensen+C%3BFimland+MS%3C%2Fauthor%3E%3CAN%3E27815771%3C%2FAN%3E%3CDT%3EJournal+Article%3C%2FDT%3E
+VL  - 27
+ID  - 225
+ER  - 
+
+TY  - JOUR
+AB  - This study examined the comparative efficacy of three interventions: a spouse-assisted coping skills training protocol for patients undergoing a multidisciplinary pain management programme (SA-MPMP), conventional patient-oriented multidisciplinary pain management programme (P-MPMP) and standard medical care (SMC). Thirty-six chronic low back pain (CLBP) patients and their spouses were randomly assigned to one of the three conditions. The SA-MPMP condition consisted of seven, weekly, 2-h, group sessions of training in dyadic pain coping and couple skills, delivered by a clinical psychologist with support of a multidisciplinary team of specialists, to patients together with their spouses. P-MPMP consisted of the SA-MPMP training delivered to the patient only (i.e., no spouse participation and assistance). The SMC condition entailed continuation of routine treatment, entailing medical care only. Data analysis revealed that, at the 12-month follow-up time point, patients receiving SA-MPMP had significant improvements in kinesiophobia and rumination about pain compared to those receiving P-MPMP and SMC. In patients suffering from CLBP, an intervention that combines spouse-assisted coping skills training with a multidisciplinary pain management programme can improve fear of movement and rumination about low back pain.
+AU  - Abbasi, M.
+AU  - Dehghani, M.
+AU  - Keefe, F. J.
+AU  - Jafari, H.
+AU  - Behtash, H.
+AU  - Shams, J.
+C1  - LR: 20120703; CI: (c) 2012; JID: 9801774; 2011/11/28 [accepted]; ppublish RAYYAN-INCLUSION: {"Stefan"=>true, "Sophie"=>true} | RAYYAN-LABELS: inclusion
+DA  - 2012-1-1 %J European journal of pain (London, England)
+IS  - 7
+KW  - Spouses
+Pain Management
+Low Back Pain
+Treatment Outcome
+Spouses/psychology
+Quality of Life
+Pain Measurement
+Pain Management/methods/psychology
+Middle Aged
+Male
+Low Back Pain/psychology/therapy
+Humans
+Female
+Chronic Pain/psychology/therapy
+Aged
+Adult
+Adaptation, Psychological
+L1  - internal-pdf://0776987884/Abbasi (2012).pdf
+internal-pdf://3393058182/Abbasi (2012) RoB_form_SKSE.docx
+internal-pdf://0208668473/Abbasi(2012).data_extraction.SKSE.docx
+LB  - 1
+N1  - included in study
+PY  - 2012
+SN  - 1532-2149
+SP  - 1033-1043
+ST  - Spouse-assisted training in pain coping skills and the outcome of multidisciplinary pain management for chronic low back pain treatment: a 1-year randomized controlled trial
+TI  - Spouse-assisted training in pain coping skills and the outcome of multidisciplinary pain management for chronic low back pain treatment: a 1-year randomized controlled trial
+VL  - 16
+ID  - 14
+ER  - 
+
+TY  - JOUR
+AB  - Background: Chronic pain is a common medical issue. Beside chronic devastating pain, patients also suffer dysfunction more generally, including in the physical, emotional, social, recreational, vocational, financial, and legal spheres. Integrated multidisciplinary and multimodal chronic pain management programmes offer clear evidence for relief of suffering and return to functional lifestyles. Materials and Methods: This retrospective review was performed in order to evaluate one-year outcomes among all newly referred patients of the multimodal chronic pain service at Hospital Universiti Sains Malaysia (HUSM). All patients received multimodal pain therapy, including pharmacological, physical, and psychological therapy, exercise, and pain intervention. The variables evaluated were based on a patient's global pain assessments, which were made using the Visual Analogue Scale (VAS) and Oswestry Disability Index (ODI), modified by patient self-report, and were taken within days to months of commencing our multimodal pain regime. Results: A total of 169 patients were enrolled in this study. Out of this number, 102 (60.4%) were seen at the pain clinic, and 67 (39.6%) were referred while they were inpatients. About one-third of the patients had chronic pain due to cancer. Our data showed that 128 (75.7%) of our chronic pain patients were successfully managed when >=50% of pain relief (as measured by their VAS score) was achieved at any point during the course of the study period. In addition, 104 patients (61.5%) showed improvement in their modified ODI by 50% or more. Conclusion: A multimodal chronic pain service plays a significant role in managing chronic pain patients in a major hospital, as it is capable of delivering comprehensive and attainable care to manage refractory and intractable chronic pain.
+AD  - N. Abdul Jalil, Department of Anaesthesiology and Intensive Care, School of Medical Sciences, Universiti Sains Malaysia Health Campus, Jln Raja Perempuan Zainab II, 16150 Kubang Kerian, Kelantan, Malaysia. E-mail: nizar@kb.usm.my
+AN  - rayyan-12097712
+AU  - Abdul Jalil, N.
+AU  - Sulaiman, Z.
+AU  - Awang, M. S.
+AU  - Omar, M.
+C1  - RAYYAN-INCLUSION: {"Stefan"=>true, "Sophie"=>true}
+DA  - 2009-1-1 %J Malaysian Journal of Medical Sciences
+IS  - 4
+KW  - steroid/po [Oral Drug Administration]
+steroid/dt [Drug Therapy]
+parecoxib/iv [Intravenous Drug Administration]
+parecoxib/dt [Drug Therapy]
+paracetamol/po [Oral Drug Administration]
+paracetamol/dt [Drug Therapy]
+oxycodone/po [Oral Drug Administration]
+oxycodone/dt [Drug Therapy]
+nonsteroid antiinflammatory agent/po [Oral Drug Administration]
+nonsteroid antiinflammatory agent/dt [Drug Therapy]
+muscle relaxant agent/po [Oral Drug Administration]
+muscle relaxant agent/dt [Drug Therapy]
+morphine sulfate/iv [Intravenous Drug Administration]
+morphine sulfate/dt [Drug Therapy]
+morphine/po [Oral Drug Administration]
+morphine/dt [Drug Therapy]
+fentanyl/td [Transdermal Drug Administration]
+fentanyl/dt [Drug Therapy]
+analgesic agent/po [Oral Drug Administration]
+analgesic agent/dt [Drug Therapy]
+visual analog scale
+treatment outcome
+teaching hospital
+self report
+scoring system
+retrospective study
+psychotherapy
+physiotherapy
+patient referral
+patient counseling
+pain assessment
+male
+Malaysia
+major clinical study
+human
+hospital patient
+*health service
+fluoroscopy
+female
+exercise
+controlled study
+cohort analysis
+cognitive therapy
+*chronic pain/th [Therapy]
+*chronic pain/dt [Drug Therapy]
+chronic pain/dt [Drug Therapy]
+cancer pain
+backache
+article
+analgesia
+adult
+LB  - 108
+N1  - intervention not sufficienlty active
+PY  - 2009
+SN  - 1394-195X 2180-4303 (electronic)
+SP  - 55-65
+ST  - Retrospective review of outcomes of a multimodal chronic pain service in a major teaching hospital: A preliminary experience in Universiti Sains Malaysia
+TI  - Retrospective review of outcomes of a multimodal chronic pain service in a major teaching hospital: A preliminary experience in Universiti Sains Malaysia
+UR  - http://ernd.usm.my/journal/journal/16-4_BC2_chronicPain3.pdf http://ovidsp.ovid.com/ovidweb.cgi?T=JS&PAGE=reference&D=emed12&NEWS=N&AN=358181408
+VL  - 16
+ID  - 136
+ER  - 
+
+TY  - JOUR
+AB  - Background: Chronic pain is a common medical issue. Beside chronic devastating pain, patients also suffer dysfunction more generally, including in the physical, emotional, social, recreational, vocational, financial, and legal spheres. Integrated multidisciplinary and multimodal chronic pain management programmes offer clear evidence for relief of suffering and return to functional lifestyles. Materials and Methods: This retrospective review was performed in order to evaluate one-year outcomes among all newly referred patients of the multimodal chronic pain service at Hospital Universiti Sains Malaysia (HUSM). All patients received multimodal pain therapy, including pharmacological, physical, and psychological therapy, exercise, and pain intervention. The variables evaluated were based on a patient's global pain assessments, which were made using the Visual Analogue Scale (VAS) and Oswestry Disability Index (ODI), modified by patient self-report, and were taken within days to months of commencing our multimodal pain regime. Results: A total of 169 patients were enrolled in this study. Out of this number, 102 (60.4%) were seen at the pain clinic, and 67 (39.6%) were referred while they were inpatients. About one-third of the patients had chronic pain due to cancer. Our data showed that 128 (75.7%) of our chronic pain patients were successfully managed when >=50% of pain relief (as measured by their VAS score) was achieved at any point during the course of the study period. In addition, 104 patients (61.5%) showed improvement in their modified ODI by 50% or more. Conclusion: A multimodal chronic pain service plays a significant role in managing chronic pain patients in a major hospital, as it is capable of delivering comprehensive and attainable care to manage refractory and intractable chronic pain.
+AD  - N. Abdul Jalil, Department of Anaesthesiology and Intensive Care, School of Medical Sciences, Universiti Sains Malaysia Health Campus, Jln Raja Perempuan Zainab II, 16150 Kubang Kerian, Kelantan, Malaysia. E-mail: nizar@kb.usm.my
+AN  - rayyan-12097712
+AU  - Abdul Jalil, N.
+AU  - Sulaiman, Z.
+AU  - Awang, M. S.
+AU  - Omar, M.
+C1  - RAYYAN-INCLUSION: {"Stefan"=>true, "Sophie"=>true}
+DA  - 2009-1-1 %J Malaysian Journal of Medical Sciences
+IS  - 4
+KW  - steroid/po [Oral Drug Administration]
+steroid/dt [Drug Therapy]
+parecoxib/iv [Intravenous Drug Administration]
+parecoxib/dt [Drug Therapy]
+paracetamol/po [Oral Drug Administration]
+paracetamol/dt [Drug Therapy]
+oxycodone/po [Oral Drug Administration]
+oxycodone/dt [Drug Therapy]
+nonsteroid antiinflammatory agent/po [Oral Drug Administration]
+nonsteroid antiinflammatory agent/dt [Drug Therapy]
+muscle relaxant agent/po [Oral Drug Administration]
+muscle relaxant agent/dt [Drug Therapy]
+morphine sulfate/iv [Intravenous Drug Administration]
+morphine sulfate/dt [Drug Therapy]
+morphine/po [Oral Drug Administration]
+morphine/dt [Drug Therapy]
+fentanyl/td [Transdermal Drug Administration]
+fentanyl/dt [Drug Therapy]
+analgesic agent/po [Oral Drug Administration]
+analgesic agent/dt [Drug Therapy]
+visual analog scale
+treatment outcome
+teaching hospital
+self report
+scoring system
+retrospective study
+psychotherapy
+physiotherapy
+patient referral
+patient counseling
+pain assessment
+male
+Malaysia
+major clinical study
+human
+hospital patient
+*health service
+fluoroscopy
+female
+exercise
+controlled study
+cohort analysis
+cognitive therapy
+*chronic pain/th [Therapy]
+*chronic pain/dt [Drug Therapy]
+chronic pain/dt [Drug Therapy]
+cancer pain
+backache
+article
+analgesia
+adult
+LB  - 342
+N1  - mainly passive forms of PT (e.g. hot packs) + duplicate of 108
+PY  - 2009
+SN  - 1394-195X 2180-4303 (electronic)
+SP  - 55-65
+ST  - Retrospective review of outcomes of a multimodal chronic pain service in a major teaching hospital: A preliminary experience in Universiti Sains Malaysia
+TI  - Retrospective review of outcomes of a multimodal chronic pain service in a major teaching hospital: A preliminary experience in Universiti Sains Malaysia
+UR  - http://ernd.usm.my/journal/journal/16-4_BC2_chronicPain3.pdf http://ovidsp.ovid.com/ovidweb.cgi?T=JS&PAGE=reference&D=emed12&NEWS=N&AN=358181408
+VL  - 16
+ID  - 915
+ER  - 
+
+TY  - JOUR
+AB  - [Correction Notice: An Erratum for this article was reported in Vol 17(10) of The Journal of Pain (see record [rid]2016-46960-010[/rid]). In the original article, there were some errors in Table 2 and Table 3. The corrected tables are present in the erratum.] Cognitive-behavioral therapy (CBT) is the most frequently delivered psychological intervention for adults with chronic pain. The treatment yields modest effect sizes, and the mechanisms of action remain understudied and unclear. Efforts are needed to identify treatment mediators that could be used to refine CBT and improve outcomes. The primary aim of this study was to investigate whether pain-related acceptance, from the psychological flexibility model, mediates changes in outcome over time in a CBT-based treatment program. This includes comparing how this variable relates to 3 other variables posited as potential mediators in standard CBT: life control, affective distress, and social support. Participants attended a 5-week outpatient multidisciplinary program with self-report data collected at assessment, posttreatment, and 12-month follow-up. Multilevel structural equation modeling was used to test for mediation in relation to 3 outcomes: pain interference, pain intensity, and depression. Results indicate that effect sizes for the treatment were within the ranges reported in the CBT for pain literature. Pain-related acceptance was not related to pain intensity, which is in line with past empirical evidence and the treatment objectives in acceptance and commitment therapy. Otherwise, pain-related acceptance was the strongest mediator across the different indices of outcome. Accumulated results like these suggest that acceptance of pain may be a general mechanism by which CBT-based treatments achieve improvements in functioning. More specific targeting of pain-related acceptance in treatment may lead to further improvements in outcome. Perspective: Potential mediators of outcome in a CBT-based treatment for adult chronic pain were investigated using multilevel structural equation modeling. The results highlight the role of pain-related acceptance as an important treatment process even when not explicitly targeted during treatment. These data may help clinicians and researchers better understand processes of change and improve the choice and development of treatment methods. (PsycINFO Database Record (c) 2017 APA, all rights reserved)
+AD  - Åkerblom, Sophia, Department of Psychology, Lund University, Box 213, 221 00, Lund, Sweden
+AN  - 2015-22349-001
+AU  - Åkerblom, Sophia
+AU  - Perrin, Sean
+AU  - Fischer, Marcelo Rivano
+AU  - McCracken, Lance M.
+C1  - RAYYAN-INCLUSION: {"Stefan"=>true, "Sophie"=>true} | RAYYAN-LABELS: Twijfel
+DA  - 2015-1-1 %J The Journal of Pain
+IS  - 7
+KW  - Behavior Therapy
+Cognitive Therapy
+Cognitive Behavior Therapy
+2015
+multilevel structural equation modeling
+mediator
+chronic pain
+cognitive-behavioral therapy
+acceptance
+Acceptance and commitment therapy
+LB  - 2
+N1  - No information disclosed on nature of 'chronic pain'. Therefore, CMP cannot be established
+PY  - 2015
+SP  - 606-615
+ST  - The mediating role of acceptance in multidisciplinary cognitive-behavioral therapy for chronic pain
+TI  - The mediating role of acceptance in multidisciplinary cognitive-behavioral therapy for chronic pain
+UR  - http://login.ezproxy.ub.unimaas.nl/login?url=http://search.ebscohost.com/login.aspx?direct=true&db=psyh&AN=2015-22349-001&site=ehost-live&scope=site ORCID: 0000-0002-5468-4706 sophia.akerblom@psy.lu.se
+VL  - 16
+ID  - 137
+ER  - 
+
+TY  - JOUR
+AB  - Reports an error in 'The mediating role of acceptance in multidisciplinary cognitive-behavioral therapy for chronic pain' by Sophia Åkerblom, Sean Perrin, Marcelo Rivano Fischer and Lance M. McCracken (The Journal of Pain, 2015[Jul], Vol 16[7], 606-615). In the original article, there were some errors in Table 2 and Table 3. The corrected tables are present in the erratum. (The following abstract of the original article appeared in record [rid]2015-22349-001[/rid]). Cognitive-behavioral therapy (CBT) is the most frequently delivered psychological intervention for adults with chronic pain. The treatment yields modest effect sizes, and the mechanisms of action remain understudied and unclear. Efforts are needed to identify treatment mediators that could be used to refine CBT and improve outcomes. The primary aim of this study was to investigate whether pain-related acceptance, from the psychological flexibility model, mediates changes in outcome over time in a CBT-based treatment program. This includes comparing how this variable relates to 3 other variables posited as potential mediators in standard CBT: life control, affective distress, and social support. Participants attended a 5-week outpatient multidisciplinary program with self-report data collected at assessment, posttreatment, and 12-month follow-up. Multilevel structural equation modeling was used to test for mediation in relation to 3 outcomes: pain interference, pain intensity, and depression. Results indicate that effect sizes for the treatment were within the ranges reported in the CBT for pain literature. Pain-related acceptance was not related to pain intensity, which is in line with past empirical evidence and the treatment objectives in acceptance and commitment therapy. Otherwise, pain-related acceptance was the strongest mediator across the different indices of outcome. Accumulated results like these suggest that acceptance of pain may be a general mechanism by which CBT-based treatments achieve improvements in functioning. More specific targeting of pain-related acceptance in treatment may lead to further improvements in outcome. Perspective: Potential mediators of outcome in a CBT-based treatment for adult chronic pain were investigated using multilevel structural equation modeling. The results highlight the role of pain-related acceptance as an important treatment process even when not explicitly targeted during treatment. These data may help clinicians and researchers better understand processes of change and improve the choice and development of treatment methods. (PsycINFO Database Record (c) 2017 APA, all rights reserved)
+AD  - Åkerblom, Sophia, Department of Psychology, Lund University, Box 213, 221 00, Lund, Sweden
+AN  - 2016-46960-010
+AU  - Åkerblom, Sophia
+AU  - Perrin, Sean
+AU  - Fischer, Marcelo Rivano
+AU  - McCracken, Lance M.
+C1  - RAYYAN-INCLUSION: {"Stefan"=>true, "Sophie"=>true} | RAYYAN-LABELS: Twijfel
+DA  - 2016-1-1 %J The Journal of Pain
+IS  - 10
+KW  - Behavior Therapy
+Cognitive Therapy
+Cognitive Behavior Therapy
+2016
+multilevel structural equation modeling
+mediator
+chronic pain
+cognitive-behavioral therapy
+acceptance
+Acceptance and commitment therapy
+LB  - 3
+N1  - erratum of Akerblom 2015 (ID 2)
+PY  - 2016
+SP  - 1135-1136
+ST  - 'The mediating role of acceptance in multidisciplinary cognitive-behavioral therapy for chronic pain': Erratum
+TI  - 'The mediating role of acceptance in multidisciplinary cognitive-behavioral therapy for chronic pain': Erratum
+UR  - http://login.ezproxy.ub.unimaas.nl/login?url=http://search.ebscohost.com/login.aspx?direct=true&db=psyh&AN=2016-46960-010&site=ehost-live&scope=site sophia.akerblom@psy.lu.se
+VL  - 17
+ID  - 138
+ER  - 
+
+TY  - JOUR
+AB  - Background: The relevance of post-traumatic stress disorder (PTSD) symptoms to outcomes of cognitive behavioural therapy (CBT) for chronic pain is unclear. This study examines whether (a) traumatic exposure or the severity of PTSD symptoms at pre-treatment predicts the outcomes (pain intensity/interference), (b) participation in this treatment is associated with reduced PTSD symptoms and (c) any observed changes in PTSD symptoms are mediated by changes in psychological mechanisms that have been shown to be of importance to PTSD and chronic pain. Method(s): Participants were 159 chronic pain patients who were consecutively admitted for a multidisciplinary, group-based CBT program at the Pain Rehabilitation Unit at Skane University Hospital. A self-report measure of traumatic exposure and PTSD symptoms was administered before and after treatment, and at a 12-month follow-up, along with measures of depression, anxiety, pain intensity, pain interference, psychological inflexibility, life control and kinesiophobia. Result(s): Traumatic exposure and PTSD symptom severity did not predict pain intensity or interference at 12-month follow-up. There were no overall significant changes in PTSD symptom severity at post-treatment or follow-up, but 24.6% of the participants showed potential clinically significant change at follow-up. Psychological inflexibility mediated the changes that occurred in PTSD symptoms during treatment. Conclusion(s): Neither traumatic exposure nor baseline symptoms of PTSD predicted the treatment outcomes examined here. Despite improvements in both comorbid depression and anxiety, participation in this pain-focused CBT program was not associated with improvements in comorbid PTSD. To the extent that changes in PTSD symptoms did occur, these were mediated by changes in psychological inflexibility during treatment. Significance: Pain-focused CBT programs yield clinically meaningful improvements in pain and comorbid symptoms of depression and anxiety, but may have little effect on comorbid PTSD. This raises the issue of whether current pain-focused CBT programs can be modified to improve outcomes for comorbid conditions, perhaps by better targeting of psychological flexibility, and/or whether separate treatment of PTSD may be associated with improved pain outcomes.Copyright © 2020 European Pain Federation - EFIC
+AD  - S. Akerblom, Department of Pain Rehabilitation, Skane University Hospital, Lund, Sweden. E-mail: sophia.akerblom@psy.lu.se
+AU  - Akerblom, S.
+AU  - Perrin, S.
+AU  - Fischer, M. R.
+AU  - McCracken, L. M.
+DO  - http://dx.doi.org/10.1002/ejp.1530
+IS  - 4
+KW  - adult
+anxiety
+article
+*chronic pain/th [Therapy]
+*cognitive behavioral therapy
+controlled study
+depression
+descriptive research
+disease exacerbation
+female
+follow up
+*group therapy
+human
+major clinical study
+male
+multiple trauma
+pain intensity
+post hoc analysis
+*posttraumatic stress disorder
+priority journal
+self report
+sexual assault
+*treatment outcome
+LA  - English
+LB  - 345
+N1  - No information disclosed on nature of 'chronic pain'. Therefore, CMP cannot be established
+PY  - 2020
+SN  - 1090-3801 1532-2149
+SP  - 807-817
+ST  - Treatment outcomes in group-based cognitive behavioural therapy for chronic pain: An examination of PTSD symptoms
+T2  - European Journal of Pain (United Kingdom)
+TI  - Treatment outcomes in group-based cognitive behavioural therapy for chronic pain: An examination of PTSD symptoms
+UR  - http://onlinelibrary.wiley.com/journal/10.1002/(ISSN)1532-2149http://ovidsp.ovid.com/ovidweb.cgi?T=JS&PAGE=reference&D=emexb&NEWS=N&AN=2004161748
+VL  - 24
+ID  - 893
+ER  - 
+
+TY  - JOUR
+AN  - 8066514
+AU  - Alaranta, H.
+AU  - Rytokoski, U.
+AU  - Rissanen, A.
+AU  - Talo, S.
+AU  - Ronnemaa, T.
+AU  - Puukka, P.
+AU  - Karppi, S. L.
+AU  - Videman, T.
+AU  - Kallio, V.
+AU  - Slatis, P.
+C1  - Alaranta, H Rytokoski, U Rissanen, A Talo, S Ronnemaa, T Puukka, P Karppi, S L Videman, T Kallio, V Slatis, P RAYYAN-INCLUSION: {"Stefan"=>true, "Sophie"=>true} | RAYYAN-LABELS: duplicate
+IS  - 12
+KW  - Low Back Pain
+LB  - 169
+N1  - no longitudindal data available for outcomes of interest (table 10: anxiety only presented for males)
+PY  - 1994
+SP  - 1339-49
+ST  - Intensive physical and psychosocial training program for patients with chronic low back pain. A controlled clinical trial %J Spine
+TI  - Intensive physical and psychosocial training program for patients with chronic low back pain. A controlled clinical trial %J Spine
+UR  - https://ovidsp.ovid.com/ovidweb.cgi?T=JS&CSC=Y&NEWS=N&PAGE=fulltext&D=med3&AN=8066514 https://maastrichtuniversity.on.worldcat.org/atoztitles/link?sid=OVID:medline&id=pmid:8066514&id=doi:&issn=0362-2436&isbn=&volume=19&issue=12&spage=1339&pages=1339-49&date=1994&title=Spine&atitle=Intensive+physical+and+psychosocial+training+program+for+patients+with+chronic+low+back+pain.+A+controlled+clinical+trial.&aulast=Alaranta&pid=%3Cauthor%3EAlaranta+H%3BRytokoski+U%3BRissanen+A%3BTalo+S%3BRonnemaa+T%3BPuukka+P%3BKarppi+SL%3BVideman+T%3BKallio+V%3BSlatis+P%3C%2Fauthor%3E%3CAN%3E8066514%3C%2FAN%3E%3CDT%3EClinical+Trial%3C%2FDT%3E
+VL  - 19
+ID  - 227
+ER  - 
+
+TY  - JOUR
+AB  - Objectives: To systematically assess the effectiveness of a combination of pharmacologic and nonpharmacologic long-term treatment interventions for the fibromyalgia syndrome [FMS]. Methods: Participants involved in an outpatient, one year, multidisciplinary treatment program within a health care setting were studied. After being screened for eligibility, participants in the treatment sample took part in combined standard pharmacologic treatment and non-pharmacologic treatment [including cognitive behavioral therapy/ psychoeducational classes, exercise, massage, auricular therapy, microcurrent therapy, and nutritional counseling] in a case controlled manner. A control sample received standard medical care in a rheumatologist's office. Pre- versus post-treatment outcome variables of psychological symptoms and personality features, as measured by the Multiaxial Diagnostic Inventory-Revised, overall impact of FMS as measured by the Fibromyalgia Impact Questionnaire, overall health status as measured by the Short Form-36, pain and anxiety as measured by visual analog scales, and tender points were assessed for treatment study participants. Data were concurrently collected for the control sample on 26 of the 39 treatment variables, including the Multiaxial Diagnostic Inventory-Revised and the Fibromyalgia Impact Questionnaire. Results: Seventy-eight participants took part in the combined pharmacologic and non-pharmacologic treatment. The control sample consisted of 20 eligible participants. Using a quasi-experimental design, the results from a series of 2 [Group] X 2 [Test] one-way analysis of variance tests with repeated measures showed a significant decrease in pre- versus post-treatment measures of function, chronic depression, general anxiety, somatization, pain, anxiety, and tender points for the treatment group. A significant increase in Short Form-36 scores indicated a patient's perceived overall better health. No significant changes were revealed with the control group. Conclusions: These findings suggested the possible value of a long-term, multidisciplinary treatment program in alleviating FMS physical and psychological symptoms. Copyright © by The Haworth Press, Inc. All rights reserved.
+AN  - rayyan-1324164
+AU  - Anderson, F. J.
+AU  - Winkler, A. E.
+C1  - L46044809 2007-02-06 L46044809 2007-02-06 L46044809 2007-02-06 L46044809 2007-02-06 RAYYAN-INCLUSION: {"Stefan"=>true, "Sophie"=>true} | RAYYAN-LABELS: fulltext
+DA  - 2006-1-1 %J Journal of Musculoskeletal Pain
+IS  - 4
+KW  - Anxiety
+Cognitive Therapy
+Questionnaires
+Fibromyalgia
+LB  - 173
+N1  - Not follow-up measurement of at minimum 12 months post-treatment
+PY  - 2006
+SN  - 1058-2452 1540-7012 (electronic)
+SP  - 11-25
+ST  - Benefits of long-term fibromyalgia syndrome treatment with a multidisciplinary program
+TI  - Benefits of long-term fibromyalgia syndrome treatment with a multidisciplinary program
+UR  - https://www.scopus.com/inward/record.url?eid=2-s2.0-33846028480&partnerID=40&md5=d18ef860ebea8cf4f4670b23879ff6a7 http://www.tandfonline.com/doi/abs/10.1300/J094v14n04_03
+VL  - 14
+ID  - 3
+ER  - 
+
+TY  - JOUR
+AB  - A treatment program for chronic pain is reported which focuses on modification of patient pain behavior. After an outpatient pain clinic screening by a multidisciplinary team, the patient with chronic pain (duration of 6 months or longer) is admitted for a 7--8 week inpatient program followed by a 4-week outpatient period. The first week of the inpatient program is used for evaluation of pain behaviors, recording use of pain medications, activity levels, and tolerance for special conditioning exercises. The program is aimed at extinguishing pain behaviors and use of pain medications, increasing activity level, reinforcing well behaviors, and returning patients to full active lives, normal for their sex and age. Of the 34 patients completing the program and returning to full active normal lives, 74% (25) have maintained this attained goal at the time of follow-up from 6 months to 7 years later.
+AU  - Anderson, T. P.
+AU  - Cole, T. M.
+AU  - Gullickson, G.
+AU  - Hudgens, A.
+AU  - Roberts, A. H.
+C1  - LR: 20111117; JID: 0075674; 0 (Analgesics); ppublish RAYYAN-INCLUSION: {"Stefan"=>true, "Sophie"=>true}
+DA  - 1977-1-1 %J Clinical orthopaedics and related research
+IS  - 129
+KW  - Patient Care Team
+Pain Management
+Pain/psychology
+Middle Aged
+Male
+Humans
+Hospitalization
+Follow-Up Studies
+Female
+Chronic Disease
+Behavior Therapy
+Analgesics/therapeutic use
+Aged
+Adult
+LB  - 4
+N1  - No BPS intervention
+PY  - 1977
+SN  - 1528-1132
+SP  - 96-100
+ST  - Behavior modification of chronic pain: a treatment program by a multidisciplinary team
+TI  - Behavior modification of chronic pain: a treatment program by a multidisciplinary team
+ID  - 15
+ER  - 
+
+TY  - JOUR
+AN  - 17074622
+AU  - Angst, F.
+AU  - Brioschi, R.
+AU  - Main, C. J.
+AU  - Lehmann, S.
+AU  - Aeschlimann, A.
+C1  - Angst, Felix Brioschi, Roberto Main, Chris J Lehmann, Susanne Aeschlimann, Andre RAYYAN-INCLUSION: {"Stefan"=>true, "Sophie"=>true} | RAYYAN-LABELS: fulltext
+IS  - 11
+KW  - Fibromyalgia
+LB  - 174
+N1  - No follow-up measurement of at minimum 12 months post-treatment; 6mo f/u
+PY  - 2006
+SN  - 1526-5900
+SP  - 807-15
+ST  - Interdisciplinary rehabilitation in fibromyalgia and chronic back pain: a prospective outcome study %J Journal of Pain
+TI  - Interdisciplinary rehabilitation in fibromyalgia and chronic back pain: a prospective outcome study %J Journal of Pain
+UR  - https://ovidsp.ovid.com/ovidweb.cgi?T=JS&CSC=Y&NEWS=N&PAGE=fulltext&D=med5&AN=17074622 https://maastrichtuniversity.on.worldcat.org/atoztitles/link?sid=OVID:medline&id=pmid:17074622&id=doi:10.1016%2Fj.jpain.2006.03.009&issn=1526-5900&isbn=&volume=7&issue=11&spage=807&pages=807-15&date=2006&title=Journal+of+Pain&atitle=Interdisciplinary+rehabilitation+in+fibromyalgia+and+chronic+back+pain%3A+a+prospective+outcome+study.&aulast=Angst&pid=%3Cauthor%3EAngst+F%3BBrioschi+R%3BMain+CJ%3BLehmann+S%3BAeschlimann+A%3C%2Fauthor%3E%3CAN%3E17074622%3C%2FAN%3E%3CDT%3EJournal+Article%3C%2FDT%3E
+VL  - 7
+ID  - 228
+ER  - 
+
+TY  - JOUR
+AU  - APTA
+C1  - ID: 117904362 RAYYAN-INCLUSION: {"Stefan"=>true, "Sophie"=>true}
+DA  - 2016-9-1 %J PT in Motion
+IS  - 8
+KW  - Treatment Outcomes
+Psychotherapy, Group
+Occupational Therapy
+Physical Therapy
+Quality of Life
+Multidisciplinary Care Team
+Rehabilitation
+Chronic Pain
+LB  - 5
+N1  - fulltext not available
+PY  - 2016
+SN  - 19493711
+SP  - 48-48
+ST  - Professional Pulse. Interdisciplinary Rehab Improves Function, Quality-of-Life for Individuals With Chronic Pain
+TI  - Professional Pulse. Interdisciplinary Rehab Improves Function, Quality-of-Life for Individuals With Chronic Pain
+UR  - http://login.ezproxy.ub.unimaas.nl/login?url=http://search.ebscohost.com/login.aspx?direct=true&db=cin20&AN=117904362&site=ehost-live&scope=site
+VL  - 8
+ID  - 13
+ER  - 
+
+TY  - JOUR
+AB  - Purpose: Which influence has an in-patient functional restoration program with the goal to improve work status on different pain and function parameters? What is the predictive validity of several clinical tests for the rehabilitation result? Method: Prospective cohort study with follow-up at 6 and 12 months. Pain intensity and pain localisation, lifting performance, maximum walking velocity, self-rating of the physical capacity and work status were assessed at admission and discharge. Follow-up questionnaires were sent to the patient (pain intensity and pain localisation) and family doctor (working activity). Results: 115 patients (92 male, 23 female). Age 42 +/- 8.5 years. There was no change in pain intensity and pain localisation from admission to discharge while there was a significant increase from discharge to 6 and 12 months. The work related capacity improved significantly from admission to discharge. The working status increased from 15 % at admission to 23 % after 6 months (P = 0.02) and to 28.5 % after 12 months (P= 0.004). 26 patients showed a positive result in the predictive tests while 89 didn't show any negative predictive factors. The group with positive predictive tests felt significantly more pain (P < 0.001), showed a worse work related capacity (P < 0.001) and did not significantly improve their working status after 6 and 12 months. The specifity of the predictive tests for the working status after 12 months is 0.86. Conclusions: Despite a primary function orientated treatment approach pain intensity and localisation remain unchanged while work related capacity and return to work after intervention shows significant improvements. Predictive tests help to identify patients who don't improve regarding work related capacity and working status. These predictive tests may indicate an unchanged working status after 12 months with a specificity of 0.86.
+AN  - 37408787
+AU  - Bachman, S.
+AU  - Oesch, P. R.
+AU  - Kool, J. P.
+AU  - Persili, S.
+AU  - Knusel, O.
+C1  - RAYYAN-INCLUSION: {"Stefan"=>true, "Sophie"=>true} | RAYYAN-LABELS: fulltext
+DA  - 2003-1-1 %J Physikalische Medizin Rehabilitationsmedizin Kurortmedizin
+IS  - 5
+KW  - Cohort Studies
+Low Back Pain
+work
+walking speed
+questionnaire
+prospective study
+physical capacity
+pain parameters
+pain
+male
+major clinical study
+low back pain/th [Therapy]
+lifting effort
+human
+hospital discharge
+follow up
+female
+ergonomics
+chronic pain/th [Therapy]
+article
+adult
+LB  - 175
+N1  - no longitudinal data available for our outcomes of interest
+PY  - 2003
+SN  - 0940-6689
+SP  - 263-270
+ST  - Treatment of Patients with Chronic Low Back Pain in a Functional Restoration Program: Work Related Function Parameters, Pain Parameters and the Working Status after 12 Months. [German]
+TI  - Treatment of Patients with Chronic Low Back Pain in a Functional Restoration Program: Work Related Function Parameters, Pain Parameters and the Working Status after 12 Months. [German]
+UR  - https://ovidsp.ovid.com/ovidweb.cgi?T=JS&CSC=Y&NEWS=N&PAGE=fulltext&D=emed8&AN=37408787 https://maastrichtuniversity.on.worldcat.org/atoztitles/link?sid=OVID:embase&id=pmid:&id=doi:10.1055%2Fs-2003-43110&issn=0940-6689&isbn=&volume=13&issue=5&spage=263&pages=263-270&date=2003&title=Physikalische+Medizin+Rehabilitationsmedizin+Kurortmedizin&atitle=Behandlung+von+Patienten+mit+Chronischen+Lumbalen+Ruckenschmerzen+in+einem+Ergonomietrainings-programm%3A+Wie+Verandern+sich+Arbeitsbezogene+Funktionsparameter%2C+Schmerzparameter+und+die+Arbeitstatigkeit+nach+12+Monaten%3F&aulast=Bachman&pid=%3Cauthor%3EBachman+S.%3BOesch+P.R.%3BKool+J.P.%3BPersili+S.%3BKnusel+O.%3C%2Fauthor%3E%3CAN%3E37408787%3C%2FAN%3E%3CDT%3EArticle%3C%2FDT%3E
+VL  - 13
+ID  - 229
+ER  - 
+
