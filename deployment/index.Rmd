@@ -69,15 +69,14 @@ Column {.sidebar data-width=500}
 -------------------------------------
 ### Interdisciplinary multimodal pain treament programs: a living repository
 
-This online repository contains all study data of a systematic review and meta analysis on the development over time of interdisciplinary multimodal pain treatment (IMPT) programs. [click here](https://www.crd.york.ac.uk/prospero/display_record.php?RecordID=76093) for the study protocol. <br />
+This online repository contains all study data of a systematic review and meta analysis on the development over time of interdisciplinary multimodal pain treatment (IMPT) programs. <a href="https://www.crd.york.ac.uk/prospero/display_record.php?RecordID=76093" target="_blank">click here</a> for the study protocol. <br />
 
-The study procedures are depicted in the figure on the right side. The main advantage of this infrastructure is that data extraction forms that have been double checked are automatically added to the analyses within this dashboard. This facilitates regular updates. 
-
-The manuscript of the base review is currently in preparation for submission. More details regarding publication will be presented on this page <br />
+The manuscript of the base systematic review is currently under review. More details regarding publication will be presented on this page <br />
 
 The R scripts and dataset will be made available via Github along with the publication of the manuscript of the base review. <br />
 
-[click here](forms/second_round_screening_form.pdf) for the second round screening forms. <br />
+
+<a href="https://github.com/stefanelbers/impt.meta_analysis/blob/7d1d41b14708fb7db1daa9b4b74f5fe5abdf1e64/deployment/forms/second_round_screening_form.pdf" target="_blank">click here</a> for the second round screening forms. <br />
 [click here]() for the data extraction forms. <br />
 [click here]() for the risk of bias assessment forms. <br />
 
@@ -1609,7 +1608,7 @@ renderFormattable({
 Fulltext assessment {data-orientation=rows}
 =======================================================================
 
-Row {data-height=1200}
+Row {data-height=900}
 -------------------------------------
 
 ### Fulltext assessment
