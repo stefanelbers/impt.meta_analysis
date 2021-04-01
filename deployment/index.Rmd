@@ -76,9 +76,10 @@ The manuscript of the base systematic review is currently under review. More det
 The R scripts and dataset will be made available via Github along with the publication of the manuscript of the base review. <br />
 
 
-<a href="https://github.com/stefanelbers/impt.meta_analysis/blob/7d1d41b14708fb7db1daa9b4b74f5fe5abdf1e64/deployment/forms/second_round_screening_form.pdf" target="_blank">click here</a> for the second round screening forms. <br />
-[click here]() for the data extraction forms. <br />
-[click here]() for the risk of bias assessment forms. <br />
+<a href="https://github.com/stefanelbers/impt.meta_analysis/blob/7d1d41b14708fb7db1daa9b4b74f5fe5abdf1e64/deployment/forms/second_round_screening_form.pdf" target="_blank">click here</a> for the second round screening form. <br />
+<a href="https://github.com/stefanelbers/impt.meta_analysis/blob/6e88756399c84ee7f9421a1eb5c3574959a58b3c/deployment/forms/S2.data_extraction_form.pdf" target="_blank">click here</a> for the data extraction form. <br />
+<a href="https://github.com/stefanelbers/impt.meta_analysis/blob/6e88756399c84ee7f9421a1eb5c3574959a58b3c/deployment/forms/rob_assessment_form.pdf" target="_blank">click here</a> for the risk of bias form. <br />
+<a href="https://github.com/stefanelbers/impt.meta_analysis/blob/master/deployment/forms/complete_search_flow_deduplicated.txt" target="_blank">click here</a> for the deduplicated set of first round screening study records. <br />
 
 For questions or comments, please contact the corresponding author via stefan.elbers@hu.nl
 
