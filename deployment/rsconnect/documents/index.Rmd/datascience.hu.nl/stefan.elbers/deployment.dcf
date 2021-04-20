@@ -5,8 +5,8 @@ account: stefan.elbers
 server: datascience.hu.nl
 hostUrl: https://datascience.hu.nl/rsconnect/__api__
 appId: 57
-bundleId: 314
+bundleId: 444
 url: https://datascience.hu.nl:443/rsconnect/content/57/
-when: 1617297172.1688
+when: 1618899176.71708
 asMultiple: FALSE
 asStatic: FALSE

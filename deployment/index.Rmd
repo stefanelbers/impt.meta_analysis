@@ -98,7 +98,7 @@ Row {data-height=1200}
 -------------------------------------
 ### flow chart
 ```{r}
-prisma(31894, 90, 17955, 17955, 17588, 374, 311, 63, 56)
+prisma(31933, 129, 17988, 17988, 17608, 380, 315, 65, 57)
 ```
 
 Study/patient characteristics {data-orientation=rows}
@@ -1627,7 +1627,7 @@ reactable(t_fulltext,
               # Render as ✘ or ✓
               if (value == 0) "\u2718" else "\u2713"
             }, style = function(value){
-              if (value == 0) {color <- '#B62A3D'} else {color <- '#456355'}
+              if (value == 0) {color <- '#e5383b'} else {color <- '#73a942'}
               list(background = color)})
           ),
           bordered = FALSE,

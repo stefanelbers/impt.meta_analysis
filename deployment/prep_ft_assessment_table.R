@@ -1,4 +1,4 @@
-data_fulltext <- read_bibliography("testset2.txt")
+data_fulltext <- read_bibliography("second_round_selection.txt")
 
 t_fulltext <- select(data_fulltext, author, year, title, LB, n1)
 
@@ -22,7 +22,5 @@ t_fulltext$decision[t_fulltext$`study id`%in% included_id] <- 1
 
 #validate if number of 1 matches number of included studies
 freq(t_fulltext$decision)
-
-
 
 
