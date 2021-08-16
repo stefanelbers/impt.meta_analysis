@@ -83,7 +83,8 @@ questionnaires <- questionnaires %>%
     vector_dass_anx <- c("DASS: anxiety", 0, 42, 1),
     vector_mpi0_pi_0100 <- c("MPI: pain interference (0-100)", 0, 100, 1),
     vector_GSE <- c("GSE (1-4)", 1, 4, 0),
-    vector_DS <- c("DS (depressivitats-skala)", 0, 48, 1)
+    vector_DS <- c("DS (depressivitats-skala)", 0, 48, 1),
+    vector_nrs_distress <- c("NRS: distress (0-100)", 0, 100, 1)
     )
 
 
