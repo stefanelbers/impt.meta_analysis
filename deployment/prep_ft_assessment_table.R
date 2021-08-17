@@ -1,4 +1,6 @@
-data_fulltext <- read_bibliography("deployment/second_round_selection.txt")
+#when debugging in rstudio use:  data_fulltext <- read_bibliography("deployment/second_round_selection.txt") instead of line below
+
+data_fulltext <- read_bibliography("second_round_selection.txt")
 
 t_fulltext <- select(data_fulltext, author, year, title, LB, n1)
 
