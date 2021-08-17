@@ -5,9 +5,9 @@ account: stefan.elbers
 server: datascience.hu.nl
 hostUrl: https://datascience.hu.nl/rsconnect/__api__
 appId: 57
-bundleId: 556
+bundleId: 557
 url: https://datascience.hu.nl:443/rsconnect/impt-cohorts/
-when: 1629215560.7034
-lastSyncTime: 1629215560.70341
+when: 1629217212.48256
+lastSyncTime: 1629217212.48257
 asMultiple: FALSE
 asStatic: FALSE

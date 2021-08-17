@@ -70,6 +70,7 @@ questionnaires <- questionnaires %>%
     vector_sf36_sf <- c("SF-36: social functioning", 0, 100, 0),
     vector_sip <- c("SIP", 0, 9608, 1),
     vector_sip_01 <- c("SIP: physical disability (0-1)", 0, 1, 1),
+    vector_sip_0100 <- c("SIP (0-100)", 0, 100, 1),
     vector_qbprs <- c("QBPRS", 0, 100, 1),
     vector_euroq_vas <- c("EuroQol-5D-3L (VAS 0-100)", 0, 100, 0),
     vector_mean_nhp <- c("mean NHP (0-100)", 0, 100, 1),
