@@ -305,7 +305,13 @@ summarytools::freq(meta_dat_prpo$ci.lb > 0) # + pre-follow-up pattern
 summarytools::freq(meta_dat_prpo$ci.lb < 0 & meta_dat_prpo$ci.ub > 0) # 0 pre-follow-up pattern
 summarytools::freq(meta_dat_prpo$ci.ub < 0) # - pre follow-up pattern
 
+#calculate median effect size for all pre-post contrasts combined.
+descr(meta_dat_prpo$yi)
+
+#create dataset for post-fu contrasts
 meta_dat_pof <- filter(meta_dat, contrast == "post-fu")
+
+
 
 #pattern total
 merge_prpo <- meta_dat_prpo[metavars2]

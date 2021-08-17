@@ -1,4 +1,20 @@
 # data analysis for results section #
+#build prisma flow chart
+
+install.packages("DiagrammeRsvg")
+install.packages("rsvg")
+
+library(DiagrammeRsvg)
+library(rsvg)
+
+prsm <- prisma(31933, 129, 17988, 17988, 17608, 380, 315, 65, 57)
+
+tmp_pdf <- tempfile()
+PRISMAstatement:::prisma_pdf(prsm, tmp_pdf)
+knitr::include_graphics(path = tmp_pdf)
+unlink(tmp_pdf)
+
+
 #first load packages and data
 
 

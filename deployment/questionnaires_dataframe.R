@@ -87,7 +87,8 @@ questionnaires <- questionnaires %>%
     vector_MPI_di_06 <- c("MPI: distress (0-6)", 0, 6, 1),
     vector_BCMDI_080 <- c("British Columbia Major Depression Inventory (0-80)", 0, 80, 1),
     vector_PASS20_0100 <- c("Pain Anxiety Symptoms Scale-20 (0-100)", 0, 100, 1),
-    vector_FfkA <- c("Freiburger questionnaire on physical activity (FfkA)", 0, 168 ,0)
+    vector_FfkA <- c("Freiburger questionnaire on physical activity (FfkA)", 0, 168 ,0),
+    vector_nrs_distress <- c("NRS: distress (0-100)", 0, 100, 1)
     )
 
 #We chose hours in a week (168) as the upper limit of the FfkA scale. 
