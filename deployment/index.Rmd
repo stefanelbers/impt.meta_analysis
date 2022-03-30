@@ -1,11 +1,11 @@
 ---
 title: "flexdashboard: IMPT meta analysis"
-runtime: shiny
 output: 
   flexdashboard::flex_dashboard:
     social: menu
     source_code: embed 
     vertical_layout: scroll
+runtime: shiny
 ---
 
 
@@ -40,6 +40,15 @@ library(tidyr)
 library(tidyverse)
 library(wesanderson)
 library(revtools)
+
+#For Ubuntu servers
+#summarytools requires: magick
+#sudo apt-get install libmagick++-dev
+#revtools requires:gsl
+#sudo add-apt-repository ppa:dns/gnu
+#sudo apt-get update
+#sudo apt install libgsl-dev
+
 ```
 
 ```{r load data, include=FALSE}

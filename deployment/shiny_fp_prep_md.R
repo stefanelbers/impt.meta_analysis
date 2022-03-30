@@ -1,5 +1,7 @@
 #preparation R script for Shiny forest plots
 
+library(stringr)
+
 dat <- dat_clean %>%
   rename(pf_name_measurement_instrument = pf_measurement_name,
          meas_hrqol = measurement_of_hrqol,
@@ -243,7 +245,7 @@ correct_rev_score <- function(data) {
 corrected_data <- correct_rev_score(data)
 
 #rename outcomes
-corrected_data$outcome <- corrected_data$outcome %>% recode(
+corrected_data$outcome <- corrected_data$outcome %>% dplyr::recode(
   "hrqol" = "health related quality of life",
   "pf" = "physical function",
   "pinter" = "pain interference",
